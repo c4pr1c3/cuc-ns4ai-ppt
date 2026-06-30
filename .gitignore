@@ -7,4 +7,5 @@ app.db
 
 # omc operational state + build outputs
 .omc/
-dist/
+# anchored to repo root only — must NOT match reveal.js/dist/ (deployed site asset)
+/dist/

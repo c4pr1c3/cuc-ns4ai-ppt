@@ -23,3 +23,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+          # clean orphan deploy: purge stale files (e.g. old reveal.js versions)
+          # so the published tree is exactly the current build
+          force_orphan: true
