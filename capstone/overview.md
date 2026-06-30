@@ -15,7 +15,7 @@ output: revealjs::revealjs_presentation
 * 旧考核：每章一份独立实验报告 → **知识碎片化、无法度量综合能力**
 * 新考核：**整学期只做一个工程**，按里程碑渐进迭代
 * 最终产物：一个「**已加固、自带 AI 能力、且 AI 能力被红队验证过**」的 Web 应用
-* DNA 沿用 [`vuls-awd.md`](vuls-awd.md.v4.html) 的「搭建→攻击→检测→防御」闭环，但从**一次性**变为**渐进式**
+* DNA 沿用 [`vuls-awd.md`](vuls-awd.html) 的「搭建→攻击→检测→防御」闭环，但从**一次性**变为**渐进式**
 
 ---
 
@@ -38,7 +38,7 @@ output: revealjs::revealjs_presentation
 | **M6** | **AI 赋能与对抗（核心）** | M6 + Ch14-18 | ⑥ | 30% |
 | **M7** | 红蓝对抗 + 复盘 + 自评 | 全课程 | 全簇 | 10% |
 
-> 期末 60% = 上表权重之和；平时 20% / 考勤 10% / 线上 10% 详见 [`intro.md`](intro.md.v4.html)。
+> 期末 60% = 上表权重之和；平时 20% / 考勤 10% / 线上 10% 详见 [`intro.md`](intro.html)。
 
 ---
 
@@ -74,7 +74,7 @@ output: revealjs::revealjs_presentation
 ## M4 加固与边界防护
 
 * **交付**：防火墙/WAF 规则、IDS 规则（Snort/Suricata）、应用与运行环境加固
-* **能力簇**：④ 防御与加固 · L2（对应 [`chap0x09`](chap0x09-slim.md.v4.html) 注入段）
+* **能力簇**：④ 防御与加固 · L2（对应 [`chap0x09`](chap0x09-slim.html) 注入段）
 
 ---
 
@@ -90,7 +90,7 @@ output: revealjs::revealjs_presentation
 * **赋能侧**：集成一个 **LLM 功能**（助手/RAG）+ 一个 **AI 检测组件**（异常/UEBA 或日志分诊），并度量效能
 * **对抗侧**：对该 AI 功能做 **提示词注入/越狱/RAG 投毒/工具滥用** 攻击，并加防御
 * **能力簇**：⑥ AI×网络安全 · L2（双向）
-* 详见 [`capstone/m6-ai.md`](m6-ai.md.v4.html)
+* 详见 [`capstone/m6-ai.md`](m6-ai.html)
 
 ---
 

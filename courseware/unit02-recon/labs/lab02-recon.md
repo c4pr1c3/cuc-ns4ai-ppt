@@ -139,7 +139,7 @@ echo "输出目录: $DIR"
 - [ ] **L2 实践**：用 Wireshark/nmap 完成测绘、解读结果、产出报告。
 - [ ] **L3 工程化**：编写可复用侦察脚本 + 结构化暴露面清单 + 风险标注与治理建议。
 
-> 提交时在报告中给出本自评勾选结果，并附一句「本次我点亮了哪些簇×级」。能力框架详见 [`capability-framework.md`](../../../capability-framework.md.v4.html)。
+> 提交时在报告中给出本自评勾选结果，并附一句「本次我点亮了哪些簇×级」。能力框架详见 [`capability-framework.md`](../../../capability-framework.html)。
 
 ---
 

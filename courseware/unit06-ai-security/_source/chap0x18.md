@@ -74,4 +74,4 @@ output: revealjs::revealjs_presentation
 
 * 扩写各 H2 为七要素幻灯
 * 加入 1 个「AI 红队报告」模板示例
-* 与 [`chap0x15`](chap0x15.md.v4.html)、[`chap0x16`](chap0x16.md.v4.html)、[`chap0x17`](chap0x17.md.v4.html) 交叉引用
+* 与 [`chap0x15`](chap0x15.html)、[`chap0x16`](chap0x16.html)、[`chap0x17`](chap0x17.html) 交叉引用

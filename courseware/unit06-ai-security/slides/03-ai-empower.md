@@ -132,4 +132,4 @@ risk = -clf.score_samples(X_live)   # 越大越异常
 
 * 在你的应用集成一个 **AI 检测组件**（Isolation Forest 打风险分）
 * **度量**：Precision/Recall、误报、与纯规则版对比、明确**局限**
-* 详见 lab + [`capstone/m6-ai.md`](../../../../capstone/m6-ai.md.v4.html)
+* 详见 lab + [`capstone/m6-ai.md`](../../../../capstone/m6-ai.html)

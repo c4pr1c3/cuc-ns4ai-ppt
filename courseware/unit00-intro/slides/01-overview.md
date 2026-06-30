@@ -56,7 +56,7 @@ output: revealjs::revealjs_presentation
 - 课程主线把这两面织进同一个应用：**U4/U5 传统方法 → AI 增强（埋伏）→ U6 AI 对抗（集中，核心 30%）**
 - 本单元先建立「双语」直觉，细节留待 U6
 
-> 详见 [`capability-framework.md`](../../../capability-framework.md.html) 簇⑥。
+> 详见 [`capability-framework.md`](../../../capability-framework.html) 簇⑥。
 
 # Topic 2: 能力框架 v2
 
@@ -95,7 +95,7 @@ output: revealjs::revealjs_presentation
 | **L2** | 对一个系统做威胁建模 + CVSS 评分 | U0 | **M0** 立项与威胁建模 |
 | L3 | 设计 RBAC/风险登记表并随项目演进 | U1 | M1 安全基线 |
 
-> 完整覆盖矩阵见 [`capability-framework.md`](../../../capability-framework.md.html)。本单元 lab = M0，证据就是你的威胁建模产物。
+> 完整覆盖矩阵见 [`capability-framework.md`](../../../capability-framework.html)。本单元 lab = M0，证据就是你的威胁建模产物。
 
 # Topic 3: CIA / STRIDE / CVSS 速成
 
@@ -190,13 +190,13 @@ output: revealjs::revealjs_presentation
 | **M6** | AI 赋能与对抗（核心）⭐ | ⑥ | 30% |
 | M7 | 红蓝对抗 + 复盘 + 自评 | 全簇 | 10% |
 
-> 主线一句话：**搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的 AI**，全程同一仓库。详见 [`capstone/overview.md`](../../../capstone/overview.md.html)。
+> 主线一句话：**搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的 AI**，全程同一仓库。详见 [`capstone/overview.md`](../../../capstone/overview.html)。
 
 ---
 
 ## 起点：capstone/seed/
 
-- 学生 fork [`capstone/seed/`](../../../capstone/seed/README.md.html)（Flask 最小应用）作为整个学期的工程起点
+- 学生 fork [`capstone/seed/`](../../../capstone/seed/README.html)（Flask 最小应用）作为整个学期的工程起点
 - 它故意「最小可运行 + 预留攻击面」，作为后续里程碑的真实素材：
   - `/login`：弱口令 + 明文比对 → **M1**
   - `/orders`：字符串拼接 SQL → **M3**

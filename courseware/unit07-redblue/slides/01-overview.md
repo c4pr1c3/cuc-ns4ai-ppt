@@ -40,4 +40,4 @@ output: revealjs::revealjs_presentation
 
 * 全簇·L3（工程化）：编排利用链、纵深防御、检测-取证-欺骗闭环、AI 综合评估 → 证据 **M7**
 
-> lab 见 `labs/lab07-redblue.md`；自评矩阵见 [`capability-framework.md`](../../../../capability-framework.md.v4.html)。
+> lab 见 `labs/lab07-redblue.md`；自评矩阵见 [`capability-framework.md`](../../../../capability-framework.html)。

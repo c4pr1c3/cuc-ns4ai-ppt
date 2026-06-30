@@ -132,4 +132,4 @@ def guard(a):
 * 对自己应用的 AI 功能做：间接注入 / 越狱 / RAG 投毒 / 工具滥用 PoC
 * 加固：白名单 + HITL + 不可信内容打标 + 审计
 * **度量**：加固前后劫持成功率下降
-* 详见 lab + [`capstone/m6-ai.md`](../../../../capstone/m6-ai.md.v4.html)
+* 详见 lab + [`capstone/m6-ai.md`](../../../../capstone/m6-ai.html)

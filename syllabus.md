@@ -23,7 +23,7 @@ output: revealjs::revealjs_presentation
 
 * 对标教育部「**人工智能赋能教育行动**」与 OBE（成果导向）反向设计
 * 对标《**AI 时代网络安全产业人才发展报告（2025）**》：全国 65.9% 高校已新增 AI 安全课（↑15pp）；本课彻底 **整课重构 + 边学边做范式**（领先一个身位）
-* 对标报告「**AI 驱动网安岗位图谱**」（智能体架构师 / 模型安全红队 / AI 风险顾问）→ 见 [`capability-framework.md`](capability-framework.md.v4.html) 就业映射
+* 对标报告「**AI 驱动网安岗位图谱**」（智能体架构师 / 模型安全红队 / AI 风险顾问）→ 见 [`capability-framework.md`](capability-framework.html) 就业映射
 * 海外基准：Stanford XACS134、UCSD CSE291(LLM Security)、Berkeley CS294(Agentic AI)、SANS SEC536/545、UMN ST5663(Red Teaming AI)
 
 ---
@@ -64,7 +64,7 @@ output: revealjs::revealjs_presentation
 | U7 红蓝对抗综合 | 全流程红蓝对抗如何打？ | M7 红蓝对抗 | 2h | 全课程 | 评估 |
 | | | | **16h** | | |
 
-> 详细单元卡片见 [`index.md`](index.md.v4.html)；能力映射见 [`capability-framework.md`](capability-framework.md.v4.html)。
+> 详细单元卡片见 [`index.md`](index.html)；能力映射见 [`capability-framework.md`](capability-framework.html)。
 
 ---
 
@@ -85,7 +85,7 @@ output: revealjs::revealjs_presentation
 * **平时 20%**：课堂快问快答 + 讨论区 + 助学层题库完成度
 * **考勤 10%** / **线上 10%**（取自 `study/*-quiz.md`）
 * **M7**：红蓝对抗 + 取证复盘 + 能力框架自评矩阵收口
-* 详见 [`capstone/overview.md`](capstone/overview.md.v4.html)
+* 详见 [`capstone/overview.md`](capstone/overview.html)
 
 # 撰写路线图
 

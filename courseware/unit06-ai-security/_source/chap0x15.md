@@ -6,7 +6,7 @@ output: revealjs::revealjs_presentation
 
 # 第十五章 AI 作为攻击面
 
-> 📝 撰写状态：**详细大纲**（待增量成文）。素材基底：[`llm-security.md`](llm-security.md.v4.html) 后半部分 + 新增现代攻击面。
+> 📝 撰写状态：**详细大纲**（待增量成文）。素材基底：[`llm-security.md`](llm-security.html) 后半部分 + 新增现代攻击面。
 
 ---
 
@@ -76,7 +76,7 @@ output: revealjs::revealjs_presentation
 ## 衔接作品 M6 对抗侧
 
 * M6 的「越狱 / 直接注入 / RAG 投毒」即本章方法的工程化
-* 详见 [`capstone/m6-ai.md`](capstone/m6-ai.md.v4.html)
+* 详见 [`capstone/m6-ai.md`](capstone/m6-ai.html)
 * 能力框架：簇 ⑥ · L2（作为对象）
 
 ---
@@ -84,5 +84,5 @@ output: revealjs::revealjs_presentation
 ## 待成文要点（撰写路线）
 
 * 把每个 H2 扩为七要素幻灯（动机/直觉/探索/形式化/实战/误区/延伸）
-* 用 [`/teachme`](study/README.md.v4.html) 七要素结构撰写
+* 用 [`/teachme`](study/README.html) 七要素结构撰写
 * 与 Ch16（Agent）/ Ch18（红队）明确分工，避免重叠

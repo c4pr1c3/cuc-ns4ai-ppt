@@ -6,7 +6,7 @@ output: revealjs::revealjs_presentation
 
 # 第十四章 AI 安全导论与治理框架
 
-> 📝 撰写状态：**详细大纲**（待增量成文）。素材基底：[`llm-security.md`](llm-security.md.v4.html) 前半部分。
+> 📝 撰写状态：**详细大纲**（待增量成文）。素材基底：[`llm-security.md`](llm-security.html) 前半部分。
 
 ---
 
@@ -68,4 +68,4 @@ output: revealjs::revealjs_presentation
 
 * 补全各 H2 为完整幻灯页（动机→直觉→形式化→实战）
 * 加入 1-2 个「对齐失败」案例讨论
-* 链接到 [`chap0x15`](chap0x15.md.v4.html)、[`chap0x16`](chap0x16.md.v4.html)、[`chap0x17`](chap0x17.md.v4.html)
+* 链接到 [`chap0x15`](chap0x15.html)、[`chap0x16`](chap0x16.html)、[`chap0x17`](chap0x17.html)

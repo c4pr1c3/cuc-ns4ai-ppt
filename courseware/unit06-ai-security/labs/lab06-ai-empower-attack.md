@@ -87,4 +87,4 @@ def guard(a):
 - 把对抗 PoC 套到评估基准思路（[ExploitGym](https://arxiv.org/abs/2605.11086) / [XBOW benchmarks](https://github.com/xbow-engineering/validation-benchmarks)）——度量「AI 攻击你的 AI 防御」的攻击成功率（ASR）
 - 方法论参照 [OWASP GenAI Red Teaming Guide](https://github.com/requie/AI-Red-Teaming-Guide)
 
-> 参考：[`capstone/m6-ai.md`](../../../../capstone/m6-ai.md.v4.html)、slides `01-overview` / `02-ai-as-target` / `03-ai-empower`、`study/unit06-guide.md`、[`study/ai-pentest-resources.md`](../../../../../study/ai-pentest-resources.md.html)。
+> 参考：[`capstone/m6-ai.md`](../../../../capstone/m6-ai.html)、slides `01-overview` / `02-ai-as-target` / `03-ai-empower`、`study/unit06-guide.md`、[`study/ai-pentest-resources.md`](../../../../../study/ai-pentest-resources.html)。

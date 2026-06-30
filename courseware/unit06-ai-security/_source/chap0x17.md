@@ -261,7 +261,7 @@ alerts = np.where(risk > np.quantile(risk, 0.99))[0]
 * 集成进应用日志管线，**实时**输出风险分
 * 报告：**Precision/Recall**、误报分析、与纯规则版的对比
 * 明确写出 **AI 组件的局限**（哪些攻击它检测不到、为何）
-* 详见 [`capstone/m6-ai.md`](capstone/m6-ai.md.v4.html)
+* 详见 [`capstone/m6-ai.md`](capstone/m6-ai.html)
 
 # 常见误区与延伸
 

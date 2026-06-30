@@ -9,7 +9,7 @@ output: revealjs::revealjs_presentation
 ## AI 赋能网络安全
 
 > 本指南是 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x17.md` 的助学伴生层，按「七要素」精简展开，面向**网安本科生自学**。
-> 配套题库见 [`chap0x17-quiz.md`](chap0x17-quiz.md.v4.html)。
+> 配套题库见 [`chap0x17-quiz.md`](chap0x17-quiz.html)。
 
 ---
 
@@ -236,4 +236,4 @@ semgrep --config p/python src/app/ --json > findings.json
 * AI 赋能 = **分层管线**（小模型检测 + LLM 分诊 + SOAR 行动 + 人在回路）
 * 四大能力：**检测 / SOC / 渗透审计 / 情报问答**
 * 关键不是「用不用 AI」，而是**在哪一层用、如何评估、如何兜底**
-* 下一步：做配套题库 [`chap0x17-quiz.md`](chap0x17-quiz.md.v4.html) 自测
+* 下一步：做配套题库 [`chap0x17-quiz.md`](chap0x17-quiz.html) 自测

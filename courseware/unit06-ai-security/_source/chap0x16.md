@@ -227,7 +227,7 @@ def guard(action):
 * 对「不可信内容」打标，限制其对指令的影响
 * 记录全链路审计日志，证明加固前后**劫持成功率下降**
 
-> 详见 [`capstone/m6-ai.md`](capstone/m6-ai.md.v4.html)；交付需同时给出**攻击 PoC** 与**防御证据**。
+> 详见 [`capstone/m6-ai.md`](capstone/m6-ai.html)；交付需同时给出**攻击 PoC** 与**防御证据**。
 
 # 常见误区与延伸
 

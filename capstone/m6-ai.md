@@ -51,7 +51,7 @@ def agent(q: str):
 
 ## 赋能侧 · 任务二：集成一个 AI 检测组件
 
-* 用 **ML-IDS / UEBA / 日志分诊** 提升防御（呼应 [`chap0x17`](../chap0x17.md.v4.html)）
+* 用 **ML-IDS / UEBA / 日志分诊** 提升防御（呼应 [`chap0x17`](../chap0x17.html)）
 * 最小实现：对登录/请求行为用 Isolation Forest 打风险分，高分触发告警
 
 ```python{.python .numberLines}
@@ -75,7 +75,7 @@ risk  = -model.score_samples(X_live)   # 越大越异常
 * **越狱 / 直接注入**：绕过护栏获取越权回答
 * **工具滥用**：诱导 Agent 把只读工具当**外传通道**
 
-> 详见 [`chap0x16`](../chap0x16.md.v4.html)。所有测试仅限自己的应用。
+> 详见 [`chap0x16`](../chap0x16.html)。所有测试仅限自己的应用。
 
 ---
 

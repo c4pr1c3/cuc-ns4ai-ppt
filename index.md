@@ -7,9 +7,9 @@ output: revealjs::revealjs_presentation
 
 # 课程入口
 
-* [教学大纲](syllabus.md.v4.html)（8 单元 · 16 讲授 + 48 实践 · 边学边做）
-* [网络安全能力框架 v2](capability-framework.md.v4.html)
-* [渐进式作品总览（capstone M0-M7）](capstone/overview.md.v4.html)
+* [教学大纲](syllabus.html)（8 单元 · 16 讲授 + 48 实践 · 边学边做）
+* [网络安全能力框架 v2](capability-framework.html)
+* [渐进式作品总览（capstone M0-M7）](capstone/overview.html)
 
 ---
 
@@ -21,7 +21,7 @@ output: revealjs::revealjs_presentation
 
 ### U0 导论与能力框架 → M0
 
-* [slides](courseware/unit00-intro/slides/01-overview.md.v4.html) | [lab M0](courseware/unit00-intro/labs/lab00-threat-model.md.v4.html)
+* [slides](courseware/unit00-intro/slides/01-overview.html) | [lab M0](courseware/unit00-intro/labs/lab00-threat-model.html)
 
 ---
 
@@ -57,7 +57,7 @@ output: revealjs::revealjs_presentation
 
 ### U6 AI 赋能与对抗 → M6 ⭐
 
-* [slides](courseware/unit06-ai-security/slides/01-overview.md.v4.html) | [lab M6](courseware/unit06-ai-security/labs/lab06-ai-empower-attack.md.v4.html)
+* [slides](courseware/unit06-ai-security/slides/01-overview.html) | [lab M6](courseware/unit06-ai-security/labs/lab06-ai-empower-attack.html)
 
 ---
 
@@ -69,15 +69,15 @@ output: revealjs::revealjs_presentation
 
 ## capstone 作品主线
 
-* [作品总览（M0-M7 + 量规）](capstone/overview.md.v4.html)
-* [里程碑 M6：AI 赋能与对抗](capstone/m6-ai.md.v4.html)
+* [作品总览（M0-M7 + 量规）](capstone/overview.html)
+* [里程碑 M6：AI 赋能与对抗](capstone/m6-ai.html)
 * [种子工程（学生 fork 起点）](https://github.com/)（`capstone/seed/`）
 
 ---
 
 ## AI 助学层（`/teachme` 生成）
 
-* [助学层使用说明](study/README.md.v4.html)
+* [助学层使用说明](study/README.html)
 * 经典章按需自学：[cuc-ns-ppt 在线仓库](https://github.com/c4pr1c3/cuc-ns-ppt/)（本仓库不保留副本）
 
 > 📝 = 待增量撰写（详见 `syllabus.md` 撰写路线图）。构建：`bash build_slides.sh`。

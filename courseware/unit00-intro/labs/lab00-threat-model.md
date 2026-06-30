@@ -15,7 +15,7 @@
 ## 2. 环境准备
 
 - **本地**: Windows 10/11（推荐 WSL 2 Ubuntu 22.04）或 macOS，已安装 Git、Python 3.10+。
-- **仓库**: 课程 GitLab。每个学生在课程 GitLab Group 下 fork [`capstone/seed/`](../../../capstone/seed/README.md.html) 为自己的私有仓库（命名建议 `cuc-ns-<学号>`）。
+- **仓库**: 课程 GitLab。每个学生在课程 GitLab Group 下 fork [`capstone/seed/`](../../../capstone/seed/README.html) 为自己的私有仓库（命名建议 `cuc-ns-<学号>`）。
 - **种子工程最小可运行**:
 
   ```bash
@@ -124,7 +124,7 @@ docs/m0/
 
 ## 5. 能力自评
 
-完成本 lab 后，在 `docs/m0/report.md` 末尾填写能力自评（对照 [`capability-framework.md`](../../../capability-framework.md.html)）：
+完成本 lab 后，在 `docs/m0/report.md` 末尾填写能力自评（对照 [`capability-framework.md`](../../../capability-framework.html)）：
 
 | 簇 × 级 | 能力描述 | 是否点亮 | 证据 |
 | :-: | :- | :-: | :- |

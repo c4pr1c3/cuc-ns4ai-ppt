@@ -16,7 +16,7 @@ author: 黄玮
 | [cuc-ns-ppt 在线](https://github.com/c4pr1c3/cuc-ns-ppt/) | 经典 13 章 + `llm-security.md` + `vuls-awd.md`（按需自学，**本仓库不保留副本**） |
 | `study/README.md` | 本说明 |
 
-* 当前样板：[`unit06-guide.md`](unit06-guide.md.html) / [`unit06-quiz.md`](unit06-quiz.md.html)
+* 当前样板：[`unit06-guide.md`](unit06-guide.html) / [`unit06-quiz.md`](unit06-quiz.html)
 * 由 `build_slides.sh` 渲染为**纯 HTML 文档**（`css/linux4ai.css` + 侧边 toc）。
 
 ## 与课件的关系

@@ -42,7 +42,7 @@ $endif$
 $for(css)$
   <link rel="stylesheet" href="$css$"/>
 $endfor$
-  <link rel="stylesheet" href="$revealjs-url$/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="$revealjs-url$/dist/plugin/highlight/monokai.css">
   <!-- Printing and PDF exports -->
 $if(math)$
   $math$
@@ -83,14 +83,19 @@ $body$
   </div>
 
   <script src="$revealjs-url$/dist/reveal.js"></script>
-  <script src="$revealjs-url$/plugin/highlight/highlight.js"></script>
+  <script src="$revealjs-url$/dist/plugin/highlight.js"></script>
+  <script src="$revealjs-url$/dist/plugin/notes.js"></script>
+  <script src="$revealjs-url$/dist/plugin/zoom.js"></script>
+$if(mathjax)$
+  <script src="$revealjs-url$/dist/plugin/math.js"></script>
+$endif$
 
   <script>
 
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
-        plugins: [ RevealHighlight ],
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom$if(mathjax)$, RevealMath$endif$ ],
 $if(controls)$
         // Display controls in the bottom right corner
         controls: $controls$,
@@ -261,18 +266,6 @@ $if(mathjax)$
         },
 $endif$
 
-        // Optional reveal.js plugins
-        dependencies: [
-          { src: '$revealjs-url$/plugin/zoom/zoom.js', async: true },
-$if(notes-server)$
-          { src: '$revealjs-url$/socket.io/socket.io.js', async: true },
-          { src: '$revealjs-url$/plugin/notes-server/client.js', async: true },
-$endif$
-$if(mathjax)$
-          { src: '$revealjs-url$/plugin/math/math.js', async: true },
-$endif$
-          { src: '$revealjs-url$/plugin/notes/notes.js', async: true }
-        ]
       });
 
       // Add "open in new window" button to all iframes

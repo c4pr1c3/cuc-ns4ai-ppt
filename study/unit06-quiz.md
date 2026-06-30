@@ -8,7 +8,7 @@ output: revealjs::revealjs_presentation
 
 ## AI 赋能网络安全
 
-> 配套学习指南：[`chap0x17-guide.md`](chap0x17-guide.md.v4.html)
+> 配套学习指南：[`chap0x17-guide.md`](chap0x17-guide.html)
 > 题型：`[单选]` / `[多选]` / `[判断]` / `[场景]`；难度从基础到进阶。
 
 ---

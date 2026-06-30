@@ -48,7 +48,7 @@ output: revealjs::revealjs_presentation
 * L1：区分两类场景（认知）
 * L2（对象）：对 AI 功能做注入/越狱/RAG 投毒并加固
 * L2（赋能）：集成 AI 检测/分诊组件并解读结果
-* 详见 [`capability-framework.md`](../../../../capability-framework.md.v4.html)
+* 详见 [`capability-framework.md`](../../../../capability-framework.html)
 
 # Topic 2: 速通 LLM 与对齐
 
