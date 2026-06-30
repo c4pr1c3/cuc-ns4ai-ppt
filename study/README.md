@@ -65,8 +65,8 @@ author: 黄玮
 - B. 20% 左右
 - C. < 1%
 - D. 100%
-> 答案：C
-> 解析：真阳性常 < 1%，这是 AI 分诊的价值所在。
+> 答案：<公开题库不含答案 · 见 internal 版>
+> 解析：<答案与解析仅存于 internal 分支的 study/unitNN-quiz-answers.md>
 ````
 
 # 再生与刷新
