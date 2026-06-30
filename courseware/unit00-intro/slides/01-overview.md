@@ -70,7 +70,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 六大能力簇 × 三级熟练度
+## 六大能力簇
 
 | # | 能力簇 | 主单元 | 来源经典（参考） |
 | :-: | :- | :-: | :- |
@@ -80,6 +80,10 @@ output: revealjs::revealjs_presentation
 | ④ | 防御与加固 | U4 | Ch8-10 |
 | ⑤ | 检测 / 取证 / 欺骗 | U5 | Ch11-13 |
 | ⑥ | **AI×网络安全（贯穿轴）** | **U6**（+U4/U5 埋伏） | Ch14-18 |
+
+---
+
+## 三级熟练度：L1 / L2 / L3
 
 - **L1 认知**：复述概念、识别场景（「知道是什么/为什么」）
 - **L2 实践**：在给定环境下用工具完成一次完整操作并解读结果（「会做一次」）
@@ -133,6 +137,10 @@ output: revealjs::revealjs_presentation
 - **时效性评估（Temporal）**：是否已有 PoC / 利用工具
 - **环境评估（Environmental）**：在你的部署环境里的实际影响
 
+---
+
+## CVSS 3.1 Base 维度速查
+
 | 维度 | 取值（CVSS 3.1） | 说明 |
 | :- | :- | :- |
 | 攻击途径 AV | N / A / L / P | 网络/邻接/本地/物理 |
@@ -148,10 +156,15 @@ output: revealjs::revealjs_presentation
 
 - 漏洞：Apache Log4j2 JNDI 注入，一行日志字符串即可 RCE
 - CVSS 3.1 Base：**10.0（Critical）**
+- 教训：一个广泛依赖的日志库 = 全行业「核弹级」攻击面
+
+---
+
+## Log4Shell 的 CVSS 向量拆解
+
 - 向量：`AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H`
   - 网络（AV:N）、低复杂度（AC:L）、无需权限（PR:N）、无需交互（UI:N）
   - 范围改变（S:C），机密性/完整性/可用性全部 High
-- 教训：一个广泛依赖的日志库 = 全行业「核弹级」攻击面
 
 > 评分用 [NVD CVSS 计算器](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator)。完整推导见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x02.md`。
 
@@ -177,7 +190,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 课程主线：capstone M0-M7
+## 课程主线：capstone M0-M7（M0-M3）
 
 | 里程碑 | 主题 | 能力簇 | 权重 |
 | :-: | :- | :-: | :-: |
@@ -185,6 +198,13 @@ output: revealjs::revealjs_presentation
 | M1 | 安全基线 | ① | 5% |
 | M2 | 自侦察 | ② | 8% |
 | M3 | 漏洞挖掘与利用 | ③ | 12% |
+
+---
+
+## 课程主线：capstone M0-M7（M4-M7）
+
+| 里程碑 | 主题 | 能力簇 | 权重 |
+| :-: | :- | :-: | :-: |
 | M4 | 加固与边界防护 | ④ | 12% |
 | M5 | 日志·取证·蜜罐 | ⑤ | 8% |
 | **M6** | AI 赋能与对抗（核心）⭐ | ⑥ | 30% |

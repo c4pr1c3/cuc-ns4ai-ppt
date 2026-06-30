@@ -1,0 +1,13 @@
+{
+  "name": "cuc-ns4ai-ppt-build",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Build/check helpers for the cuc-ns4ai-ppt courseware site",
+  "scripts": {
+    "check:overflow": "node scripts/check_slide_overflow.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

@@ -80,6 +80,11 @@
     text-align: left;
 }
 
+/* 限制 slide 内图片高度，防止大图溢出画布（与代码块同理；为标题/说明预留空间） */
+.reveal section img {
+    max-height: 560px;
+}
+
 /* 滚动条样式 */
 .reveal pre code::-webkit-scrollbar {
     width: 8px;

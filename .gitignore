@@ -5,7 +5,12 @@ __pycache__/
 *.pyc
 app.db
 
+# node (Playwright slide-overflow checker)
+node_modules/
+
 # omc operational state + build outputs
 .omc/
 # anchored to repo root only — must NOT match reveal.js/dist/ (deployed site asset)
 /dist/
+
+.env
