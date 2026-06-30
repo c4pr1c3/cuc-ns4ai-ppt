@@ -1,0 +1,26 @@
+name: Mirror master to public
+# 主仓库为私有（含 master + internal）。本 workflow 在 push master 时，
+# 把 master 镜像推到公开仓库（PUBLIC_REMOTE secret）。internal 分支永不触发。
+on:
+  push:
+    branches: [master]
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          fetch-depth: 0
+      - name: Push master to public remote
+        env:
+          PUBLIC_REMOTE: ${{ secrets.PUBLIC_REMOTE }}
+        run: |
+          if [ -z "$PUBLIC_REMOTE" ]; then
+            echo "PUBLIC_REMOTE secret 未配置，跳过镜像（配置后自动生效）"
+            exit 0
+          fi
+          git remote add public "$PUBLIC_REMOTE"
+          git push -f public master
+          echo "已镜像 master → 公开仓库（仅 master，不含 internal/答案/solution）"
