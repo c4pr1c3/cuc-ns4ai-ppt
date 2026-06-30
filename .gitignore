@@ -1,0 +1,10 @@
+.DS_Store
+
+# python
+__pycache__/
+*.pyc
+app.db
+
+# omc operational state + build outputs
+.omc/
+dist/
