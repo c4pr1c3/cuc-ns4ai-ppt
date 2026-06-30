@@ -28,6 +28,7 @@ import { chromium } from 'playwright';
 // slide canvas (cfg.height, default 700). reveal.js scales uniformly, so content taller
 // than cfg.height is clipped regardless of zoom. Grace absorbs sub-pixel/font-metric noise.
 const OVERFLOW_GRACE_PX = 8;
+let cfgHeight = 700; // slide canvas height (read from Reveal.getConfig per deck)
 const ROOT = resolve(join(import.meta.dirname, '..'));
 
 // --- collect slide HTML files -------------------------------------------------
@@ -42,6 +43,7 @@ function walk(dir, out) {
 
 const argv = process.argv.slice(2);
 const asJson = argv.includes('--json');
+const dumpHeights = argv.includes('--dump');
 const pos = argv.filter((a) => !a.startsWith('--'));
 let files = pos.length ? pos.flatMap((g) => g.split(' ')).map((p) => resolve(p)) : [];
 if (!files.length) {
@@ -108,6 +110,7 @@ const page = await browser.newPage();
 page.setDefaultTimeout(20000);
 
 const findings = [];
+const allHeights = [];
 
 try {
   for (const file of files) {
@@ -130,6 +133,7 @@ try {
     const cfg = await page.evaluate(() => window.Reveal.getConfig());
     const slideW = cfg.width || 960;
     const slideH = cfg.height || 700; // slide canvas height — the clip threshold
+    cfgHeight = slideH;
     await page.setViewportSize({ width: slideW, height: slideH });
     await page.evaluate(() => window.Reveal.layout());
 
@@ -176,6 +180,7 @@ try {
         return { sh: s.scrollHeight, heading: hd ? hd.textContent.trim().slice(0, 80) : '(无标题)' };
       });
       if (!m) continue;
+      allHeights.push({ file: rel, slide: slideNo, sh: m.sh, heading: m.heading });
       const limit = slideH + OVERFLOW_GRACE_PX;
       if (m.sh > limit) {
         findings.push({
@@ -195,6 +200,17 @@ try {
 }
 
 // --- report -------------------------------------------------------------------
+if (dumpHeights) {
+  // diagnostic: print every slide's content height (sorted, highest first) so authors
+  // can see headroom under the canvas and split proactively before CI/font variance tips it over.
+  const rows = allHeights.slice().sort((a, b) => b.sh - a.sh);
+  console.log(`[dump] ${allHeights.length} slides (canvas=${cfgHeight}px). Showing all, highest first:`);
+  for (const r of rows) {
+    const flag = r.sh > cfgHeight + OVERFLOW_GRACE_PX ? 'OVER' : r.sh > cfgHeight * 0.9 ? 'near' : 'ok';
+    console.log(`  ${String(r.sh).padStart(4)}px [${flag}]  ${r.file} #${r.slide} ${r.heading}`);
+  }
+  process.exit(findings.length ? 1 : 0);
+}
 if (asJson) {
   console.log(JSON.stringify({ overflow: findings, count: findings.length }, null, 2));
 } else if (findings.length === 0) {

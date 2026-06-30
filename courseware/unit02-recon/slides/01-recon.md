@@ -170,13 +170,18 @@ nmap -sV -p 1-1000 127.0.0.1 -oG m2-scan.grep      # grep 友好
 
 ---
 
-## 为什么「指纹」是侦察的高价值产出
+## 为什么「指纹」是侦察的高价值产出（服务 / OS）
 
 * 知道「**开了口**」不够，要知道「**口后是什么、什么版本**」→ 版本决定可利用漏洞
 * **服务指纹（`-sV`）**：根据 Banner / 协议探针识别服务与版本
     * 例：`5000/tcp open http` → `-sV` → `5000/tcp open http Werkzeug httpd 3.0.x (Flask)`
 * **OS 指纹（`-O`）**：根据 TCP/IP 协议栈实现差异（窗口大小、选项顺序…）猜操作系统
-* **Web/应用指纹**：`http-title`、`http-server-header`、响应头 `Server`/`X-Powered-By`、favicon hash、页面特征
+
+---
+
+## Web / 应用指纹
+
+* `http-title`、`http-server-header`、响应头 `Server`/`X-Powered-By`、favicon hash、页面特征
 
 > **M2 提示**：对你的 Flask 靶场做 `-sV`，会暴露 `Werkzeug`/`Python` 版本——这正是攻击者后续（U3）选漏洞利用 payload 的依据。
 
