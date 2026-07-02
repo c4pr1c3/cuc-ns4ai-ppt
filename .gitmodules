@@ -1,0 +1,27 @@
+[submodule "reveal.js"]
+	path = reveal.js
+	url = https://github.com/hakimel/reveal.js.git
+[submodule "solutions/unit03-web-offense/lab03-sqli"]
+	path = solutions/unit03-web-offense/lab03-sqli
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab03-sqli.git
+[submodule "solutions/unit00-intro/lab00-threat-model"]
+	path = solutions/unit00-intro/lab00-threat-model
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab00-threat-model.git
+[submodule "solutions/unit01-baseline/lab01-baseline"]
+	path = solutions/unit01-baseline/lab01-baseline
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab01-baseline.git
+[submodule "solutions/unit02-recon/lab02-recon"]
+	path = solutions/unit02-recon/lab02-recon
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab02-recon.git
+[submodule "solutions/unit04-defense/lab04-defense"]
+	path = solutions/unit04-defense/lab04-defense
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab04-defense.git
+[submodule "solutions/unit06-ai-security/lab06-ai"]
+	path = solutions/unit06-ai-security/lab06-ai
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab06-ai.git
+[submodule "solutions/unit05-detect-forensics/lab05-forensics"]
+	path = solutions/unit05-detect-forensics/lab05-forensics
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab05-forensics.git
+[submodule "solutions/unit07-redblue/lab07-redblue"]
+	path = solutions/unit07-redblue/lab07-redblue
+	url = git@gitee.a101e.lab:cuc-ns4ai-solutions/lab07-redblue.git

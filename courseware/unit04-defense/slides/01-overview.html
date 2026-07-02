@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第四单元: 加固与边界防护</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第四单元: 加固与边界防护</h1>
+  <p class="subtitle">【道】纵深 · 【术】防火墙/IDS/WAF · 【器】规则集 ·
+【造器】M4</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-0攻过了然后呢" class="title-slide slide level1">
+<h1>主题 0：攻过了，然后呢？</h1>
+
+</section>
+<section id="问题引入如何用防火墙-ids-waf-联防" class="slide level2">
+<h2>问题引入：如何用防火墙 + IDS + WAF 联防？</h2>
+<blockquote>
+<p><strong>M3 你已攻破了自己的靶场</strong>——明文凭证、SQL
+注入、XSS、上传马都复现了。M4：<strong>给这个千疮百孔的应用套上纵深防御，并量化你挡住了多少、放过了多少。</strong></p>
+</blockquote>
+<ul>
+<li>攻防不对称：攻击者只需找到一个口子；防御者要守住所有口子 →
+<strong>单点防御必败</strong></li>
+<li><strong>纵深（Defense in Depth）</strong>：网络边界（防火墙）+
+流量检测（IDS）+ 应用层（WAF）+ 运行环境（加固）层层兜底</li>
+<li>本单元 = 把 M2
+暴露面清单的处置建议<strong>落地成规则</strong>，并<strong>度量命中 /
+误报</strong></li>
+</ul>
+</section>
+<section id="本单元地图2-学时加固与边界防护" class="slide level2">
+<h2>本单元地图（≤2 学时）：加固与边界防护</h2>
+<ol type="1">
+<li>【道】纵深防御 / 最小暴露 / <strong>规则 vs
+误报权衡</strong>（核心思维）</li>
+<li>【术】防火墙：iptables / nftables 收敛暴露面（默认拒绝）</li>
+<li>【术】IDS：Snort / Suricata 规则 + <strong>命中 /
+误报度量</strong>（重放 M3 概念验证（PoC））</li>
+<li>【术】WAF：ModSecurity + OWASP CRS 拦截 M3
+攻击载荷（payload）<strong>变种</strong>（绕过 ↔︎ 反绕过）</li>
+<li>【术】运行环境加固：<code>debug=False</code>、隐藏指纹、最小权限</li>
+<li>【器】ModSecurity / Suricata / iptables（用器 → 造器）</li>
+<li>【造器】衔接实验 <strong>M4</strong>：规则集 + 命中 /
+误报度量报告</li>
+</ol>
+</section>
+<section id="本单元定位u4" class="slide level2">
+<h2>本单元定位（U4）</h2>
+<table>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">真实问题</td>
+<td style="text-align: left;">如何用防火墙 + IDS + WAF 联防？</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">实验（= 综合实践项目（capstone）
+<strong>M4</strong>）</td>
+<td style="text-align: left;">加固与边界防护（规则集 + 度量）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">讲授</td>
+<td style="text-align: left;">≤2 学时：道 / 术 / 器 / 造器</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">来源</td>
+<td style="text-align: left;">第 8 章（防火墙）/ 第 9 章（IDS/IPS）/ 第
+10 章（运行环境加固，并入实践）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">能力点亮</td>
+<td style="text-align: left;">簇 ④·<strong>L2</strong> 防御与加固</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>M4 权重 <strong>12%</strong>；其中「<strong>深度
+0.30</strong>」要求规则集有命中 / 误报度量数字——<strong>规则 vs
+误报的权衡是本里程碑的核心思维</strong>。</p>
+</blockquote>
+</section>
+<section id="能力框架对应" class="slide level2">
+<h2>能力框架对应</h2>
+<ul>
+<li>簇 ④「<strong>防御与加固</strong>」·
+<strong>L2</strong>（本单元主点亮）</li>
+<li>L2：配置防火墙 / WAF / IDS 规则 + 运行环境加固 + 命中 /
+误报度量（<strong>M4</strong>）</li>
+<li>L3（延伸）：把规则集接进 CI、随部署变更持续调优（M7 复盘 /
+进阶方向）</li>
+</ul>
+</section></section>
+<section>
+<section id="道纵深防御与规则权衡" class="title-slide slide level1">
+<h1>【道】纵深防御与规则权衡</h1>
+
+</section>
+<section id="第一原则纵深防御defense-in-depth" class="slide level2">
+<h2>第一原则：纵深防御（Defense in Depth）</h2>
+<ul>
+<li>假设<strong>任何单层都会被突破</strong> → 用多层异构防御叠加</li>
+<li>经典四层（由外向内）：
+<ul>
+<li><strong>网络边界</strong>：防火墙——只放行必要端口（最小暴露）</li>
+<li><strong>流量检测</strong>：IDS/IPS——发现可疑流量并告警 / 阻断</li>
+<li><strong>应用层</strong>：WAF——拦 SQLi / XSS / 上传等应用攻击</li>
+<li><strong>运行环境</strong>：加固——关 debug、隐藏指纹、最小权限</li>
+</ul></li>
+<li>每一层都假设前一层已失守；纵深让攻击者<strong>每过一层都要付出成本</strong></li>
+</ul>
+</section>
+<section id="第二原则最小暴露minimum-exposure" class="slide level2">
+<h2>第二原则：最小暴露（Minimum Exposure）</h2>
+<ul>
+<li><strong>不开的口，绝不暴露</strong>——默认拒绝（default
+deny），只白名单放行必要端口</li>
+<li>落实 M2 暴露面清单里的处置建议：
+<ul>
+<li>该关的端口关了吗？（如 <code>5000</code> 只对内 / 仅本机）</li>
+<li>管理端口（SSH、DB）是否暴露到公网？</li>
+<li>指纹信息是否过度暴露？（<code>Server</code> / <code>Werkzeug</code>
+版本号）</li>
+</ul></li>
+<li><strong>暴露面收敛 ≠ 加功能，而是减攻击面</strong>——这是 M4 任务 A
+的本质</li>
+</ul>
+</section>
+<section id="第三原则规则-vs-误报的权衡核心思维" class="slide level2">
+<h2>第三原则：规则 vs 误报的权衡（核心思维）</h2>
+<blockquote>
+<p>一条规则写得太宽 →
+<strong>误报（FP）</strong>炸了，正常请求被拦，业务受损；写得太窄 →
+<strong>漏报（FN）</strong>，攻击溜过去，形同虚设。<strong>好的防御工程师不是写得出规则，而是能量化这条权衡曲线。</strong></p>
+</blockquote>
+<ul>
+<li><strong>TP（真阳）/ FP（假阳）/ FN（假阴）/
+TN（真阴）</strong>——规则质量的四象限</li>
+<li>派生指标：<strong>precision</strong>（拦下来的里有多少是真攻击）、<strong>recall</strong>（真攻击里拦下了多少）</li>
+<li>M4 任务 B 的核心交付：<strong>用 M3 概念验证（PoC）重放 +
+正常流量</strong>，给出 TP/FP/precision/recall
+<strong>数字</strong></li>
+</ul>
+</section>
+<section id="为什么度量比写规则更难" class="slide level2">
+<h2>为什么「度量」比「写规则」更难</h2>
+<ul>
+<li>写一条命中 <code>' OR 1=1 --</code> 的规则 = 5
+分钟；证明它在<strong>真实流量</strong>下不误报、不漏报 = 5 天</li>
+<li>度量需要<strong>有标签的测试集</strong>：
+<ul>
+<li><strong>正样本</strong>：M3 的 PoC 流量（SQLi / XSS / 上传）+
+<strong>变种</strong>（编码、大小写、注释混淆）</li>
+<li><strong>负样本</strong>：正常登录 / 查询 /
+评论流量（含带特殊字符的合法输入）</li>
+</ul></li>
+<li>规则集的价值不在「挡住了
+PoC」，而在「<strong>在变种和正常流量之间的边界划得有多准</strong>」</li>
+</ul>
+<blockquote>
+<p>这就是为什么 M4 量规里「<strong>深度
+0.30</strong>」单独考核「规则严格度 vs
+误报的权衡」——它区分了「贴规则」与「会守」。</p>
+</blockquote>
+</section>
+<section id="攻防不对称-纵深-度量" class="slide level2">
+<h2>攻防不对称 → 纵深 + 度量</h2>
+<ul>
+<li>攻防不对称：攻击者一次成功就赢；防御者必须次次成功</li>
+<li>应对：<strong>纵深</strong>（提高攻击成本）+
+<strong>度量</strong>（知道自己的盲区在哪）</li>
+<li><strong>没有度量的防御 =
+信仰</strong>：你以为挡住了，其实规则根本没命中变种，或正常流量天天被拦你没看见</li>
+</ul>
+<blockquote>
+<p>M4 的思维升级：从 M3 的「<strong>能不能攻破</strong>」到 M4
+的「<strong>我的防御覆盖率是多少、误报率是多少</strong>」——这是从攻击者思维到防御者思维的转折点。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="术防火墙收敛暴露面" class="title-slide slide level1">
+<h1>【术】防火墙：收敛暴露面</h1>
+
+</section>
+<section id="防火墙网络边界的第一道闸" class="slide level2">
+<h2>防火墙：网络边界的第一道闸</h2>
+<ul>
+<li><strong>包过滤（Packet Filtering）</strong>：按五元组（src/dst
+IP、src/dst port、协议）逐包放行 / 丢弃</li>
+<li><strong>状态检测（Stateful）</strong>：跟踪连接状态（NEW /
+ESTABLISHED / RELATED），只放行属于已建立连接的回包</li>
+<li><strong>默认拒绝（default deny）</strong>：最后一条
+<code>DROP</code>
+所有未显式放行的流量——<strong>最小暴露原则的直接实现</strong></li>
+</ul>
+</section>
+<section id="iptables链与表的最小心智模型" class="slide level2">
+<h2>iptables：链与表的最小心智模型</h2>
+<ul>
+<li><strong>表（table）</strong>：<code>filter</code>（过滤，最常用）/
+<code>nat</code>（地址转换）/ <code>mangle</code>（改包）</li>
+<li><strong>链（chain）</strong>：<code>INPUT</code>（入站）/
+<code>OUTPUT</code>（出站）/ <code>FORWARD</code>（转发）</li>
+<li><strong>规则顺序</strong>：自上而下匹配，<strong>命中即停</strong>——顺序至关重要</li>
+<li><strong>动作</strong>：<code>ACCEPT</code> /
+<code>DROP</code>（静默丢弃）/ <code>REJECT</code>（拒绝并回包）</li>
+</ul>
+<blockquote>
+<p>默认策略 <code>DROP</code> + 白名单放行 =
+收敛暴露面的标准范式。深度理论见
+<code>chap0x08.md</code>「防火墙」一章。</p>
+</blockquote>
+</section>
+<section id="iptables-实战收敛-flask-靶场暴露面" class="slide level2">
+<h2>iptables 实战：收敛 Flask 靶场暴露面</h2>
+<pre ><code class="bash"># 默认拒绝所有入站，允许所有出站
+sudo iptables -P INPUT DROP
+sudo iptables -P FORWARD DROP
+sudo iptables -P OUTPUT ACCEPT
+
+# 放行回包（已建立连接）和本机回环
+sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A INPUT -i lo -j ACCEPT
+
+# 仅放行必要端口：SSH(22) + Web(5000，限来源)
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+sudo iptables -A INPUT -p tcp -s 127.0.0.1 --dport 5000 -j ACCEPT
+# 其余全 DROP（已被默认策略兜底）</code></pre>
+<blockquote>
+<p>对照 M2 暴露面清单：M2
+扫到的每一个开放端口，在这里都要回答「<strong>该不该对外开</strong>」——这就是把暴露面清单的处置建议<strong>落地</strong>。</p>
+</blockquote>
+</section>
+<section id="nftablesiptables-的现代继任者" class="slide level2">
+<h2>nftables：iptables 的现代继任者</h2>
+<ul>
+<li><code>nftables</code> 是 <code>iptables</code> 的统一替代（统一了
+iptables/ip6tables/arptables）</li>
+<li>优势：统一语法、原子化规则加载、性能更好、支持集合 / 字典</li>
+<li>两者<strong>心智模型一致</strong>（表 → 链 → 规则 →
+动作），本课程两者皆可</li>
+</ul>
+<pre ><code class="bash"># nftables 等价写法（默认拒绝 + 放行 22/5000）
+nft add table inet filter
+nft add chain inet filter input '{ type filter hook input priority 0; policy drop; }'
+nft add rule inet filter input ct state established,related accept
+nft add rule inet filter input iif lo accept
+nft add rule inet filter input tcp dport 22 accept</code></pre>
+</section></section>
+<section>
+<section id="术ids规则-命中误报度量" class="title-slide slide level1">
+<h1>【术】IDS：规则 + 命中/误报度量</h1>
+
+</section>
+<section id="ids-vs-ips告警还是阻断" class="slide level2">
+<h2>IDS vs IPS：告警还是阻断</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: left;">IDS（入侵检测）</th>
+<th style="text-align: left;">IPS（入侵防御）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>部署</strong></td>
+<td style="text-align: left;">旁路（镜像流量）</td>
+<td style="text-align: left;">串接（在线）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>动作</strong></td>
+<td style="text-align: left;">检测到 → <strong>告警</strong></td>
+<td style="text-align: left;">检测到 → <strong>阻断</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>风险</strong></td>
+<td style="text-align: left;">漏报无害（只漏告警）</td>
+<td style="text-align: left;">误报会<strong>中断业务</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>课程定位</strong></td>
+<td style="text-align: left;">M4 主线（先看清楚）</td>
+<td style="text-align: left;">进阶（基于 IDS 度量后上 IPS）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>M4 先做 <strong>IDS</strong>（旁路 + 度量），把命中 /
+误报测准了，再考虑是否升级为 IPS</li>
+<li><strong>没度量就上 IPS =
+拿业务当小白鼠</strong>——这也是「度量优先」思维的体现</li>
+</ul>
+</section>
+<section id="检测范式签名-vs-异常" class="slide level2">
+<h2>检测范式：签名 vs 异常</h2>
+<ul>
+<li><strong>签名检测（Signature-based）</strong>：用规则匹配<strong>已知攻击模式</strong>（如
+<code>' OR 1=1</code>）
+<ul>
+<li>优点：<strong>低误报</strong>、可解释、规则可审计</li>
+<li>缺点：<strong>只能挡已知</strong>，变种 / 0-day 漏报</li>
+</ul></li>
+<li><strong>异常检测（Anomaly-based）</strong>：建立「正常」基线，偏离即告警
+<ul>
+<li>优点：<strong>可能挡未知</strong></li>
+<li>缺点：<strong>高误报</strong>、难解释、需持续调参</li>
+</ul></li>
+</ul>
+<blockquote>
+<p><strong>埋伏（M6）</strong>：异常检测正是 <strong>AI / ML</strong>
+的用武之地——M4 任务 E 用 <strong>IsolationForest</strong> 给请求 /
+日志打异常分，与规则版对比，为 M6「AI 检测组件」铺路。规则 → AI 增强 =
+课程螺旋。</p>
+</blockquote>
+</section>
+<section id="snort-suricata开源-ids-双雄" class="slide level2">
+<h2>Snort / Suricata：开源 IDS 双雄</h2>
+<ul>
+<li><strong>Snort</strong>：经典老牌，规则语法事实标准，社区规则库庞大</li>
+<li><strong>Suricata</strong>：现代多线程实现，兼容 Snort
+规则语法，支持协议解析 + 文件提取</li>
+<li><strong>国产优先视角</strong>：两者均为开源、可离线部署；规则可自研，<strong>不依赖国外云服务</strong></li>
+<li>课程推荐
+<strong>Suricata</strong>（多线程、协议解析更强），规则语法与 Snort
+互通</li>
+</ul>
+<blockquote>
+<p>深度理论（IDS/IPS 部署模式、规则语法全集、误报治理）见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x09.md</code>「入侵检测系统」一章。</p>
+</blockquote>
+</section>
+<section id="suricata-规则语法速览" class="slide level2">
+<h2>Suricata 规则语法速览</h2>
+<pre ><code ># 规则 = 动作 协议 源 源端口 -&gt; 目的 目的端口 (选项)
+# 经典 SQLi 签名：在 URI 或请求体里匹配 ' OR 1=1
+alert http any any -&gt; $HOME_NET any ( \
+    msg:"M4-SQLi OR-1-1 signature"; \
+    flow:established,to_server; \
+    http.request_line; \
+    content:"' OR 1=1"; nocase; \
+    sid:1000001; rev:1; \
+)</code></pre>
+<ul>
+<li><strong>动作</strong>：<code>alert</code>（告警）/
+<code>drop</code>（IPS 丢弃）/ <code>pass</code>（放行，做白名单）</li>
+<li><strong>content +
+nocase</strong>：大小写不敏感匹配（变种防御基础）</li>
+<li><strong>sid</strong>：规则唯一 ID（自研规则用 <code>1000000+</code>
+段，避开官方保留段）</li>
+</ul>
+</section>
+<section id="命中-误报度量四象限" class="slide level2">
+<h2>命中 / 误报度量：四象限</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;">规则判定：攻击</th>
+<th style="text-align: left;">规则判定：正常</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>真实：攻击</strong></td>
+<td style="text-align: center;"><strong>TP</strong>（命中）</td>
+<td style="text-align: left;"><strong>FN</strong>（漏报）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>真实：正常</strong></td>
+<td style="text-align: center;"><strong>FP</strong>（误报）</td>
+<td style="text-align: left;"><strong>TN</strong>（真阴）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>TP（真阳）/ FP（假阳）/ FN（假阴）/
+TN（真阴）</strong>——规则质量的四象限</li>
+<li>有了这四个数，就能派生出可比较的度量指标（下页）</li>
+</ul>
+</section>
+<section id="派生指标precision-recall-fpr" class="slide level2">
+<h2>派生指标：precision / recall / FPR</h2>
+<ul>
+<li><strong>precision = TP / (TP +
+FP)</strong>：拦下来的里，有多少是真攻击（越高越不误报）</li>
+<li><strong>recall = TP / (TP +
+FN)</strong>：真攻击里，拦下了多少（越高越不漏报）</li>
+<li><strong>FPR = FP / (FP +
+TN)</strong>：正常流量里，误拦了多少（业务影响指标）</li>
+</ul>
+<blockquote>
+<p>规则调优的本质：在 precision 和 recall
+之间找<strong>业务可接受的平衡点</strong>——M4「深度
+0.30」考核的核心。</p>
+</blockquote>
+</section>
+<section id="度量实战用-m3-poc-重放" class="slide level2">
+<h2>度量实战：用 M3 PoC 重放</h2>
+<pre ><code class="bash"># 1. 跑 IDS（旁路监听），把告警输出到文件
+suricata -c suricata.yaml -i lo -l /var/log/suricata/ &
+
+# 2. 重放 M3 PoC 流量（正样本）——SQLi/XSS/上传变种
+python3 replay-poc.py --target http://127.0.0.1:5000 --set m3-payloads/
+
+# 3. 重放正常流量（负样本）——含特殊字符的合法登录/查询
+python3 replay-normal.py --target http://127.0.0.1:5000
+
+# 4. 解析 eve.json（Suricata 告警），对照标签算 TP/FP/precision/recall
+python3 score.py --alerts /var/log/suricata/eve.json --labels labels.json</code></pre>
+<blockquote>
+<p>输出形如
+<code>TP=18, FP=3, FN=2, TN=45 → precision=0.86, recall=0.90</code>——<strong>这就是
+M4 报告里要的数字</strong>。光贴规则无度量 = 深度不合格。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="术waf拦截-payload-变种" class="title-slide slide level1">
+<h1>【术】WAF：拦截 payload 变种</h1>
+
+</section>
+<section id="waf应用层的专门防御" class="slide level2">
+<h2>WAF：应用层的专门防御</h2>
+<ul>
+<li><strong>WAF（Web Application Firewall）</strong>：工作在 HTTP/HTTPS
+应用层，理解请求语义（URL / Header / Body / Cookie）</li>
+<li>与网络防火墙的区别：<strong>懂应用协议</strong>，能识别 SQLi / XSS /
+命令注入 / 路径穿越等应用攻击</li>
+<li><strong>核心价值</strong>：补网络防火墙看不懂应用语义的缺口（如端口
+80/443 是必须开的，但里面的内容要 WAF 审）</li>
+</ul>
+</section>
+<section id="modsecurity-owasp-crs" class="slide level2">
+<h2>ModSecurity + OWASP CRS</h2>
+<ul>
+<li><strong>ModSecurity</strong>：经典开源 WAF 模块（Apache /
+Nginx），规则引擎成熟</li>
+<li><strong>OWASP CRS（Core Rule
+Set）</strong>：社区维护的通用规则集，覆盖 OWASP Top 10</li>
+<li>工作模式：
+<ul>
+<li><code>DetectionOnly</code>（只记录，不拦）——<strong>调优期首选</strong>，先看误报再决定</li>
+<li><code>On</code>（阻断）——调优完成后上线</li>
+</ul></li>
+</ul>
+<blockquote>
+<p><strong>最佳实践</strong>：先 <code>DetectionOnly</code>
+跑一周看日志，把误报白名单化，再切阻断——这又是「<strong>度量优先于阻断</strong>」的思维。</p>
+</blockquote>
+</section>
+<section id="拦截变种绕过-反绕过的一轮博弈" class="slide level2">
+<h2>拦截变种：绕过 ↔︎ 反绕过的一轮博弈</h2>
+<ul>
+<li>M3 的原始 PoC（如
+<code>' OR 1=1 --</code>）容易被规则挡；<strong>变种</strong>才是 WAF
+的真正考验</li>
+<li>常见绕过手法：
+<ul>
+<li>大小写混淆：<code>' Or 1=1 --</code></li>
+<li>注释混淆：<code>'/**/OR/**/1=1</code></li>
+<li>编码绕过：URL 编码、Unicode、Hex</li>
+<li>等价变形：<code>' OR '1'='1</code>、<code>' OR 2&gt;1</code></li>
+</ul></li>
+<li>反绕过：CRS 的<strong>正则泛化</strong> + <code>nocase</code> +
+解码后再匹配 + 语义分析</li>
+</ul>
+</section>
+<section id="绕过-反绕过实验记录" class="slide level2">
+<h2>绕过 ↔︎ 反绕过：实验记录</h2>
+<ul>
+<li>任务 C 要求记录<strong>一轮博弈</strong>（不是只挡原 PoC）：
+<ol type="1">
+<li>写规则挡住 M3 原 PoC → 命中</li>
+<li>构造变种（大小写 / 编码 / 注释）→ 观察是否绕过</li>
+<li>加固规则（解码 + 泛化）→ 再测变种是否被挡</li>
+<li>再构造更狡猾的变种 →
+……（一轮即可，重点是<strong>博弈意识</strong>）</li>
+</ol></li>
+<li>输出：<code>变种表 + 每条的命中/绕过结果 + 规则演进</code></li>
+</ul>
+<blockquote>
+<p>这就是「<strong>规则是活的</strong>」——攻击者一直在演化，WAF
+规则集也要持续迭代。M7 复盘会回到这一点。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="术运行环境加固" class="title-slide slide level1">
+<h1>【术】运行环境加固</h1>
+
+</section>
+<section id="应用-运行环境加固第-10-章-并入实践" class="slide level2">
+<h2>应用 / 运行环境加固（第 10 章 并入实践）</h2>
+<ul>
+<li>M3
+能攻破，往往不只是应用代码漏洞，<strong>运行环境裸奔</strong>也是帮凶：
+<ul>
+<li>Flask <code>debug=True</code> → Werkzeug 调试器 → <strong>直接
+RCE</strong>（pin 可爆破）</li>
+<li>响应头暴露 <code>Server: Werkzeug/x.y.z Python/3.x</code> →
+攻击者精准选 CVE</li>
+<li>进程以 root 跑 → 提权即全盘沦陷</li>
+</ul></li>
+<li>加固 =
+消除这些「<strong>非应用代码、但放大危害</strong>」的环境因素</li>
+</ul>
+</section>
+<section id="加固清单12关-debug-隐藏指纹" class="slide level2">
+<h2>加固清单（1/2）：关 debug · 隐藏指纹</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">项</th>
+<th style="text-align: left;">加固动作</th>
+<th style="text-align: left;">落实 M2 暴露面</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>关 debug</strong></td>
+<td style="text-align: left;"><code>app.run(debug=False)</code> /
+<code>FLASK_DEBUG=0</code></td>
+<td style="text-align: left;">M2 指纹里的 Werkzeug 调试器</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>隐藏指纹</strong></td>
+<td style="text-align: left;">移除 / 改写 <code>Server</code>
+头、统一错误页</td>
+<td style="text-align: left;">M2 <code>-sV</code> 探到的版本号</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>自检：<code>git grep -nE 'debug\s*=\s*False|FLASK_DEBUG' milestone/m4 -- '*.py'</code>——<code>debug=False</code>
+是量规「安全严谨」的<strong>硬门槛</strong>。</p>
+</blockquote>
+</section>
+<section id="加固清单22最小权限-容器-ssh" class="slide level2">
+<h2>加固清单（2/2）：最小权限 · 容器 / SSH</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">项</th>
+<th style="text-align: left;">加固动作</th>
+<th style="text-align: left;">落实 M2 暴露面</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>最小权限</strong></td>
+<td style="text-align: left;">非 root 用户运行；容器
+<code>--read-only</code></td>
+<td style="text-align: left;">减少提权后的爆炸半径</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>容器 / SSH</strong></td>
+<td style="text-align: left;">最小镜像、SSH 禁 root + 密钥登录</td>
+<td style="text-align: left;">收敛管理面</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>系统化加固清单（主机加固、服务最小化、SELinux/AppArmor、日志审计）见
+<code>chap0x10.md</code>「运行环境加固」一章；本课件只讲「做 M4
+所需」最小集。</p>
+</blockquote>
+</section>
+<section id="debugtrue-的真实危害直觉版" class="slide level2">
+<h2>debug=True 的真实危害（直觉版）</h2>
+<ul>
+<li>Flask/Werkzeug <code>debug=True</code> 开启 <strong>Werkzeug
+调试器</strong>：网页上直接看到堆栈、<strong>交互式 Python
+控制台</strong></li>
+<li>攻击者触发一个异常 → 拿到控制台 →
+<strong>任意代码执行</strong>（无需任何应用漏洞）</li>
+<li>Werkzeug 调试器有个
+PIN（基于机器特征算出），可被<strong>离线爆破</strong></li>
+<li>结论：<code>debug=True</code> 暴露在生产 =
+<strong>裸奔</strong>，比绝大多数应用漏洞都严重</li>
+</ul>
+<blockquote>
+<p>M3 你大概率就是靠 <code>debug=True</code> 的控制台拿到的 RCE——M4
+第一步就是把它关掉，<strong>断了攻击者最舒服的路</strong>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="器从用器到造器" class="title-slide slide level1">
+<h1>【器】从用器到造器</h1>
+
+</section>
+<section id="器三大工具速查" class="slide level2">
+<h2>【器】三大工具速查</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">工具</th>
+<th style="text-align: left;">层次</th>
+<th style="text-align: left;">典型规则形态</th>
+<th style="text-align: left;">M4 对应任务</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>iptables /
+nftables</strong></td>
+<td style="text-align: left;">网络边界</td>
+<td
+style="text-align: left;"><code>-A INPUT -p tcp --dport X -j ACCEPT</code></td>
+<td style="text-align: left;">A 暴露面收敛</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Suricata / Snort</strong></td>
+<td style="text-align: left;">流量检测</td>
+<td
+style="text-align: left;"><code>alert http ... (content:...; sid:...)</code></td>
+<td style="text-align: left;">B 规则 + 度量</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>ModSecurity + CRS</strong></td>
+<td style="text-align: left;">应用层</td>
+<td
+style="text-align: left;"><code>SecRule ARGS "@rx ..." "id:...,deny"</code></td>
+<td style="text-align: left;">C 拦截变种</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>用器</strong>：会用这三个工具写规则、看日志（L1/L2）</li>
+<li><strong>造器</strong>：把规则集<strong>工程化</strong>——版本管理、CI
+里跑命中 / 误报回归、随部署变更持续调优（L3 延伸）</li>
+</ul>
+</section>
+<section id="造器规则集的工程化" class="slide level2">
+<h2>【造器】规则集的工程化</h2>
+<ul>
+<li>规则不是一次写好的，是<strong>随攻击演化持续迭代</strong>的资产</li>
+<li>工程化要点：
+<ul>
+<li><strong>版本管理</strong>：规则集进
+Git（<code>docs/m4/ids.rules</code>、<code>docs/m4/waf/</code>）</li>
+<li><strong>回归测试</strong>：M3 PoC + 变种 +
+正常流量做成测试集，规则改动后 CI 自动跑命中 / 误报</li>
+<li><strong>可追溯</strong>：每条规则标注「挡什么攻击、对应 M2
+哪个暴露面、当前 precision/recall」</li>
+</ul></li>
+<li>这正是从簇 ④·L2（会用）走向
+L3（<strong>能造、能守、能评</strong>）的分水岭</li>
+</ul>
+</section>
+<section id="造器衔接实验-m4" class="slide level2">
+<h2>【造器】衔接实验 M4</h2>
+<pre ><code >docs/m4/
+├── ids.rules / suricata.yaml   # 任务 B：规则 + 命中/误报度量（数字）
+├── waf/ 或 modsec/             # 任务 C：拦截变种 + 绕过↔反绕过一轮
+├── iptables.rules              # 任务 A：暴露面收敛（对照 M2 清单）
+└── report.md                   # 规则集 + 加固 diff + 度量数字 + 自评</code></pre>
+<ul>
+<li><strong>分支</strong>：从 <code>milestone/m3</code> 切
+<code>milestone/m4</code>，MR 目标 = <code>milestone/m3</code>（见 <a
+href="../../unit00-intro/labs/git-guide.html">Git 指南</a>）</li>
+<li><strong>弹药</strong>：M3 的 PoC 流量 = IDS/WAF 要命中 /
+度量的对象；<strong>AI 双向</strong>可用国产 LLM 辅助调优规则（注明范围
++ 人工复核）</li>
+</ul>
+<blockquote>
+<p>详见 <code>../labs/lab04-defense.md</code>。完成后在
+<code>report.md</code> 自评点亮 <strong>簇④·L2</strong>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-9收尾" class="title-slide slide level1">
+<h1>主题 9：收尾</h1>
+
+</section>
+<section id="能力自评本单元点亮簇-④" class="slide level2">
+<h2>能力自评：本单元点亮簇 ④</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">自评勾选</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>④·L2</strong></td>
+<td style="text-align: left;">配置防火墙 / WAF / IDS 规则 + 运行环境加固
++ 命中 / 误报度量</td>
+<td style="text-align: center;">☐ M4 规则集 + 度量交付</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">④·L3（延伸）</td>
+<td style="text-align: left;">规则集工程化（CI 回归 + 持续调优）</td>
+<td style="text-align: center;">☐ 进阶方向</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>核心思维</strong>：纵深防御 + 最小暴露 + <strong>规则 vs
+误报的权衡（度量优先）</strong></li>
+<li><strong>从 M3 到 M4
+的转变</strong>：从「能不能攻破」到「<strong>防御覆盖率 /
+误报率是多少</strong>」</li>
+</ul>
+</section>
+<section id="红线防御实验在自己靶场" class="slide level2">
+<h2>⚠️ 红线：防御实验在自己靶场</h2>
+<ul>
+<li>所有防火墙 / IDS / WAF 实验<strong>仅在自己的靶场、127.0.0.1
+或明确授权的环境</strong></li>
+<li>即便是防御性工具，对他人系统未授权部署检测 / 拦截也可能构成干扰</li>
+<li>本单元<strong>非纯攻击侧</strong>（M3 已过），重点是把 M2/M3
+的发现<strong>收敛成规则</strong>——但红线依旧：<strong>只守自己的东西</strong></li>
+</ul>
+</section>
+<section id="小结今天带走的三件事" class="slide level2">
+<h2>小结：今天带走的三件事</h2>
+<ol type="1">
+<li><strong>道</strong>：纵深防御（层层兜底）+ 最小暴露（默认拒绝）+
+<strong>规则 vs 误报的权衡（度量优先）</strong></li>
+<li><strong>术 / 器</strong>：iptables 收敛暴露面 · Suricata 规则 + 度量
+· ModSecurity 拦变种 · 加固（关 debug）</li>
+<li><strong>造器</strong>：规则集工程化（版本管理 + CI 回归 +
+持续调优），从 L2 走向 L3</li>
+</ol>
+<blockquote>
+<p>下一单元 U5（M5 日志取证蜜罐）：把 IDS/WAF
+的<strong>告警接入集中日志</strong>，复盘一次针对己方的攻击——告警 → 日志
+→ 取证 → 蜜罐，闭环。经典理论：<code>chap0x08.md</code> /
+<code>chap0x09.md</code> / <code>chap0x10.md</code>；实验指南见
+<code>../labs/lab04-defense.md</code>。</p>
+</blockquote>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

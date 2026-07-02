@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第〇单元: 导论与能力框架</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第〇单元: 导论与能力框架</h1>
+  <p class="subtitle">AI 时代的攻防实战</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-1课程范式与一个真实问题"
+class="title-slide slide level1">
+<h1>主题 1：课程范式与一个真实问题</h1>
+
+</section>
+<section id="一个真实问题" class="slide level2">
+<h2>一个真实问题</h2>
+<blockquote>
+<p><strong>「如何系统地攻防一个真实系统？」</strong></p>
+</blockquote>
+<ul>
+<li>本课程不是靠几道选择题应付的考核，而是贯穿整学期的工程实践</li>
+<li>经典安全课：分章讲授 + 分章实验报告 →
+知识碎片化、无法度量综合能力</li>
+<li>本课程：<strong>整学期只做一个综合实践项目（capstone）</strong>（一个「含
+AI 能力的靶场 Web 应用」），按里程碑 M0-M7 渐进迭代</li>
+<li>知识按需、实战驱动；课堂只补「做出来所需」的最小讲授</li>
+</ul>
+</section>
+<section id="课程范式少讲授-边学边做" class="slide level2">
+<h2>课程范式：少讲授 · 边学边做</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">类别</th>
+<th style="text-align: center;">学时</th>
+<th style="text-align: center;">占比</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">课堂按需讲授</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">25%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">实战 / 实验 / 作品</td>
+<td style="text-align: center;">48</td>
+<td style="text-align: center;"><strong>75%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>合计</strong></td>
+<td style="text-align: center;"><strong>64</strong></td>
+<td style="text-align: center;">100%</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>趋势：讲授学时<strong>将继续精简</strong>，实践比重进一步提升。每单元
+= 真实问题引入 + 实战实验 + 按需讲授。</p>
+</blockquote>
+</section>
+<section id="ai-时代你学网安的意义" class="slide level2">
+<h2>AI 时代，你学网安的意义</h2>
+<blockquote>
+<p>AI 能秒级写代码、找漏洞——你「学」的意义是什么？</p>
+</blockquote>
+<ul>
+<li><strong>人的价值 = 驾驭
+AI</strong>：拆问题、指挥、<strong>否决错误</strong>、<strong>担责</strong>——AI
+自己做不了</li>
+<li>课奖励<strong>驾驭质量</strong>，不奖励执行速度</li>
+<li>焦虑解药 ≠ 跑赢 AI；= 成为 AI 做不到的<strong>指挥者</strong></li>
+</ul>
+</section>
+<section id="评价让真学可见" class="slide level2">
+<h2>评价：让真学可见</h2>
+<ul>
+<li>git 提交史 + CI 构建 + 终端录屏 =
+<strong>高伪造成本过程证据</strong></li>
+<li>不追求「不可骗」；追求<strong>让骗的成本 &gt;
+真学的成本</strong></li>
+<li>AI-only 一把梭 → commit 粒度 / 录屏露馅 → 激励对齐</li>
+</ul>
+</section>
+<section id="本单元定位u0" class="slide level2">
+<h2>本单元定位（U0）</h2>
+<table>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">真实问题</td>
+<td style="text-align: left;">如何系统攻防一个真实系统？</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">实验（= 综合实践项目 M0）</td>
+<td style="text-align: left;">立项与威胁建模</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">讲授</td>
+<td style="text-align: left;">1h：能力框架 + CIA/STRIDE/CVSS 速成</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">来源</td>
+<td style="text-align: left;">第 1-2 章压缩（经典全文见 <a
+href="https://github.com/c4pr1c3/cuc-ns-ppt/">cuc-ns-ppt
+在线仓库</a>）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">能力点亮</td>
+<td style="text-align: left;">簇①·L1 认知 + 簇①·L2 实践</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>本单元<strong>不写代码</strong>，但把整学期的「地基」打好：能力框架、威胁建模语言、风险评分标尺。</p>
+</blockquote>
+</section>
+<section id="ai-时代的攻防景观双向" class="slide level2">
+<h2>AI 时代的攻防景观（双向）</h2>
+<blockquote>
+<p>一句话总览：AI
+既是<strong>武器</strong>，也是<strong>靶场</strong>。</p>
+</blockquote>
+<ul>
+<li><span style="color:#1a73e8"><strong>AI
+赋能安全</strong></span>：用大模型做代码审计、日志分诊、威胁情报、概念验证（PoC）生成、取证摘要</li>
+<li><span style="color:#d93025"><strong>AI
+作为安全对象</strong></span>：提示词注入、越狱、RAG
+投毒、工具滥用、模型窃取</li>
+<li>课程主线把这两面织进同一个应用：<strong>U4/U5 传统方法 → AI
+增强（埋伏）→ U6 AI 对抗（集中，核心 30%）</strong></li>
+<li>本单元先建立「双语」直觉，细节留待 U6</li>
+</ul>
+<blockquote>
+<p>详见 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>
+簇⑥。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-2能力框架-v2" class="title-slide slide level1">
+<h1>主题 2：能力框架 v2</h1>
+
+</section>
+<section id="为什么需要能力框架" class="slide level2">
+<h2>为什么需要能力框架</h2>
+<ul>
+<li>旧考核 =
+碎片化「分章实验报告」，<strong>无法度量综合能力</strong>，也<strong>无法串联知识体系</strong></li>
+<li>能力框架 v2 用「<strong>簇 × 级 ×
+证据</strong>」三维度，把每一次单元实战都绑定到可观测能力</li>
+<li>经典理论见 <a
+href="https://github.com/c4pr1c3/cuc-ns-ppt/">cuc-ns-ppt 在线仓库</a>
+按需自学；课堂只保留「做出来所需」最小集</li>
+</ul>
+</section>
+<section id="六大能力簇" class="slide level2">
+<h2>六大能力簇</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">能力簇</th>
+<th style="text-align: center;">主单元</th>
+<th style="text-align: left;">来源经典（参考）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①</td>
+<td style="text-align: left;">安全基石与风险</td>
+<td style="text-align: center;">U0-U1</td>
+<td style="text-align: left;">第 1-3 章</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">②</td>
+<td style="text-align: left;">侦察与发现</td>
+<td style="text-align: center;">U2</td>
+<td style="text-align: left;">第 4-5 章（+第 13 章 社工）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">③</td>
+<td style="text-align: left;">攻击与渗透</td>
+<td style="text-align: center;">U3</td>
+<td style="text-align: left;">第 6-7 章</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">④</td>
+<td style="text-align: left;">防御与加固</td>
+<td style="text-align: center;">U4</td>
+<td style="text-align: left;">第 8-10 章</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⑤</td>
+<td style="text-align: left;">检测 / 取证 / 欺骗</td>
+<td style="text-align: center;">U5</td>
+<td style="text-align: left;">第 11-13 章</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">⑥</td>
+<td
+style="text-align: left;"><strong>AI×网络安全（贯穿轴）</strong></td>
+<td style="text-align: center;"><strong>U6</strong>（+U4/U5 埋伏）</td>
+<td style="text-align: left;">AI 安全专题（新增）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="三级熟练度l1-l2-l3" class="slide level2">
+<h2>三级熟练度：L1 / L2 / L3</h2>
+<ul>
+<li><strong>L1
+认知</strong>：复述概念、识别场景（「知道是什么/为什么」）</li>
+<li><strong>L2
+实践</strong>：在给定环境下用工具完成一次完整操作并解读结果（「会做一次」）</li>
+<li><strong>L3
+工程化</strong>：设计、集成、评估可持续方案并权衡取舍（「能造、能守、能评」）</li>
+</ul>
+</section>
+<section id="簇-①本单元你要点亮什么" class="slide level2">
+<h2>簇 ①：本单元你要点亮什么</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>L1</strong></td>
+<td style="text-align: left;">复述 CIA/STRIDE/CVSS，识别资产与威胁</td>
+<td style="text-align: center;">U0</td>
+<td style="text-align: left;">课堂快问快答</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>L2</strong></td>
+<td style="text-align: left;">对一个系统做威胁建模 + CVSS 评分</td>
+<td style="text-align: center;">U0</td>
+<td style="text-align: left;"><strong>M0</strong> 立项与威胁建模</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">设计 RBAC/风险登记表并随项目演进</td>
+<td style="text-align: center;">U1</td>
+<td style="text-align: left;">M1 安全基线</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>完整覆盖矩阵见 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>。本单元实验
+= M0，证据就是你的威胁建模产物。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-3cia-stride-cvss-速成"
+class="title-slide slide level1">
+<h1>主题 3：CIA / STRIDE / CVSS 速成</h1>
+
+</section>
+<section id="cia-三元组安全的第一性目标" class="slide level2">
+<h2>CIA 三元组：安全的「第一性」目标</h2>
+<ul>
+<li><strong>机密性（Confidentiality）</strong>：信息不可见，乃至状态不可知</li>
+<li><strong>完整性（Integrity）</strong>：未经授权不能更改</li>
+<li><strong>可用性（Availability）</strong>：授权实体可按需访问与使用</li>
+<li>扩充属性：认证（Authentication）/ 授权（Authorization）/
+不可抵赖性（审计 Accountability）</li>
+</ul>
+<blockquote>
+<p>每一次威胁建模，第一步都是问：这个资产，<strong>C/I/A</strong>
+哪个最受关注？</p>
+</blockquote>
+</section>
+<section id="道cia-标注反例别一刀切-cia-全-high" class="slide level2">
+<h2>【道】CIA 标注反例：别一刀切 C+I+A 全 High</h2>
+<blockquote>
+<p>新手误区：每个资产都标 C=H / I=H / A=H——等于没标。</p>
+</blockquote>
+<ul>
+<li>资产要<strong>挑最致命的 1 个属性</strong>打星（如「用户口令表 →
+C★」，泄露即沦陷）</li>
+<li>三问择一：「攻击者最想要什么 / 最怕什么被改 /
+哪个挂了最要命」里<strong>最尖锐</strong>的那个</li>
+<li>例：<code>orders 订单表</code>
+主要怕<strong>篡改/越权（I）</strong>而非机密性 → 标 I★ 才能引导 M3 SQLi
+防御</li>
+</ul>
+</section>
+<section id="道资产清单误区对-127.0.0.1-自扫-os-指纹意义有限"
+class="slide level2">
+<h2>【道】资产清单误区：对 127.0.0.1 自扫 OS 指纹意义有限</h2>
+<blockquote>
+<p>给<strong>自己的</strong>应用做资产清单时，别急着 <code>-O</code> 扫
+OS 指纹。</p>
+</blockquote>
+<ul>
+<li>你扫的是 <code>127.0.0.1</code> = <strong>你自己的机器</strong> → OS
+你本来就知道，指纹扫描信息量≈0</li>
+<li>M0
+资产清单要的是<strong>应用层资产</strong>：端点（<code>/login</code>
+<code>/orders</code> <code>/api/agent</code>）、数据（orders
+表、USERS、secret_key）、依赖（Flask/sqlite/LLM SDK）</li>
+<li>指纹/版本扫描留到 <strong>U2 自侦察</strong>
+才有意义（那时是「攻击者视角看暴露面」）</li>
+</ul>
+</section>
+<section id="stride威胁分类的速查表" class="slide level2">
+<h2>STRIDE：威胁分类的速查表</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">威胁（STRIDE）</th>
+<th style="text-align: left;">破坏属性</th>
+<th style="text-align: left;">小例子</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>S</strong>poofing 假冒</td>
+<td style="text-align: left;">认证</td>
+<td style="text-align: left;">弱口令登录冒充他人</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>T</strong>ampering 篡改</td>
+<td style="text-align: left;">完整性</td>
+<td style="text-align: left;">改订单数据</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R</strong>epudiation 否认</td>
+<td style="text-align: left;">不可抵赖</td>
+<td style="text-align: left;">「我没下过这个单」</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>I</strong>nformation Disclosure
+信息泄露</td>
+<td style="text-align: left;">机密性</td>
+<td style="text-align: left;">报错回显 SQL/堆栈</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>D</strong>enial of Service
+拒绝服务</td>
+<td style="text-align: left;">可用性</td>
+<td style="text-align: left;">耗尽连接</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>E</strong>levation of Privilege
+提权</td>
+<td style="text-align: left;">授权</td>
+<td style="text-align: left;">普通用户拿到 admin</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>STRIDE
+是<strong>穷举式</strong>的清单——对每个资产/数据流逐一过一遍六类，不漏威胁。</p>
+</blockquote>
+</section>
+<section id="cvss给风险打分010" class="slide level2">
+<h2>CVSS：给风险打分（[0,10]）</h2>
+<ul>
+<li><strong>基本评估（Base）</strong>：漏洞固有属性，不随时间/环境变化
+—— <strong>课堂主要用这组</strong></li>
+<li><strong>时效性评估（Temporal）</strong>：是否已有概念验证 /
+利用工具</li>
+<li><strong>环境评估（Environmental）</strong>：在你的部署环境里的实际影响</li>
+</ul>
+</section>
+<section id="cvss-3.1-base-维度速查" class="slide level2">
+<h2>CVSS 3.1 Base 维度速查</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">维度</th>
+<th style="text-align: left;">取值（CVSS 3.1）</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">攻击途径 AV</td>
+<td style="text-align: left;">N / A / L / P</td>
+<td style="text-align: left;">网络/邻接/本地/物理</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">攻击复杂度 AC</td>
+<td style="text-align: left;">L / H</td>
+<td style="text-align: left;">低/高</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">所需权限 PR</td>
+<td style="text-align: left;">N / L / H</td>
+<td style="text-align: left;">无/低/高</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">用户交互 UI</td>
+<td style="text-align: left;">N / R</td>
+<td style="text-align: left;">不需要/需要</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">影响范围 S</td>
+<td style="text-align: left;">U / C</td>
+<td style="text-align: left;">不变/改变</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CIA 影响</td>
+<td style="text-align: left;">N / L / H</td>
+<td style="text-align: left;">无/低/高</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="真实-cve-例子log4shellcve-2021-44228" class="slide level2">
+<h2>真实 CVE 例子：Log4Shell（CVE-2021-44228）</h2>
+<ul>
+<li>漏洞：Apache Log4j2 JNDI 注入，一行日志字符串即可 RCE</li>
+<li>CVSS 3.1 Base：<strong>10.0（Critical）</strong></li>
+<li>教训：一个广泛依赖的日志库 = 全行业「核弹级」攻击面</li>
+</ul>
+</section>
+<section id="log4shell-的-cvss-向量拆解" class="slide level2">
+<h2>Log4Shell 的 CVSS 向量拆解</h2>
+<ul>
+<li>向量：<code>AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H</code>
+<ul>
+<li>网络（AV:N）、低复杂度（AC:L）、无需权限（PR:N）、无需交互（UI:N）</li>
+<li>范围改变（S:C），机密性/完整性/可用性全部 High</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>评分用 <a
+href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator">NVD CVSS
+计算器</a>。完整推导见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x02.md</code>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-4怎么学-怎么交付" class="title-slide slide level1">
+<h1>主题 4：怎么学 + 怎么交付</h1>
+
+</section>
+<section id="学习金字塔主动学才有留存" class="slide level2">
+<h2>学习金字塔：主动学才有留存</h2>
+<figure>
+<img
+data-src="https://raw.githubusercontent.com/c4pr1c3/cuc-ns-ppt/master/images/chap0x01/pyramid-1.jpg"
+style="width:40.0%" alt="学习金字塔" />
+<figcaption aria-hidden="true">学习金字塔</figcaption>
+</figure>
+<blockquote>
+<p>听讲 5% / 阅读 10% / 演示 30% / <strong>讨论 50% / 实践 75% / 教别人
+90%</strong>。</p>
+</blockquote>
+</section>
+<section id="主动学-主动做-主动讲" class="slide level2">
+<h2>主动学 · 主动做 · 主动讲</h2>
+<blockquote>
+<p>本课程范式 = <strong>主动学 · 主动做 · 主动讲</strong>。</p>
+</blockquote>
+<ul>
+<li><strong>主动学</strong>：课堂只补最小集；经典理论按需自学见 <a
+href="https://github.com/c4pr1c3/cuc-ns-ppt/">在线仓库</a>，助学层有题库自测</li>
+<li><strong>主动做</strong>：每周有实验；整学期一个综合实践项目，M0-M7
+持续迭代，开分支 <code>milestone/m0</code>…<code>milestone/m7</code> +
+MR（见 <a href="../labs/git-guide.html">Git 指南</a>）</li>
+<li><strong>主动讲</strong>：里程碑报告写「做了什么 / 点亮哪些能力 /
+踩到什么坑」；M7 现场红队/蓝队汇报</li>
+<li>反馈环：每个里程碑对照能力框架自评「这次点亮了哪些簇 × 级」</li>
+</ul>
+</section>
+<section id="课程主线综合实践项目-m0-m7m0-m3" class="slide level2">
+<h2>课程主线：综合实践项目 M0-M7（M0-M3）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">里程碑</th>
+<th style="text-align: left;">主题</th>
+<th style="text-align: center;">能力簇</th>
+<th style="text-align: center;">权重</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>M0</strong></td>
+<td style="text-align: left;">立项与威胁建模</td>
+<td style="text-align: center;">①</td>
+<td style="text-align: center;">5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M1</td>
+<td style="text-align: left;">安全基线</td>
+<td style="text-align: center;">①</td>
+<td style="text-align: center;">5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M2</td>
+<td style="text-align: left;">自侦察</td>
+<td style="text-align: center;">②</td>
+<td style="text-align: center;">8%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M3</td>
+<td style="text-align: left;">漏洞挖掘与利用</td>
+<td style="text-align: center;">③</td>
+<td style="text-align: center;">12%</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="课程主线综合实践项目-m0-m7m4-m7" class="slide level2">
+<h2>课程主线：综合实践项目 M0-M7（M4-M7）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">里程碑</th>
+<th style="text-align: left;">主题</th>
+<th style="text-align: center;">能力簇</th>
+<th style="text-align: center;">权重</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">M4</td>
+<td style="text-align: left;">加固与边界防护</td>
+<td style="text-align: center;">④</td>
+<td style="text-align: center;">12%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M5</td>
+<td style="text-align: left;">日志·取证·蜜罐</td>
+<td style="text-align: center;">⑤</td>
+<td style="text-align: center;">8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>M6</strong></td>
+<td style="text-align: left;">AI 赋能与对抗（核心）⭐</td>
+<td style="text-align: center;">⑥</td>
+<td style="text-align: center;">30%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M7</td>
+<td style="text-align: left;">红队/蓝队对抗 + 复盘 + 自评</td>
+<td style="text-align: center;">全簇</td>
+<td style="text-align: center;">10%</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>主线一句话：<strong>搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的
+AI</strong>，全程同一仓库。详见 <a
+href="../../../capstone/overview.html"><code>capstone/overview.md</code></a>。</p>
+</blockquote>
+</section>
+<section id="起点综合实践项目种子工程seed" class="slide level2">
+<h2>起点：综合实践项目/种子工程（seed）/</h2>
+<ul>
+<li>学生派生 <a
+href="../../../capstone/seed/README.html"><code>capstone/seed/</code></a>（Flask
+最小应用）作为整个学期的工程起点</li>
+<li>它故意「最小可运行 + 预留攻击面」，作为后续里程碑的真实素材：
+<ul>
+<li><code>/login</code>：弱口令 + 明文比对 → <strong>M1</strong></li>
+<li><code>/orders</code>：字符串拼接 SQL → <strong>M3</strong></li>
+<li><code>/api/agent</code>：带工具的 LLM 端点 + 护栏钩子 →
+<strong>M6</strong></li>
+<li><code>AUDIT</code> 日志：统一审计出口 → <strong>M5/M6</strong></li>
+</ul></li>
+<li>⚠️
+所有攻击实验<strong>仅在自己的靶场、授权环境</strong>内进行；课程不教授编写恶意代码</li>
+</ul>
+</section>
+<section id="本单元实验-m0你要交付什么" class="slide level2">
+<h2>本单元实验 = M0：你要交付什么</h2>
+<pre ><code >M0 立项与威胁建模</code></pre>
+<ul>
+<li>任务 A：技术选型 + 派生仓库骨架</li>
+<li>任务 B：资产清单 + CIA 标注</li>
+<li>任务 C：对种子工程做 <strong>STRIDE 威胁建模</strong></li>
+<li>任务 D：风险登记表（含 <strong>CVSS 评分</strong>）</li>
+</ul>
+<blockquote>
+<p>详见
+<code>labs/lab00-threat-model.md</code>。完成后在能力框架自评里点亮
+<strong>簇①·L1/L2</strong>。</p>
+</blockquote>
+</section>
+<section id="能力自评本单元点亮" class="slide level2">
+<h2>能力自评：本单元点亮</h2>
+<ul>
+<li>✅ <strong>簇①·L1</strong>：能复述 CIA / STRIDE /
+CVSS，识别资产与威胁</li>
+<li>✅ <strong>簇①·L2</strong>：能对一个系统做威胁建模 + CVSS 评分（M0
+证据）</li>
+<li>🔜 后续：U1 升到 L3（设计 RBAC / 风险登记表随项目演进）</li>
+</ul>
+<blockquote>
+<p>下一单元 U1：安全基线 —— 把 M0
+识别出的认证/会话/口令风险落到代码（M1）。</p>
+</blockquote>
+</section>
+<section id="小结今天带走的三件事" class="slide level2">
+<h2>小结：今天带走的三件事</h2>
+<ol type="1">
+<li><strong>范式</strong>：少讲授、边学边做、整学期一个综合实践项目（M0-M7）</li>
+<li><strong>语言</strong>：CIA 是目标、STRIDE 是威胁清单、CVSS
+是风险标尺 —— 三者构成威胁建模的最小工具箱</li>
+<li><strong>行动</strong>：派生
+<code>capstone/seed/</code>，本单元实验用它完成 M0，点亮簇①·L1/L2</li>
+</ol>
+<blockquote>
+<p>经典理论全文：<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x01.md</code>、<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x02.md</code>（按需自学）。</p>
+</blockquote>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

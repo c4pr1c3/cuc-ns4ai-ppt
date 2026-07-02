@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第六单元: AI 赋能与对抗</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第六单元: AI 赋能与对抗</h1>
+  <p class="subtitle">AI 赋能安全 · 红队速成</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-1为什么要-ai-赋能" class="title-slide slide level1">
+<h1>主题 1：为什么要 AI 赋能</h1>
+
+</section>
+<section id="告警洪流" class="slide level2">
+<h2>告警洪流</h2>
+<ul>
+<li>中型 SOC 每天<strong>数万~数十万</strong>告警，真阳性常 &lt; 1%</li>
+<li>人才缺 + 数据爆 → 传统规则/签名<strong>力不从心</strong></li>
+<li>AI 价值：<strong>速度</strong>（秒级分诊）/
+<strong>广度</strong>（长尾未知威胁）/
+<strong>语义</strong>（读懂日志代码）</li>
+</ul>
+<blockquote>
+<p>把重复、海量、需语义理解的工作交给
+AI；把<strong>判断、决策、问责</strong>留给人。</p>
+</blockquote>
+</section>
+<section id="全景数据模型决策行动" class="slide level2">
+<h2>全景：数据→模型→决策→行动</h2>
+<pre ><code >行动 SOAR  ：剧本化响应、隔离、封禁（人在回路）
+决策 AI-SOC：告警分诊、优先级、调查摘要（LLM）
+模型 检测  ：ML-IDS / 异常 / UEBA / 代码审计
+数据 采集  ：流量 / 日志 / 端点 / 代码 / 情报</code></pre>
+<ul>
+<li>工程多为<strong>混合</strong>：小模型检测打分 + LLM 分诊解释</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-2检测与分诊" class="title-slide slide level1">
+<h1>主题 2：检测与分诊</h1>
+
+</section>
+<section id="从签名到-ml-ids" class="slide level2">
+<h2>从签名到 ML-IDS</h2>
+<ul>
+<li><strong>误用检测（签名/规则）</strong>：已知坏 →
+命中（Snort/Suricata，U4 已用）</li>
+<li><strong>异常检测（AI）</strong>：学「正常」，偏离即告警 →
+发现<strong>未知</strong></li>
+<li>互补：签名保下限，异常拓上限</li>
+</ul>
+</section>
+<section id="异常检测直觉" class="slide level2">
+<h2>异常检测直觉</h2>
+<ul>
+<li><strong>Isolation
+Forest</strong>：随机切分，<strong>异常点更易被孤立</strong></li>
+<li><strong>自编码器</strong>：压缩再还原，<strong>还原误差大 =
+异常</strong></li>
+</ul>
+<pre ><code class="python" data-line-numbers="">from sklearn.ensemble import IsolationForest
+clf = IsolationForest(contamination=0.01).fit(X_normal)  # 只用正常样本
+risk = -clf.score_samples(X_live)   # 越大越异常</code></pre>
+</section>
+<section id="ueba-与-ai-soc" class="slide level2">
+<h2>UEBA 与 AI-SOC</h2>
+<ul>
+<li><strong>UEBA</strong>：把异常具体到<strong>用户/实体</strong>（凌晨海外登录
+= 高风险），输出风险评分</li>
+<li><strong>AI-SOC 分诊</strong>：LLM
+对告警归类、合并攻击链、生成调查摘要（要求显式表达不确定性）</li>
+<li>代表（<strong>国产优先</strong>）：DeepSeek / Qwen / GLM / Kimi 做
+AI-SOC 分诊与日志归类；国外仅作对比（Security Copilot、Gemini for
+Security、Elastic ML）——<strong>本课程接入一律国产</strong></li>
+</ul>
+</section>
+<section id="soar决策行动铁律" class="slide level2">
+<h2>SOAR：决策→行动（铁律）</h2>
+<ul>
+<li><strong>SOAR</strong>：响应剧本化（钓鱼邮件→提威胁情报指标（IoC）→查情报→命中则隔离+封禁）</li>
+<li>AI 介入：自然语言→剧本、运行中动态调整</li>
+<li>⚠️ <strong>高风险动作必须「人在回路」</strong></li>
+</ul>
+</section></section>
+<section>
+<section id="主题-3渗透审计情报" class="title-slide slide level1">
+<h1>主题 3：渗透·审计·情报</h1>
+
+</section>
+<section id="ai-辅助渗透与代码审计" class="slide level2">
+<h2>AI 辅助渗透与代码审计</h2>
+<ul>
+<li>侦察：LLM 解读 nmap/子域名结果</li>
+<li>漏洞：辅助分析反编译、生成攻击载荷（payload）变体（绕 WAF）</li>
+<li><strong>AI 代码审计</strong>：静态分析器（高精度）+
+LLM（高召回）<strong>交叉验证</strong>，修复须人工审查</li>
+<li>⚠️ 仅限授权范围；课程<strong>不教</strong>编写恶意代码</li>
+</ul>
+</section>
+<section id="rag-威胁情报" class="slide level2">
+<h2>RAG 威胁情报</h2>
+<ul>
+<li>LLM 训练有截止日 → 对新 CVE/新组织无知</li>
+<li><strong>RAG</strong>：检索情报库 → 拼进提示 → 带引用生成</li>
+<li>✅ 赋能：自然语言查情报、生成检测规则</li>
+<li>⚠️ 作为对象：库被投毒 → 输出被污染（课件 02 已述）</li>
+</ul>
+</section>
+<section id="aiai-攻防演进" class="slide level2">
+<h2>AI↔︎AI 攻防演进</h2>
+<ul>
+<li>攻防都在用 AI：AI 检测 vs AI 生成钓鱼/深度伪造</li>
+<li>→ <strong>AI 防御 AI</strong>（深度伪造检测、AI 钓鱼识别）</li>
+<li>评估 AI
+安全产品看：<strong>误报率、可解释性、对抗鲁棒性、人在回路</strong></li>
+</ul>
+</section></section>
+<section>
+<section id="主题-4红队速成" class="title-slide slide level1">
+<h1>主题 4：红队速成</h1>
+
+</section>
+<section id="ai-红队-传统红队" class="slide level2">
+<h2>AI 红队 ≠ 传统红队</h2>
+<ul>
+<li>目标含<strong>模型行为 /
+智能体（Agent）链</strong>，不只网络主机</li>
+<li>分层评估：模型层 / 应用层 / Agentic 层</li>
+<li>评测集（自行核证）：AgentDojo、InjecAgent、JailbreakBench</li>
+<li>度量：攻击成功率（ASR）、鲁棒性曲线、HITL 拦截率</li>
+</ul>
+</section>
+<section id="评估整改复测闭环" class="slide level2">
+<h2>评估→整改→复测闭环</h2>
+<ul>
+<li>评估脚本/数据/结果<strong>版本化</strong>、可复现</li>
+<li>与治理框架（课件 01）衔接</li>
+<li>落到工程：<strong>U7 红蓝对抗</strong>即 Agentic
+红队的综合演练场</li>
+</ul>
+</section>
+<section id="ai-红队方法论与工具锚点" class="slide level2">
+<h2>AI 红队方法论与工具锚点</h2>
+<ul>
+<li><strong>方法论</strong>：<a
+href="https://github.com/requie/AI-Red-Teaming-Guide">OWASP GenAI Red
+Teaming Guide</a>、<a
+href="https://github.com/ottosulin/awesome-ai-security">awesome-ai-security</a>
+/ <a
+href="https://github.com/jassics/awesome-genai-security">awesome-genai-security</a></li>
+<li><strong>自动化评估工具</strong>：<a
+href="https://www.promptfoo.dev/">Promptfoo</a>（LLM
+测试/红队）、DeepTeam（LLM/智能体红队框架，50+ 漏洞类型）</li>
+<li><strong>评估基准</strong>：<a
+href="https://arxiv.org/abs/2605.11086">ExploitGym</a>（AI
+把漏洞变真实攻击）、<a
+href="https://github.com/sunblaze-ucb/cybergym">CyberGym</a>、<a
+href="https://github.com/xbow-engineering/validation-benchmarks">XBOW
+validation-benchmarks</a></li>
+<li><strong>国内自主智能体标杆</strong>：腾讯云智能渗透赛 TCH、<a
+href="https://github.com/sooryathejas/METATRON">METATRON</a>（案例讨论，非教学依赖）</li>
+</ul>
+</section>
+<section id="衔接实验-m6赋能侧" class="slide level2">
+<h2>衔接实验 M6（赋能侧）</h2>
+<ul>
+<li>在你的应用集成一个 <strong>AI 检测组件</strong>（Isolation Forest
+打风险分）</li>
+<li><strong>度量</strong>：Precision/Recall、误报、与纯规则版对比、明确<strong>局限</strong></li>
+<li>详见实验 + <a
+href="../../../capstone/m6-ai.html"><code>capstone/m6-ai.md</code></a></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

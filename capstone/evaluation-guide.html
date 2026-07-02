@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>课程评价指南（学生版）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">课程评价指南（学生版）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#课程评价指南学生版"
+id="toc-课程评价指南学生版">课程评价指南（学生版）</a>
+<ul>
+<li><a href="#一句话总则" id="toc-一句话总则">0. 一句话总则</a></li>
+<li><a href="#总分构成" id="toc-总分构成">1. 总分构成</a></li>
+<li><a href="#量规5-维度-3-档" id="toc-量规5-维度-3-档">2. 量规：5 维度
+× 3 档</a></li>
+<li><a href="#里程碑权重与维度侧重" id="toc-里程碑权重与维度侧重">3.
+里程碑权重与维度侧重</a>
+<ul>
+<li><a href="#里程碑期末权重和-90" id="toc-里程碑期末权重和-90">3.1
+里程碑期末权重（和 = 90%）</a></li>
+<li><a href="#每个里程碑的维度权重决定你该往哪使劲"
+id="toc-每个里程碑的维度权重决定你该往哪使劲">3.2
+每个里程碑的维度权重（决定你该往哪使劲）</a></li>
+</ul></li>
+<li><a href="#每个里程碑交付什么" id="toc-每个里程碑交付什么">4.
+每个里程碑交付什么</a>
+<ul>
+<li><a href="#m0-立项与威胁建模簇①l2" id="toc-m0-立项与威胁建模簇①l2">M0
+· 立项与威胁建模（簇①·L2）</a></li>
+<li><a href="#m1-安全基线簇①l3" id="toc-m1-安全基线簇①l3">M1 ·
+安全基线（簇①·L3）</a></li>
+<li><a href="#m2-自侦察簇②l2l3" id="toc-m2-自侦察簇②l2l3">M2 ·
+自侦察（簇②·L2/L3）</a></li>
+<li><a href="#m3-漏洞挖掘与利用簇③l2" id="toc-m3-漏洞挖掘与利用簇③l2">M3
+· 漏洞挖掘与利用（簇③·L2）</a></li>
+<li><a href="#m4-加固与边界防护簇④l2" id="toc-m4-加固与边界防护簇④l2">M4
+· 加固与边界防护（簇④·L2）</a></li>
+<li><a href="#m5-日志-取证-蜜罐簇⑤l2" id="toc-m5-日志-取证-蜜罐簇⑤l2">M5
+· 日志 · 取证 · 蜜罐（簇⑤·L2）</a></li>
+<li><a href="#m6-ai-赋能与对抗簇⑥l2-双向-核心占-30"
+id="toc-m6-ai-赋能与对抗簇⑥l2-双向-核心占-30">M6 · AI 赋能与对抗（簇⑥·L2
+双向）⭐ 核心，占 30%</a></li>
+<li><a href="#m7-红蓝对抗-复盘-自评全簇l3"
+id="toc-m7-红蓝对抗-复盘-自评全簇l3">M7 · 红蓝对抗 + 复盘 +
+自评（全簇·L3）</a></li>
+</ul></li>
+<li><a href="#提交规范怎么交卷" id="toc-提交规范怎么交卷">5.
+提交规范（怎么交卷）</a></li>
+<li><a href="#红线与硬门碰了直接重扣" id="toc-红线与硬门碰了直接重扣">6.
+红线与硬门（碰了直接重扣）</a>
+<ul>
+<li><a href="#密钥-凭证泄露hard-gate"
+id="toc-密钥-凭证泄露hard-gate">6.1 密钥 / 凭证泄露（hard
+gate）</a></li>
+<li><a href="#授权红线" id="toc-授权红线">6.2 授权红线</a></li>
+<li><a href="#种子-app.py-的教学弱密钥"
+id="toc-种子-app.py-的教学弱密钥">6.3 种子 <code>app.py</code>
+的教学弱密钥</a></li>
+</ul></li>
+<li><a href="#如何拿优秀深度倾斜规则" id="toc-如何拿优秀深度倾斜规则">7.
+如何拿「优秀」（深度倾斜规则）</a></li>
+<li><a href="#评分汇总表自填用" id="toc-评分汇总表自填用">8.
+评分汇总表（自填用）</a></li>
+<li><a href="#faq" id="toc-faq">9. FAQ</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="课程评价指南学生版">课程评价指南（学生版）</h1>
+<blockquote>
+<p>《网络安全（AI 时代版）》· 你将如何被评分、如何拿到高分。 配套：<a
+href="overview.html">综合实践总览</a> · <a
+href="../capability-framework.html">能力框架</a> · <a
+href="../syllabus.html">教学大纲</a> · <a
+href="../courseware/unit00-intro/labs/git-guide.html">Git
+操作规范</a></p>
+<p>这份指南把散落在总览/大纲/各 lab
+里的评分规则整合成<strong>单点入口</strong>，并与 AI
+助教（<code>ns4ai-review</code>）的机器核验信号对齐——你可以照着自检再提交。</p>
+</blockquote>
+<hr />
+<h2 id="一句话总则">0. 一句话总则</h2>
+<blockquote>
+<p><strong>整学期只做一个综合实践项目（capstone）（M0→M7
+渐进迭代）；按里程碑开 <code>milestone/m{n}</code> 分支 + 一个 MR
+交卷；AI 助教按 5 维度 × 3
+档量规评分；显式体现思维范式、诚实声明局限的同学，深度档倾斜优秀。</strong></p>
+</blockquote>
+<hr />
+<h2 id="总分构成">1. 总分构成</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 37%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">类别</th>
+<th style="text-align: center;">占比</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>期末 ·
+综合实践作品</strong></td>
+<td style="text-align: center;"><strong>60%</strong></td>
+<td style="text-align: left;">M0–M7 渐进式「含 AI 的靶场 Web
+应用」，按里程碑迭代周期评分（量规绑定能力簇 × 级）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">平时</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: left;">课堂快问快答 + 讨论区 +
+助学层题库完成度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">考勤</td>
+<td style="text-align: center;">10%</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">线上</td>
+<td style="text-align: center;">10%</td>
+<td style="text-align: left;">取自 <code>study/*-quiz.md</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>合计</strong></td>
+<td style="text-align: center;"><strong>100%</strong></td>
+<td style="text-align: left;">M7 设现场红蓝对抗演示</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>里程碑相对权重（M0–M7）之和 = 90%（见 §3）；折算到课程总评：60% ×
+(里程碑权重 / 90%)。</p>
+</blockquote>
+<p><strong>评分原则</strong>： - 量规<strong>绑定能力簇 ×
+级</strong>（见 <a
+href="../capability-framework.html">能力框架</a>）——每个里程碑点亮哪些簇的哪一级，有明确证据要求。
+- AI 助教 <code>ns4ai-review</code> =
+<strong>确定性证据采集（机器信号）+ LLM
+档位裁定</strong>：先机器核验你交了什么（文件齐全度、CVSS 向量、STRIDE
+覆盖、分支/MR、密钥扫描），再由 LLM
+按量规判档位。每条扣分都必须有可复现证据。 -
+鼓励创新与攻防对照；<strong>机械套模板不会自动获优秀</strong>（见
+§7）。</p>
+<blockquote>
+<p><strong>与综合实践课（CP）评分体系的区别</strong>：本课用「里程碑 ×
+维度 × 档位」三维加权，<strong>不单列</strong> CP 那样的「创新性 /
+实用性」维度——创新性由「深度 + 思维范式」承载；AI
+也不是加分项，而是<strong>核心维度</strong>（M6 占 30%）。详见
+§2、§7。</p>
+</blockquote>
+<hr />
+<h2 id="量规5-维度-3-档">2. 量规：5 维度 × 3 档</h2>
+<blockquote>
+<p>档位中点：<strong>优秀 = 95</strong>、合格 = 70、不合格 =
+40。单里程碑得分 = Σ(维度权重 × 档位中点)。</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">优秀 (95)</th>
+<th style="text-align: left;">合格 (70)</th>
+<th style="text-align: left;">不合格 (40)</th>
+<th style="text-align: left;">评分要点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: left;">全部里程碑可演示；交付物齐全</td>
+<td style="text-align: left;">主要里程碑完成</td>
+<td style="text-align: left;">关键里程碑缺失</td>
+<td style="text-align: left;">期望文件是否齐全、能否运行/演示</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: left;">有<strong>度量 / 对比 /
+权衡</strong>；显式体现思维范式</td>
+<td style="text-align: left;">能跑通</td>
+<td style="text-align: left;">仅贴代码 / 贴结果</td>
+<td style="text-align: left;">有没有数据对比 + 局限分析（见 §7）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: left;">M6 赋能 +
+对抗<strong>均有证据</strong></td>
+<td style="text-align: left;">仅一面</td>
+<td style="text-align: left;">无 AI 内容</td>
+<td style="text-align: left;">赋能侧（LLM 功能 + AI
+检测）与对抗侧（概念验证（PoC） + 加固）是否闭环</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: left;">最小权限 / 审计 / 人在回路；授权合规</td>
+<td style="text-align: left;">基本防护</td>
+<td style="text-align: left;">高危裸奔 / 越界</td>
+<td style="text-align: left;">是否落实风险登记表的处置 + 仅授权环境</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: left;">自评矩阵与作品一致（逐簇 ×
+级附证据，无虚点亮）</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+<td style="text-align: left;">自评是否能逐项回指到仓库证据</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>单里程碑评审时，<strong>「完成度」指该里程碑的交付完整性</strong>；非
+M6 里程碑的「AI 双向」按「是否产出 AI 证据或为 M6
+铺垫」给档（通常无强相关 AI 内容给合格）。</p>
+</blockquote>
+<blockquote>
+<p><strong>与各 lab §4 量规的关系</strong>：这 5
+维是评分的<strong>通用口径</strong>。各 lab §4 统一采用这 5
+维（lab01/03/04/05/07 已直接对齐）；早期旗舰 lab
+的任务子项命名通过映射对齐——lab00（资产清单/STRIDE/CVSS/工程规范）→
+完成度+深度+安全严谨；lab02（L2 测绘/L3 脚本/暴露面清单/授权合规/自评）→
+直接对应 5 维；lab06（赋能完整度/度量严谨/对抗深度/加固工程化）→
+完成度+深度+AI 双向+安全严谨。映射明细见
+<code>ns4ai-review/references/milestone-rubric.md</code> §M{n} 脚注；lab
+§4 定稿校验清单见 <code>courseware-writing-plan.md</code> §6.1。</p>
+</blockquote>
+<hr />
+<h2 id="里程碑权重与维度侧重">3. 里程碑权重与维度侧重</h2>
+<h3 id="里程碑期末权重和-90">3.1 里程碑期末权重（和 = 90%）</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">里程碑</th>
+<th style="text-align: left;">主题</th>
+<th style="text-align: center;">能力簇</th>
+<th style="text-align: center;">期末权重</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">M0</td>
+<td style="text-align: left;">立项与威胁建模</td>
+<td style="text-align: center;">①</td>
+<td style="text-align: center;">5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M1</td>
+<td style="text-align: left;">安全基线</td>
+<td style="text-align: center;">①</td>
+<td style="text-align: center;">5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M2</td>
+<td style="text-align: left;">自侦察</td>
+<td style="text-align: center;">②</td>
+<td style="text-align: center;">8%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M3</td>
+<td style="text-align: left;">漏洞挖掘与利用</td>
+<td style="text-align: center;">③</td>
+<td style="text-align: center;">12%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M4</td>
+<td style="text-align: left;">加固与边界防护</td>
+<td style="text-align: center;">④</td>
+<td style="text-align: center;">12%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M5</td>
+<td style="text-align: left;">日志 · 取证 · 蜜罐</td>
+<td style="text-align: center;">⑤</td>
+<td style="text-align: center;">8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>M6</strong></td>
+<td style="text-align: left;"><strong>AI 赋能与对抗（核心
+⭐）</strong></td>
+<td style="text-align: center;">⑥</td>
+<td style="text-align: center;"><strong>30%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M7</td>
+<td style="text-align: left;">红蓝对抗 + 复盘 + 自评</td>
+<td style="text-align: center;">全簇</td>
+<td style="text-align: center;">10%</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>M6 占里程碑总分的三分之一</strong>——投入应最多。</p>
+</blockquote>
+<h3 id="每个里程碑的维度权重决定你该往哪使劲">3.2
+每个里程碑的维度权重（决定你该往哪使劲）</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">里程碑</th>
+<th style="text-align: center;">完成度</th>
+<th style="text-align: center;">深度</th>
+<th style="text-align: center;">AI 双向</th>
+<th style="text-align: center;">安全严谨</th>
+<th style="text-align: center;">自评</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">M0</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M1</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;"><strong>0.30</strong></td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M2</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;"><strong>0.30</strong></td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;"><strong>0.30</strong></td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M3</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M4</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;"><strong>0.30</strong></td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M5</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;"><strong>0.30</strong></td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>M6</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;"><strong>0.25</strong> ⬅ 最高</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M7</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;"><strong>0.20</strong></td>
+</tr>
+</tbody>
+</table>
+<p>读法：M2/M4 重<strong>深度</strong>（脚本可复用 /
+规则有度量）；M1/M2/M5 重<strong>安全严谨</strong>；<strong>M6
+是唯一「AI 双向」权重大幅上调的里程碑</strong>；M7
+重<strong>自评</strong>（回看整学期）。</p>
+<hr />
+<h2 id="每个里程碑交付什么">4. 每个里程碑交付什么</h2>
+<blockquote>
+<p>每个里程碑的交付物与硬性门控如下；按 §2 的 5
+维量规打分（自动核验信号属评分实现，不在学生版）。</p>
+</blockquote>
+<h3 id="m0-立项与威胁建模簇①l2">M0 · 立项与威胁建模（簇①·L2）</h3>
+<p><strong>交付</strong>：<code>docs/m0/{tech-stack, assets, stride, risk-register, report}.md</code>
++ 可运行骨架（<code>app.py</code> +
+<code>requirements.txt</code>）。</p>
+<blockquote>
+<p>⚠️ <strong>必做</strong>：把种子 <code>app.py</code> 里硬编码的
+<code>secret_key</code> 写进 <code>risk-register.md</code> 的 R4——后续
+M1 修掉它，就<strong>反计亮点</strong>而非扣分（见 §6）。</p>
+</blockquote>
+<h3 id="m1-安全基线簇①l3">M1 · 安全基线（簇①·L3）</h3>
+<p><strong>交付</strong>：<code>docs/m1/report.md</code>（RBAC 设计 +
+「相对 seed 弱实现的加固对照」）+
+代码改动（口令哈希、会话加固、失败锁定）。</p>
+<h3 id="m2-自侦察簇②l2l3">M2 · 自侦察（簇②·L2/L3）</h3>
+<p><strong>交付</strong>：<code>docs/m2/</code>（暴露面清单 +
+可复用侦察脚本 + nmap 结构化产物 + <code>.cast</code> 录屏 +
+授权声明）。</p>
+<h3 id="m3-漏洞挖掘与利用簇③l2">M3 · 漏洞挖掘与利用（簇③·L2）</h3>
+<p><strong>交付</strong>：<code>docs/m3/</code>（≥4 类漏洞概念验证 +
+复现步骤：SQLi / XSS / 文件上传 / CSRF）。</p>
+<h3 id="m4-加固与边界防护簇④l2">M4 · 加固与边界防护（簇④·L2）</h3>
+<p><strong>交付</strong>：<code>docs/m4/</code>（WAF 规则 + IDS 规则
+Snort/Suricata + 运行环境加固 + <strong>命中/误报度量</strong>）。</p>
+<h3 id="m5-日志-取证-蜜罐簇⑤l2">M5 · 日志 · 取证 · 蜜罐（簇⑤·L2）</h3>
+<p><strong>交付</strong>：<code>docs/m5/</code>（集中日志管线 +
+取证应对手册（playbook） + 蜜罐部署证据 + 攻击复盘）。</p>
+<h3 id="m6-ai-赋能与对抗簇⑥l2-双向-核心占-30">M6 · AI 赋能与对抗（簇⑥·L2
+双向）⭐ 核心，占 30%</h3>
+<p><strong>交付</strong>：<code>docs/m6/</code>（代码 + 攻击概念验证 +
+度量报告 + 自评）。<strong>必须国产
+LLM</strong>（<code>deepseek-v4-flash</code> / Qwen / GLM / Kimi）。</p>
+<blockquote>
+<p>🚨 <strong>M6 硬门</strong>：LLM 功能<strong>和</strong> AI
+检测组件<strong>任一缺失</strong> →
+完成度不合格；攻击概念验证<strong>和</strong>加固证据<strong>任一缺失</strong>
+→ AI 双向不合格（仅一面）。</p>
+</blockquote>
+<h3 id="m7-红蓝对抗-复盘-自评全簇l3">M7 · 红蓝对抗 + 复盘 +
+自评（全簇·L3）</h3>
+<p><strong>交付</strong>：<code>docs/m7/</code>（红蓝对抗记录 + 取证报告
++ 能力框架自评矩阵）。</p>
+<blockquote>
+<p>M7 评审会<strong>回看 M0–M6</strong>：自评矩阵里点亮的每一簇 ×
+级都要能指回仓库证据，「无虚点亮」。</p>
+<p>现场红蓝演示属<strong>动态证据</strong>，静态无法核验——请同时提交<strong>录屏
+/ 动态证据包</strong>，否则该部分降级为
+observation（不计入档位分）。</p>
+</blockquote>
+<hr />
+<h2 id="提交规范怎么交卷">5. 提交规范（怎么交卷）</h2>
+<blockquote>
+<p>完整步骤见 <a
+href="../courseware/unit00-intro/labs/git-guide.html">Git
+操作规范</a>。这里只列对评分有直接影响的部分。</p>
+</blockquote>
+<ul>
+<li><strong>用分支标记里程碑，不打 tag</strong>：每个里程碑开
+<code>milestone/m{n}</code>
+分支；分支<strong>堆叠串联</strong>——<code>milestone/m{n}</code> 基于
+<code>milestone/m{n-1}</code> 切出（M0 基于 <code>main</code>）。</li>
+<li><strong>一个里程碑一个 MR，保持 open 不合并</strong>：MR 源 =
+<code>milestone/m{n}</code>，目标 = <code>milestone/m{n-1}</code>（M0
+目标 <code>main</code>）；<strong>@
+助教</strong>才算交卷；学期内<strong>不要合并、不要关闭</strong>。</li>
+<li><strong>AI 助教的评审面</strong> = <code>milestone/m{n}</code> 分支
+tip（累积态）+
+相对上一里程碑的增量（<code>git diff milestone/m{n-1}..milestone/m{n}</code>）。</li>
+<li>⚠️ <strong>不开 <code>milestone/m{n}</code> 分支</strong> → 回退到
+HEAD
+评审，并标注「未按规范开里程碑分支，<strong>工程规范扣分</strong>」。</li>
+<li><strong>MR diff 要干净</strong>：每个 MR
+只含本里程碑增量（<code>git diff milestone/m{n-1}..milestone/m{n}</code>）；混入其他里程碑或无关内容会干扰评审。</li>
+</ul>
+<p>一键开分支+推送+开
+MR：<code>bash scripts/new-milestone.sh &lt;n&gt;</code>（见 Git
+指南）。</p>
+<hr />
+<h2 id="红线与硬门碰了直接重扣">6. 红线与硬门（碰了直接重扣）</h2>
+<h3 id="密钥-凭证泄露hard-gate">6.1 密钥 / 凭证泄露（hard gate）</h3>
+<p>AI 助教对<strong>任何</strong>密钥/token/<code>SECRET_KEY</code>/API
+key 类发现做强制交叉核验（跟踪文件 + 全历史 blob）： -
+<strong>跟踪文件或历史 blob 命中</strong> → 判 <strong>REAL
+泄露</strong>：如实报告、重扣、建议轮换 +
+清理历史（<code>git filter-repo</code>）。 - 仅 <code>.git/config</code>
+/ clone URL 命中 → FALSE POSITIVE（同步脚本注入的 clone
+凭证），<strong>不计为你泄露</strong>。 - 别把调试用 API
+key（<code>sk-ant-...</code>、<code>glpat-...</code>）提交进仓库——哪怕在
+<code>notes.md</code> 里。</p>
+<h3 id="授权红线">6.2 授权红线</h3>
+<p>所有攻击实验<strong>仅在自己派生的靶场、<code>127.0.0.1</code>、授权环境</strong>内进行。触及第三方
+/ 未授权系统（如 M2 扫了真实 IP、M3 概念验证指向外部真实站点）→
+<strong>不降级为 observation，直接判「安全严谨」不合格 +
+上报</strong>。每个 M2/M3 报告都要<strong>显式声明</strong>仅限
+<code>127.0.0.1</code> / 授权环境。</p>
+<h3 id="种子-app.py-的教学弱密钥">6.3 种子 <code>app.py</code>
+的教学弱密钥</h3>
+<p>种子工程的 <code>secret_key</code>
+是<strong>教学素材</strong>（故意弱）。处置方式决定得分： - M0 把它写进
+<code>risk-register.md</code>（如 R4）<strong>且</strong> M1 用
+<code>secrets.token_hex</code> 等随机化修复 →
+<strong>已识别已闭环，不计扣分，反计亮点</strong>； - 未识别也未修复 →
+计扣分。</p>
+<hr />
+<h2 id="如何拿优秀深度倾斜规则">7. 如何拿「优秀」（深度倾斜规则）</h2>
+<p><strong>「深度 / 度量严谨」优秀档</strong>要求<strong>有数据对比 +
+局限分析</strong>。注意防虚高：</p>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">情形</th>
+<th style="text-align: center;">深度档位</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">仅在合成 / 平凡可分数据上度量（如检测器在
+10 正常 + 5 异常上 P/R=1.0）<strong>且未声明局限</strong></td>
+<td style="text-align: center;">最多<strong>合格</strong>（70）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">复现参考解的合成度量模式、无更难数据 /
+无局限声明</td>
+<td style="text-align: center;"><strong>合格</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">度量在<strong>有区分度</strong>的数据上 +
+有局限分析（即便数据量不大）</td>
+<td style="text-align: center;"><strong>优秀</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>关键：机械套模板不会自动获优秀；<strong>显式体现思维范式</strong>才倾斜优秀。课程五大贯穿范式（任选其一在报告里显式体现即可）：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>范式</th>
+<th>一句话</th>
+<th>怎么练</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>威胁建模思维</td>
+<td>先想清「什么会出错、为什么、有多糟」再动手</td>
+<td>每个里程碑先更新威胁模型，再写代码</td>
+</tr>
+<tr class="even">
+<td>攻防不对称</td>
+<td>攻击者只需一个缺口，防御者要堵全部 → 纵深 + 最小权限</td>
+<td>加固时显式列「攻击者视角」并度量</td>
+</tr>
+<tr class="odd">
+<td>最小权限 / 默认拒绝</td>
+<td>只授最少权限，未知一律拒</td>
+<td>授权 / 护栏默认 deny，allow 显式</td>
+</tr>
+<tr class="even">
+<td>纵深防御</td>
+<td>不靠单层防线，多层独立控制层层衰减</td>
+<td>每个里程碑给 ≥2 层防御证据</td>
+</tr>
+<tr class="odd">
+<td>AI 对抗思维（用 AI 与防 AI）</td>
+<td>LLM 是概率程序、数据 ↔︎ 指令会混淆</td>
+<td>用 AI → 攻 AI（注入 / 滥用）→ 防 AI（护栏 + 检测）闭环</td>
+</tr>
+</tbody>
+</table>
+<p>贯穿性元范式「<strong>数据即程序</strong>」：注入类问题（SQLi /
+提示词注入 / XSS）共享同一根源——把不可信数据当成可执行指令（U3 提出、U6
+回扣）。在报告里点出这种「跨域复现」也是深度优秀的信号。</p>
+<p>实操：跑了检测器拿到 1.0
+别只贴数字——说明数据集构成、为什么能拿满分、什么情况下会失效（即局限）。这一步把「度量」从合格拉到优秀。</p>
+</blockquote>
+<hr />
+<h2 id="评分汇总表自填用">8. 评分汇总表（自填用）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">里程碑</th>
+<th style="text-align: center;">期末权重</th>
+<th style="text-align: center;">你的里程碑得分 (0–100)</th>
+<th style="text-align: left;">加权贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">M0</td>
+<td style="text-align: center;">5%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M1</td>
+<td style="text-align: center;">5%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M2</td>
+<td style="text-align: center;">8%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M3</td>
+<td style="text-align: center;">12%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M4</td>
+<td style="text-align: center;">12%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M5</td>
+<td style="text-align: center;">8%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M6</td>
+<td style="text-align: center;">30%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M7</td>
+<td style="text-align: center;">10%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>里程碑合计</strong></td>
+<td style="text-align: center;"><strong>90%</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;">____ / 90</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>里程碑合计 ÷ 90 × 60% = 期末综合实践作品占总评的分数；再加平时 20% +
+考勤 10% + 线上 10%。</p>
+<p><strong>算例</strong>：M6 拿 85 分 → 加权贡献 85 × 30% =
+25.5；若八里程碑加权合计 75，则期末综合实践作品占总评 = 75 ÷ 90 × 60% =
+50 分（满分 60）。</p>
+</blockquote>
+<hr />
+<h2 id="faq">9. FAQ</h2>
+<p><strong>Q1：AI 助教怎么工作？会误判吗？</strong>
+先跑确定性证据引擎（只读：git/grep/文件存在/SHA256，<strong>不执行你的代码</strong>）采集机器信号，再由
+LLM 按量规判 5 维度档位。每条扣分必须带可复现的
+<code>recheck_command</code>；缺失型扣分先过里程碑证据基线，并有独立复核环节防误报。</p>
+<p><strong>Q2：最常见的扣分有哪些？</strong> STRIDE
+漏类（必须六类逐项过）、CVSS
+只给分不给完整向量串、威胁不挂代码位置（泛泛而谈）、CIA 一刀切全标
+C+I+A、不开 <code>milestone/m{n}</code> 分支、一个巨型 commit、把调试
+API key 提交进仓库、M2/M3 缺授权声明。</p>
+<p><strong>Q3：报告一定要 Markdown 吗？</strong> 是。AI
+助教只读文本（git/grep），doc/pdf
+的二进制内容<strong>无法被解析</strong>。放 <code>docs/m{n}/</code>
+下，文件名建议 <code>report.md</code> 或各 lab 指定的名字。</p>
+<p><strong>Q4：可以用 AI 写作业吗？</strong>
+鼓励用<strong>国产</strong>大模型（<code>deepseek-v4-flash</code> / Qwen
+/ GLM / Kimi）辅助起草，但须在 <code>report.md</code> 注明 AI 辅助范围 +
+人工复核了什么；<strong>禁止选用国外大模型</strong>（GPT/Claude/Gemini）。<code>git push</code>
+一律自己来。</p>
+<p><strong>Q5：M6 为什么占这么多分？</strong> M6（30%）是「用 AI → 攻 AI
+→ 防 AI」的闭环，是本课程区别于传统网安课的核心。它要求赋能（LLM 功能 +
+AI 检测）与对抗（概念验证 +
+加固）<strong>双向都有证据</strong>——只做一面拿不到 AI 双向分。</p>
+<p><strong>Q6：自评矩阵怎么算「无虚点亮」？</strong> 每一簇 ×
+级的点亮都要能指回仓库里的具体证据（文件路径 / commit）。M7
+评审会逐簇回看 M0–M6——点亮了但找不到证据 =
+虚点亮，自评维度判不合格。</p>
+<script src="../js/toc.js"></script></body>
+</html>

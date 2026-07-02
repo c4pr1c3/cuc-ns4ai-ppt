@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Git 操作指南与规范（本学期综合实践项目专用）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">Git 操作指南与规范（本学期综合实践项目专用）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#git-操作指南与规范本学期综合实践项目专用"
+id="toc-git-操作指南与规范本学期综合实践项目专用">Git
+操作指南与规范（本学期综合实践项目专用）</a>
+<ul>
+<li><a href="#为什么本学期要单独讲-git"
+id="toc-为什么本学期要单独讲-git">1. 为什么本学期要单独讲 Git</a></li>
+<li><a href="#三条铁律先记住这三条" id="toc-三条铁律先记住这三条">2.
+三条铁律（先记住这三条）</a></li>
+<li><a href="#分支长什么样拓扑图" id="toc-分支长什么样拓扑图">3.
+分支长什么样（拓扑图）</a>
+<ul>
+<li><a href="#命名规范" id="toc-命名规范">3.1 命名规范</a></li>
+</ul></li>
+<li><a href="#每个里程碑的标准操作复制即用"
+id="toc-每个里程碑的标准操作复制即用">4.
+每个里程碑的标准操作（复制即用）</a>
+<ul>
+<li><a href="#第一次开-m0从-main-切" id="toc-第一次开-m0从-main-切">4.1
+第一次：开 M0（从 main 切）</a></li>
+<li><a href="#之后每一次开-mnn-1从上一里程碑切"
+id="toc-之后每一次开-mnn-1从上一里程碑切">4.2 之后每一次：开 M{n}（n ≥
+1，从上一里程碑切）</a></li>
+<li><a href="#一行总结-ritual" id="toc-一行总结-ritual">4.3 一行总结
+ritual</a></li>
+</ul></li>
+<li><a href="#在-gitlab-上开-mr-叫助教"
+id="toc-在-gitlab-上开-mr-叫助教">5. 在 GitLab 上开 MR + 叫助教</a>
+<ul>
+<li><a href="#助教给了修改意见怎么办"
+id="toc-助教给了修改意见怎么办">5.1 助教给了修改意见怎么办？</a></li>
+</ul></li>
+<li><a href="#常见坑前几届同学用血换来的"
+id="toc-常见坑前几届同学用血换来的">6.
+常见坑（前几届同学用血换来的）</a></li>
+<li><a href="#一页速查表" id="toc-一页速查表">7. 一页速查表</a></li>
+<li><a href="#和-linux-课的-git-流程有何不同"
+id="toc-和-linux-课的-git-流程有何不同">8. 和 Linux 课的 Git
+流程有何不同</a></li>
+<li><a href="#faq" id="toc-faq">9. FAQ</a></li>
+<li><a href="#检查清单提交前自检" id="toc-检查清单提交前自检">10.
+检查清单（提交前自检）</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="git-操作指南与规范本学期综合实践项目专用">Git
+操作指南与规范（本学期综合实践项目专用）</h1>
+<blockquote>
+<p>这是《网络安全（AI 时代版）》渐进式作品（综合实践项目
+M0–M7）的<strong>唯一</strong> Git 提交规范。
+适用对象：所有学生，<strong>尤其是自认为 Git
+基础薄弱的同学</strong>——按本指南照做即可，不需要额外看其它教程。
+配套：<a href="../../../capstone/overview.html">综合实践项目总览</a> ·
+<a href="../../../capstone/seed/README.html">种子工程</a> · <a
+href="lab00-threat-model.html">实验 00 / M0</a></p>
+</blockquote>
+<hr />
+<h2 id="为什么本学期要单独讲-git">1. 为什么本学期要单独讲 Git</h2>
+<p>如果你上学年上过 Linux 课，会记得它教的 Git 流程：<strong>每个单元从
+<code>main</code> 切一个分支、建同名目录、开一个 MR、保持 open
+不合并</strong>。那套流程对「每单元独立」的作业是对的。</p>
+<p><strong>但本学期不一样</strong>：整学期只做一个工程——一个「含 AI
+能力的靶场 Web 应用」，按里程碑 M0→M7
+<strong>渐进迭代</strong>。也就是说：</p>
+<blockquote>
+<p><strong>M2 的代码踩在 M1 上，M1 踩在 M0
+上……同一个仓库、同一套代码，一路长成一个完整系统。</strong></p>
+</blockquote>
+<p>这条「累积」性质，直接决定了 Git 的用法必须改。具体改在哪，见 <a
+href="#8-和-linux-课的-git-流程有何不同">§8 和 Linux
+课的差异</a>。先记住下面三条铁律即可。</p>
+<hr />
+<h2 id="三条铁律先记住这三条">2. 三条铁律（先记住这三条）</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">铁律</th>
+<th style="text-align: left;">一句话</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①</td>
+<td style="text-align: left;"><strong>用分支标记里程碑</strong></td>
+<td style="text-align: left;">完成一个里程碑 = 开一个名为
+<code>milestone/m{n}</code> 的分支；<strong>不再打 tag</strong>。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">②</td>
+<td style="text-align: left;"><strong>用 MR 叫助教来批改</strong></td>
+<td style="text-align: left;">分支推上去后，开一个 Merge Request 并
+<strong><span class="citation"
+data-cites="助教">@助教</span></strong>（把助教勾选为
+reviewer）。<strong>只 push 代码 ≠ 交卷</strong>，开了 MR 且 @
+了助教才算交卷。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">③</td>
+<td
+style="text-align: left;"><strong>不合并不关闭，学期末才收尾</strong></td>
+<td style="text-align: left;">每个 MR <strong>保持 open</strong>：不要点
+Merge、不要 Close。每个 MR
+只含<strong>一个里程碑</strong>的内容。学期全部结束、所有 M
+评审完成后，再把最终的 <code>milestone/m7</code> 合回
+<code>main</code>。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>助教（含 AI 助教 <code>ns4ai-review</code>）<strong>只看你 MR 里的
+changes</strong> 来批改。所以 MR
+里有什么、范围对不对，直接决定你的分数。</p>
+</blockquote>
+<hr />
+<h2 id="分支长什么样拓扑图">3. 分支长什么样（拓扑图）</h2>
+<p>本学期的里程碑分支<strong>首尾相接、层层叠加</strong>，像一串糖葫芦：</p>
+<pre><code>main ────────────────────────────────────── (冻结到学期末，别碰它)
+  │
+  └─ milestone/m0     ← MR m0  目标: main
+      └─ milestone/m1   ← MR m1  目标: milestone/m0
+          └─ milestone/m2   ← MR m2  目标: milestone/m1
+              └─ milestone/m3  …
+                  └─ … 直至 milestone/m7</code></pre>
+<p><strong>关键直觉</strong>：</p>
+<ul>
+<li><strong><code>main</code>
+是博物馆</strong>：学期内冻结，谁都不许往里直接提交或合并。它是你派生种子时的初始状态。</li>
+<li><strong>每个里程碑是一条「叠在上一个之上」的分支</strong>：<code>milestone/m2</code>
+里<strong>包含</strong> M0+M1+M2 的全部代码（所以助教能直接运行你 M2
+时的完整系统），但它<strong>相对 <code>milestone/m1</code> 只多了 M2
+那一截</strong>（所以助教看到的 MR diff 干净，只有 M2 的增量）。</li>
+<li><strong>为什么必须叠，而不能每次都从 main 切？</strong>
+因为代码是累积的。如果 <code>milestone/m2</code> 从冻结的
+<code>main</code> 切，里面就没有 M1 的代码，系统根本跑不起来。</li>
+</ul>
+<h3 id="命名规范">3.1 命名规范</h3>
+<ul>
+<li>里程碑分支固定叫
+<strong><code>milestone/m0</code>、<code>milestone/m1</code>、…、<code>milestone/m7</code></strong>——与里程碑编号一一对应，<strong>不要自创名字</strong>。</li>
+<li><code>milestone/</code> 这个前缀是<strong>命名空间</strong>：GitLab
+网页上会自动把它们折叠成一组，你和助教一眼就能看清进度。</li>
+<li><strong>不要打
+tag</strong>（<code>git tag</code>）：本学期分支就是标记，tag
+是多余的，且会和分支名撞车。</li>
+</ul>
+<hr />
+<h2 id="每个里程碑的标准操作复制即用">4.
+每个里程碑的标准操作（复制即用）</h2>
+<h3 id="第一次开-m0从-main-切">4.1 第一次：开 M0（从 main 切）</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ① 确认在 main，且是最新的种子</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch main</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull origin main</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ② 创建 M0 分支</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> milestone/m0</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ③ 做 M0 的实验（见 lab00），产物放进 docs/m0/</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    例如：docs/m0/tech-stack.md、assets.md、stride.md、risk-register.md、report.md</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    小步、多次、写人话 commit：</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add docs/m0/</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;feat(m0): 资产清单 + CIA 标注&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ...继续边做边 commit...</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ④ 推送 M0 分支</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin milestone/m0</span></code></pre></div>
+<p>然后去 GitLab 网页开 MR（见 <a
+href="#5-在-gitlab-上开-mr--叫助教">§5</a>）：<strong>源 =
+<code>milestone/m0</code>，目标 = <code>main</code></strong>。</p>
+<h3 id="之后每一次开-mnn-1从上一里程碑切">4.2 之后每一次：开 M{n}（n ≥
+1，从上一里程碑切）</h3>
+<blockquote>
+<p>⚠️ <strong>最容易踩的坑</strong>：M2 要从
+<strong><code>milestone/m1</code></strong> 切，<strong>不是从 main
+切</strong>。回到上一里程碑分支，再切新的。</p>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ① 回到「上一个里程碑」的分支（不是 main！）</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch milestone/m1</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull origin milestone/m1</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ② 从这里切出新的里程碑分支</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> milestone/m2</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ③ 做 M2 的实验，产物放进 docs/m2/</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add docs/m2/</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;feat(m2): 暴露面清单 + 参数化侦察脚本&quot;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ...边做边 commit...</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ④ 推送</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin milestone/m2</span></code></pre></div>
+<p>然后开 MR：<strong>源 = <code>milestone/m2</code>，目标 =
+<code>milestone/m1</code></strong>（目标务必选上一里程碑分支，不要选
+main）。</p>
+<blockquote>
+<p>把上面这段里的 <code>m1</code>/<code>m2</code>
+换成你当前的里程碑编号即可，每个里程碑重复一次。</p>
+</blockquote>
+<h3 id="一行总结-ritual">4.3 一行总结 ritual</h3>
+<pre><code>回到上一里程碑分支 → 切新分支 → 做实验写报告 → push → 开 MR（目标=上一里程碑分支）→ @助教 → 保持 open</code></pre>
+<hr />
+<h2 id="在-gitlab-上开-mr-叫助教">5. 在 GitLab 上开 MR + 叫助教</h2>
+<ol type="1">
+<li>推送分支后，打开课程 GitLab 上<strong>你自己的仓库</strong>，左侧
+<strong>Merge requests → New merge request</strong>。</li>
+<li><strong>选源分支</strong>：<code>milestone/m{n}</code>。</li>
+<li><strong>选目标分支</strong>（关键！）：
+<ul>
+<li>M0 → 目标选 <code>main</code>；</li>
+<li>M1..M7 → 目标选
+<strong><code>milestone/m{n-1}</code></strong>（上一个里程碑分支）。GitLab
+默认会填 <code>main</code>，<strong>你必须手动改掉</strong>。</li>
+</ul></li>
+<li>标题写成：<code>M{n} &lt;里程碑主题&gt; 评审</code>，例如
+<code>M2 自侦察 评审</code>。</li>
+<li><strong>Reviewer / Assignee
+勾选助教</strong>——这一步等于「发消息提醒助教来批改」，没勾 =
+助教不知道你交了。</li>
+<li><strong>不要点 Merge</strong>、<strong>不要点
+Close</strong>。开好就放着，保持 <code>Open</code> 状态。</li>
+<li>开完后，<strong>在网页上把 MR 的 Changes
+翻一遍</strong>：报告里的图片能不能显示、文件路径对不对。<strong>你在 MR
+里看到什么样，助教看到的就是什么样。</strong></li>
+</ol>
+<h3 id="助教给了修改意见怎么办">5.1 助教给了修改意见怎么办？</h3>
+<p><strong>不用关
+MR、不用重开、不用新切分支</strong>。直接在<strong>同一个</strong>
+<code>milestone/m{n}</code> 分支上继续改、继续 commit、继续
+<code>git push</code>，MR 会自动更新成最新内容，然后<strong>在 MR 评论区
+@
+助教</strong>说「已修改，请重新批改」即可。整个学期里，一个里程碑从头到尾只用<strong>一个分支
++ 一个 MR</strong>。</p>
+<hr />
+<h2 id="常见坑前几届同学用血换来的">6.
+常见坑（前几届同学用血换来的）</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">坑</th>
+<th style="text-align: left;">现象</th>
+<th style="text-align: left;">正确做法</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>从 main 切 M2</strong></td>
+<td style="text-align: left;">M2 分支里没有 M1 代码，系统跑不起来；MR
+diff 一片混乱</td>
+<td style="text-align: left;">M{n} 一律从 <code>milestone/m{n-1}</code>
+切（<a href="#42-之后每一次开-mn--n--1从上一里程碑切">§4.2</a>）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>手滑点了 Merge</strong></td>
+<td style="text-align: left;">MR 被合并进目标分支，评审面破坏</td>
+<td style="text-align: left;"><strong>别点。</strong>
+不小心点了，立刻在群里 @ 助教说明，不要自行 close</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>报告图片挂掉</strong></td>
+<td style="text-align: left;">MR 里图片全是裂图</td>
+<td style="text-align: left;">截图统一放
+<code>docs/m{n}/screenshots/</code>，用相对路径引用；开 MR
+后在网页核对一遍</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>一个 commit 交全卷</strong></td>
+<td style="text-align: left;"><code>initial commit</code>
+一个巨包，看不出改了啥</td>
+<td style="text-align: left;">小步、多次、语义化
+commit：<code>feat(m2): ...</code>、<code>fix(m2): ...</code>、<code>docs(m2): ...</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>报告用 docx/pdf</strong></td>
+<td style="text-align: left;">AI 助教解析不出来，直接判扣分</td>
+<td style="text-align: left;">报告一律
+Markdown（<code>docs/m{n}/report.md</code>），禁止 doc/pdf</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>忘了 push 或忘了开
+MR</strong></td>
+<td style="text-align: left;">「我明明 commit
+了啊」——但助教什么都看不到</td>
+<td style="text-align: left;">commit 是本地的；<strong>push + 开 MR + @
+助教</strong> 才是交卷</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: center;"><strong>在不同里程碑分支之间乱切着改</strong></td>
+<td style="text-align: left;">分支互相串味，出现「平行宇宙」</td>
+<td style="text-align: left;">一次只做一个里程碑；切换前
+<code>git status</code> 确认干净，新分支只从上一里程碑切</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="一页速查表">7. 一页速查表</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 开启里程碑 M{n}（n≥1；M0 见 §4.1）=====</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch milestone/m<span class="va">$((n</span><span class="op">-</span><span class="dv">1</span><span class="va">))</span>        <span class="co"># ① 回到上一里程碑分支（非 main）</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull origin milestone/m<span class="va">$((n</span><span class="op">-</span><span class="dv">1</span><span class="va">))</span>   <span class="co"># ② 拉最新</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> milestone/m<span class="va">$n</span>           <span class="co"># ③ 切新分支</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ④ 边做边 commit：  git commit -m &quot;feat(m$n): ...&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin milestone/m<span class="va">$n</span>      <span class="co"># ⑤ 推送</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ⑥ GitLab 开 MR：源=milestone/m$n，目标=milestone/m$((n-1))，@助教，保持 Open</span></span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">里程碑</th>
+<th style="text-align: left;">分支</th>
+<th style="text-align: left;">MR 目标</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">M0</td>
+<td style="text-align: left;"><code>milestone/m0</code></td>
+<td style="text-align: left;"><code>main</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M1</td>
+<td style="text-align: left;"><code>milestone/m1</code></td>
+<td style="text-align: left;"><code>milestone/m0</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M2</td>
+<td style="text-align: left;"><code>milestone/m2</code></td>
+<td style="text-align: left;"><code>milestone/m1</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M3</td>
+<td style="text-align: left;"><code>milestone/m3</code></td>
+<td style="text-align: left;"><code>milestone/m2</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M4</td>
+<td style="text-align: left;"><code>milestone/m4</code></td>
+<td style="text-align: left;"><code>milestone/m3</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M5</td>
+<td style="text-align: left;"><code>milestone/m5</code></td>
+<td style="text-align: left;"><code>milestone/m4</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">M6</td>
+<td style="text-align: left;"><code>milestone/m6</code></td>
+<td style="text-align: left;"><code>milestone/m5</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">M7</td>
+<td style="text-align: left;"><code>milestone/m7</code></td>
+<td style="text-align: left;"><code>milestone/m6</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>学期末：所有里程碑评审完成后，把 <code>milestone/m7</code> 合回
+<code>main</code>（届时助教会统一指导）。</p>
+</blockquote>
+<hr />
+<h2 id="和-linux-课的-git-流程有何不同">8. 和 Linux 课的 Git
+流程有何不同</h2>
+<p>如果你上学年用过 Linux
+课那套，<strong>唯一的概念差异</strong>就是切分支的起点：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Linux 课（每单元独立）</th>
+<th style="text-align: left;">本学期综合实践项目（渐进累积）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">切新分支的起点</td>
+<td style="text-align: left;">永远从 <strong><code>main</code></strong>
+切</td>
+<td style="text-align: left;">从 <strong>上一里程碑分支</strong> 切（M0
+才从 main）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">单元/里程碑之间</td>
+<td style="text-align: left;">互相独立、互不依赖</td>
+<td style="text-align: left;">累积，后一个盖在前一个之上</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">标记方式</td>
+<td style="text-align: left;">分支（无 tag）</td>
+<td style="text-align: left;">分支（无 tag）✅ 这条一样</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MR 目标</td>
+<td style="text-align: left;"><code>main</code></td>
+<td style="text-align: left;">上一里程碑分支（M0→main）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">合并</td>
+<td style="text-align: left;">不合并，保持 open</td>
+<td style="text-align: left;">不合并，保持 open ✅ 这条一样</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">单元/里程碑产物隔离</td>
+<td style="text-align: left;">靠「分支同名目录」</td>
+<td style="text-align: left;">靠 <code>docs/m{n}/</code> 目录 +
+累积代码</td>
+</tr>
+</tbody>
+</table>
+<p>一句话：<strong>还是「分支 + MR +
+不合并」那套，只是切新分支时要回到上一里程碑，而不是 main。</strong>
+原因是本学期的作品是一路长起来的，不是一堆互不相干的作业。</p>
+<hr />
+<h2 id="faq">9. FAQ</h2>
+<p><strong>Q1：我做到 M3 时发现 M1 的代码有个 bug，要回去改 M1
+吗？</strong>
+不用回退（那是高级操作，容易把后续分支搞乱）。<strong>在当前
+<code>milestone/m3</code> 分支里直接修掉</strong>，commit message
+写清楚（如 <code>fix(m1 的口令哈希): 在 m3 分支内修复</code>），并在 M3
+的 <code>report.md</code> 里说明一句「发现并修复了 M1 的 XX 问题」。这叫
+<strong>fix-forward</strong>，是工程上推荐的做法。</p>
+<p><strong>Q2：我能不能用网页版 GitLab
+直接编辑文件、不开本地分支？</strong>
+不推荐。本学期的代码要本地能跑（<code>python app.py</code>）、要做攻击/检测实验，几乎都得在本地改。请用本地
+Git。</p>
+<p><strong>Q3：commit message 写中文还是英文？</strong>
+都行，但要<strong>说人话</strong>——写清楚这次改了啥。推荐 Conventional
+Commits
+风格：<code>feat(m2): ...</code>、<code>fix(m3): ...</code>、<code>docs(m0): ...</code>。</p>
+<p><strong>Q4：可以用 AI 帮我写 commit message / 整理改动吗？</strong>
+可以。但 <strong><code>git push</code> 一律自己来</strong>，且需在
+<code>report.md</code> 注明用了哪个 AI 辅助 +
+人工复核了什么。本课程<strong>只允许国产大模型</strong>（如
+<code>deepseek-v4-flash</code> / Qwen / GLM /
+Kimi），<strong>禁止</strong> GPT/Claude/Gemini。</p>
+<p><strong>Q5：我的 MR 目标选错了（选成 main 了）怎么办？</strong> 在 MR
+页面右侧 <strong>Edit</strong>，把 target branch 改回
+<code>milestone/m{n-1}</code> 即可，不用重新建。</p>
+<p><strong>Q6：为什么不能直接 push 到 main？</strong> 因为
+<code>main</code>
+是冻结的「基线」，所有评审都基于「里程碑相对上一里程碑的增量」。直接动
+main 会破坏所有 MR 的 diff，助教就无法判断每个里程碑各自做了什么。</p>
+<p><strong>Q7：我想偷懒，不想记这些命令？</strong> 种子工程自带
+<code>scripts/new-milestone.sh</code>，一条命令自动定位上一里程碑分支、切新分支、推送、并打印一个<strong>预填好目标分支</strong>的
+GitLab 开 MR 链接。想偷懒用它；想学原理就照 §4 手动来。</p>
+<hr />
+<h2 id="检查清单提交前自检">10. 检查清单（提交前自检）</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />当前分支名是
+<code>milestone/m{n}</code>（不是 main、不是别的）</label></li>
+<li><label><input type="checkbox" />这个分支是从
+<code>milestone/m{n-1}</code>（M0 则从 main）切出来的</label></li>
+<li><label><input type="checkbox" />本里程碑产物都在
+<code>docs/m{n}/</code> 下，含
+<code>report.md</code>（Markdown）</label></li>
+<li><label><input type="checkbox" />报告里的图片在 MR
+网页上能正常显示</label></li>
+<li><label><input type="checkbox" />commit 是小步语义化的，没有「initial
+commit」巨包</label></li>
+<li><label><input type="checkbox" />已经 <code>git push</code>
+到远端</label></li>
+<li><label><input type="checkbox" />已开
+MR，<strong>源=milestone/m{n}，目标=milestone/m{n-1}（或
+main）</strong></label></li>
+<li><label><input type="checkbox" />MR 保持 <strong>Open</strong>，没点
+Merge、没点 Close</label></li>
+<li><label><input type="checkbox" />已在 MR 里 <strong>@
+助教</strong></label></li>
+</ul>
+<script src="../../../js/toc.js"></script></body>
+</html>

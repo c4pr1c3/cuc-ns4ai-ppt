@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第七单元: 红蓝对抗与综合复盘</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第七单元: 红蓝对抗与综合复盘</h1>
+  <p class="subtitle">对抗 · 复盘 · 自评（全学期收口）</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-0全流程红蓝对抗怎么打"
+class="title-slide slide level1">
+<h1>主题 0：全流程红蓝对抗怎么打？</h1>
+
+</section>
+<section id="问题引入在已加固-带-ai的系统上打一场" class="slide level2">
+<h2>问题引入：在「已加固 + 带 AI」的系统上打一场</h2>
+<blockquote>
+<p><strong>「前面六个里程碑都点亮了，但拼在一起还能打穿吗？」</strong></p>
+</blockquote>
+<ul>
+<li>红蓝对抗 = 把 <strong>M0-M6
+全部能力</strong>放在「<strong>同一套已加固、带
+AI、可观测</strong>」的集成系统上压一遍</li>
+<li>攻击者视角：你的纵深防御哪一层先漏？</li>
+<li>防御者视角：你的检测/取证/欺骗闭环能接住几次？</li>
+<li>本单元 =
+整学期综合实践项目（capstone）的<strong>收口</strong>：综合演练 +
+<strong>能力自评</strong>（M7）</li>
+</ul>
+</section>
+<section id="本单元地图2-学时演练-度量-自评" class="slide level2">
+<h2>本单元地图（≤2 学时）：演练 · 度量 · 自评</h2>
+<ol type="1">
+<li><strong>【道】</strong>攻防不对称与综合工程化的心智</li>
+<li><strong>【术】</strong>红蓝演练编排：场景/规则 + 红队复用 M3/M6 编链
++ 蓝队 M4/M5 闭环 + <strong>纵深度量</strong></li>
+<li><strong>【术】能力自评矩阵</strong>（核心）：6 簇 × 3 级逐项回看
+M0-M6 证据</li>
+<li><strong>【术】AI 综合评估</strong>（簇⑥·L3）：赋能 + 对抗 +
+<strong>局限</strong></li>
+<li><strong>【器】</strong>靶场平台 + 复盘模板 +
+<strong>现场演示/录屏</strong></li>
+<li><strong>【造器】</strong>衔接实验 M7：红蓝取证报告 + 能力自评矩阵 =
+能力成绩单</li>
+</ol>
+</section>
+<section id="能力框架对应全簇-l3-综合工程化" class="slide level2">
+<h2>能力框架对应：全簇 · L3 综合工程化</h2>
+<ul>
+<li>M7 是<strong>唯一一个「全簇」</strong>里程碑：①基石 / ②侦察 / ③攻击
+/ ④防御 / ⑤检测取证 / ⑥AI，三级要压到 <strong>L3</strong></li>
+<li>「综合」的含义：<strong>不是逐项再做一遍</strong>，而是在演练里把它们<strong>串成利用链与防御链</strong>，并度量纵深</li>
+<li>评审会<strong>回看
+M0-M6</strong>——本单元自评矩阵每项都要能指回仓库证据</li>
+</ul>
+<blockquote>
+<p><strong>本里程碑自评权重 0.20</strong>（最高之一，回看整学期）+
+<strong>现场演示</strong>（动态证据）。完整能力矩阵见 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-1道攻防不对称与综合工程化"
+class="title-slide slide level1">
+<h1>主题 1：【道】攻防不对称与综合工程化</h1>
+
+</section>
+<section id="攻防不对称攻击者一个缺口-vs-防御者堵全部"
+class="slide level2">
+<h2>攻防不对称：攻击者一个缺口 vs 防御者堵全部</h2>
+<ul>
+<li><strong>攻击者</strong>只需找到<strong>一个</strong>可用的缺口 →
+单点击穿（侦察 → 渗透 → 提权 → 横向）</li>
+<li><strong>防御者</strong>必须堵住<strong>全部</strong>缺口 →
+纵深防御（边界 → 应用 → 主机 → 数据 → 检测）</li>
+<li>这是为什么「跑通一次攻击」远比「跑通一次防御」容易——也是本单元要<strong>度量纵深</strong>的原因</li>
+</ul>
+<blockquote>
+<p>红蓝对抗的价值：<strong>用攻击者的视角检验防御者的覆盖度</strong>，把「我以为防住了」变成「我量过每层命中率」。</p>
+</blockquote>
+</section>
+<section id="综合工程化从会做一次到能编排能度量能复盘"
+class="slide level2">
+<h2>综合工程化：从「会做一次」到「能编排、能度量、能复盘」</h2>
+<ul>
+<li>L2 是<strong>会做一次</strong>（跑通一次 SQLi、配一条 WAF
+规则、抓一次日志）</li>
+<li><strong>L3 工程化</strong> 是本单元的硬门槛：
+<ul>
+<li>红队：把 M3/M6 的单点概念验证（PoC）
+<strong>编成多阶段链</strong></li>
+<li>蓝队：把 M4/M5 的单点防御
+<strong>接成检测-取证-欺骗闭环</strong>，并<strong>度量纵深</strong></li>
+<li>AI：在演练里<strong>综合评估</strong>（赋能 + 对抗 + 局限）</li>
+</ul></li>
+<li>「能编排 / 能度量 / 能复盘」——缺一不可</li>
+</ul>
+</section>
+<section id="道自评诚实评审回看-8-个-milestonemn-分支"
+class="slide level2">
+<h2>【道】自评诚实：评审回看 8 个 <code>milestone/m{n}</code> 分支</h2>
+<blockquote>
+<p>自评不是「点亮越多越好」，而是「<strong>点的每一项都能指回证据</strong>」。</p>
+</blockquote>
+<ul>
+<li>M7 自评矩阵的核心约束：<strong>无虚点亮</strong>（点了簇×级却找不到
+M0-M6 证据 = 扣分项）</li>
+<li>评审会<strong>回看全部 8
+个里程碑分支</strong>：<code>git branch --list 'milestone/m[0-7]'</code>
+应 = 8</li>
+<li>诚实自评 =
+把「<strong>做了</strong>」和「<strong>会了</strong>」分开：
+<ul>
+<li>做了 ≠ 点亮（可能只是照抄、未理解）</li>
+<li>点亮 = 能讲清思路 + 能给出仓库证据 +
+能说<strong>踩到什么坑</strong></li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="主题-2术红蓝演练编排场景与规则"
+class="title-slide slide level1">
+<h1>主题 2：【术】红蓝演练编排：场景与规则</h1>
+
+</section>
+<section id="任务-a演练场景与规则设计" class="slide level2">
+<h2>任务 A：演练场景与规则设计</h2>
+<ul>
+<li><strong>攻击面 = 你自己的系统</strong>（综合实践项目靶场，已加固 +
+带 AI 端点 + 集中日志）</li>
+<li><strong>角色</strong>：分组 / 自扮红蓝；红队目标 =
+找到并利用缺口；蓝队目标 = 检测 + 阻断 + 取证</li>
+<li><strong>停战条件</strong>：约定时间窗 / 目标达成 / 任一方认输 →
+进入复盘（<strong>不在复盘期继续打</strong>）</li>
+<li><strong>评分维度</strong>：红队（利用链完整度 / AI 对抗深度）+
+蓝队（检测覆盖率 / 取证时间线 / 纵深度量）</li>
+</ul>
+<blockquote>
+<p>⚠️ 仅在自己系统 / 授权环境；触及第三方 = 安全严谨不合格 +
+上报。课程<strong>不教授编写恶意代码</strong>。</p>
+</blockquote>
+</section>
+<section id="演练节奏建议2-学时压缩版" class="slide level2">
+<h2>演练节奏建议（2 学时压缩版）</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 37%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">阶段</th>
+<th style="text-align: center;">时长</th>
+<th style="text-align: left;">产出</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">场景与规则对齐</td>
+<td style="text-align: center;">15min</td>
+<td style="text-align: left;">redblue-record.md
+骨架（目标/规则/停战）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">红队攻击链执行</td>
+<td style="text-align: center;">30min</td>
+<td style="text-align: left;">多阶段链记录（每步攻击载荷（payload） +
+结果）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">蓝队防御复盘</td>
+<td style="text-align: center;">30min</td>
+<td style="text-align: left;">哪些被拦/漏检 + 纵深度量表</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">取证 + AI 综合评估</td>
+<td style="text-align: center;">20min</td>
+<td style="text-align: left;">forensics-report.md + AI 局限分析</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">自评矩阵 + 汇报</td>
+<td style="text-align: center;">25min</td>
+<td style="text-align: left;">self-matrix.md + 现场演示</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>课内跑不完很正常——<strong>录屏 /
+动态证据包</strong>补足；静态无法核验的动态证据，不交录屏则<strong>降级
+observation</strong>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-3术红队编排复用-m3m6-编多阶段链"
+class="title-slide slide level1">
+<h1>主题 3：【术】红队编排：复用 M3/M6 编多阶段链</h1>
+
+</section>
+<section id="红队把单点-poc-串成链" class="slide level2">
+<h2>红队：把单点 PoC 串成链</h2>
+<ul>
+<li><strong>M3 攻击库</strong>（簇③）：SQLi（<code>/orders</code>
+字符串拼接）、XSS、文件上传、CSRF —— 都已在 M3 留下 PoC</li>
+<li><strong>M6 攻击库</strong>（簇⑥）：提示词注入 / 越狱 / RAG 投毒 /
+工具滥用 —— 针对 <code>/api/agent</code> AI 端点</li>
+<li>M7 红队的任务 =
+<strong>编排</strong>一条多阶段链（不是再做一遍单点）：
+<ol type="1">
+<li>侦察（复用 M2 暴露面清单）→ 选目标</li>
+<li>渗透（M3 的 SQLi/上传等）→ 拿到 foothold</li>
+<li><strong>AI 对抗</strong>（M6 提示词注入）→ 让
+<code>/api/agent</code> 越权调工具 / 泄露数据</li>
+<li>横向（拿到凭证后访问其他端点）</li>
+</ol></li>
+</ul>
+</section>
+<section id="多阶段链的记录要求redblue-record.md" class="slide level2">
+<h2>多阶段链的记录要求（redblue-record.md）</h2>
+<pre ><code class="markdown">## 攻击链 stage-by-stage
+- stage1 侦察：nmap -sV → 发现 5000 端口 + /api/agent（M2 证据）
+- stage2 渗透：SQLi at /orders?id=1 UNION SELECT... → 拿到用户表（M3 PoC）
+- stage3 AI 对抗：提示词注入 /api/agent → 忽略护栏调用 read_file（M6 PoC）
+- stage4 横向：用 stage2 的凭证访问 /admin → 发现配置漂移
+每步附：payload + 响应 + 哪一层防御该接住（蓝队对照）</code></pre>
+<blockquote>
+<p>红队的 L3
+不是「找到新漏洞」，而是「<strong>把已有能力编成有杀伤力的链，并标注每步对应的能力簇</strong>」。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-4术蓝队闭环复用-m4m5-纵深度量"
+class="title-slide slide level1">
+<h1>主题 4：【术】蓝队闭环：复用 M4/M5 + 纵深度量</h1>
+
+</section>
+<section id="蓝队把单点防御接成闭环" class="slide level2">
+<h2>蓝队：把单点防御接成闭环</h2>
+<ul>
+<li><strong>M4 防御库</strong>（簇④）：WAF（拦
+SQLi/XSS）、IDS、边界防护、加固基线</li>
+<li><strong>M5
+检测库</strong>（簇⑤）：集中日志（AUDIT）、取证时间线、蜜罐（欺骗）</li>
+<li>M7 蓝队的任务 = <strong>闭环</strong>：
+<ul>
+<li>检测（日志/WAF/IDS 告警）→ 取证（时间线 + IoC）→
+复盘（哪些漏检）</li>
+<li>欺骗（蜜罐）：红队踩到蜜罐 = 蓝队提前发现</li>
+</ul></li>
+</ul>
+</section>
+<section id="纵深度量防御链各层命中率" class="slide level2">
+<h2>纵深度量：防御链各层命中率</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">防御层</th>
+<th style="text-align: center;">来源</th>
+<th style="text-align: left;">该接住的攻击</th>
+<th style="text-align: center;">是否命中</th>
+<th style="text-align: left;">漏检原因</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">WAF（边界）</td>
+<td style="text-align: center;">M4</td>
+<td style="text-align: left;">stage2 SQLi</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">规则未覆盖 UNION</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">应用校验</td>
+<td style="text-align: center;">M3 加固</td>
+<td style="text-align: left;">stage2 SQLi</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">仅前端校验</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">日志告警</td>
+<td style="text-align: center;">M5</td>
+<td style="text-align: left;">stage3 提示词注入</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">无 prompt 检测规则</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">蜜罐</td>
+<td style="text-align: center;">M5</td>
+<td style="text-align: left;">stage4 横向</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">红队未踩</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>纵深度量的价值：<strong>把「防御有效性」从感觉变成数字</strong>（命中率
+= 命中层 / 应接住层）。这是簇④/⑤·L3 的核心要求。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-5术能力自评矩阵核心-任务-d"
+class="title-slide slide level1">
+<h1>主题 5：【术】能力自评矩阵（核心 · 任务 D）</h1>
+
+</section>
+<section id="能力自评矩阵12簇-①②③-攻防前半程" class="slide level2">
+<h2>能力自评矩阵（1/2）：簇 ①②③ 攻防前半程</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: left;">证据（M0-M6 路径）</th>
+<th style="text-align: left;">思维范式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①·L3</td>
+<td style="text-align: left;">设计 RBAC / 风险登记表随项目演进</td>
+<td style="text-align: left;"><code>docs/m1/</code> 安全基线</td>
+<td style="text-align: left;">最小权限</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">②·L3</td>
+<td style="text-align: left;">可复用侦察脚本 + 暴露面清单治理</td>
+<td style="text-align: left;"><code>docs/m2/recon.*</code></td>
+<td style="text-align: left;">自侦察</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">③·L3</td>
+<td style="text-align: left;">编排多阶段利用链</td>
+<td style="text-align: left;"><code>docs/m3/</code> PoC + M7 攻击链</td>
+<td style="text-align: left;">链式利用</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="能力自评矩阵22簇-④⑤⑥-防御与-ai-收口" class="slide level2">
+<h2>能力自评矩阵（2/2）：簇 ④⑤⑥ 防御与 AI 收口</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: left;">证据（M0-M6 路径）</th>
+<th style="text-align: left;">思维范式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">④·L3</td>
+<td style="text-align: left;">纵深防御 + 度量</td>
+<td style="text-align: left;"><code>docs/m4/</code> + M7 纵深表</td>
+<td style="text-align: left;">纵深覆盖</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">⑤·L3</td>
+<td style="text-align: left;">检测-取证-欺骗闭环</td>
+<td style="text-align: left;"><code>docs/m5/</code> + M7 取证报告</td>
+<td style="text-align: left;">闭环复盘</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⑥·L3</td>
+<td style="text-align: left;">AI 综合评估（赋能+对抗+局限）</td>
+<td style="text-align: left;"><code>docs/m6/</code> + M7 AI 评估</td>
+<td style="text-align: left;">双向审视</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="自评矩阵的三个硬约束" class="slide level2">
+<h2>自评矩阵的三个硬约束</h2>
+<ol type="1">
+<li><strong>覆盖 ≥3 个簇</strong>（任务 D 的最低门槛；覆盖
+<code>①|②|③|④|⑤|⑥</code>）</li>
+<li><strong>无虚点亮</strong>：每一行
+<code>①·L3</code>…<code>⑥·L3</code> 都必须能指回仓库里的 M0-M6
+证据路径</li>
+<li><strong>附思维范式列</strong>：不只是「点亮了什么」，还要回答「<strong>这次练了哪个思维范式</strong>」（最小权限
+/ 自侦察 / 链式利用 / 纵深覆盖 / 闭环复盘 / 双向审视）</li>
+</ol>
+<blockquote>
+<p>自检覆盖度：<code>git grep -hoE '①|②|③|④|⑤|⑥' milestone/m7 -- '*.md' | sort -u | wc -l</code>（应
+≥3）。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-6术ai-综合评估簇⑥l3-任务-e"
+class="title-slide slide level1">
+<h1>主题 6：【术】AI 综合评估（簇⑥·L3 · 任务 E）</h1>
+
+</section>
+<section id="ai-双向赋能-对抗-局限三件套缺一不可" class="slide level2">
+<h2>AI 双向：赋能 + 对抗 + 局限（三件套缺一不可）</h2>
+<blockquote>
+<p>M7 的 AI 评估按「<strong>是否在演练中综合评估 AI（攻防 +
+局限）</strong>」给档，权重 0.20。</p>
+</blockquote>
+<ul>
+<li><strong>赋能侧（用 AI 防御）</strong>：AI
+做日志分诊、异常聚类、取证摘要、威胁情报关联 → 帮蓝队提速</li>
+<li><strong>对抗侧（攻 AI）</strong>：红队对 <code>/api/agent</code>
+做提示词注入 / 越狱 / 工具滥用 → AI 被攻破的路径（复用 M6）</li>
+<li><strong>局限侧（评估 AI 失效）</strong>：什么场景 AI 失效 / 误报 /
+漏报 —— 这是本单元的<strong>新增要求</strong></li>
+</ul>
+</section>
+<section id="ai-局限分析哪些场景-ai-会失效" class="slide level2">
+<h2>AI 局限分析：哪些场景 AI 会失效</h2>
+<ul>
+<li><strong>误报</strong>：正常流量被 AI 判为攻击（如合法的批量查询 →
+误判 SQLi）→ 噪声淹没真实告警</li>
+<li><strong>漏报</strong>：新型/变体攻击（训练分布外）→ AI
+见过才会拦，没见过的链式攻击易漏</li>
+<li><strong>对抗鲁棒性</strong>：提示词注入的变体（编码 / 拆分 /
+多轮诱导）能绕过 M6 的护栏</li>
+<li><strong>国产优先</strong>：评估时优先用国产大模型（<code>deepseek-v4-flash</code>
+/ Qwen / GLM / Kimi）—— 课程内容<strong>禁止依赖国外大模型</strong></li>
+</ul>
+<blockquote>
+<p>AI 不是万能防线：<strong>局限分析</strong>就是承认「AI
+在哪些地方帮倒忙」，这是簇⑥·L3 区别于 L2 的关键。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-7器靶场平台与复盘模板"
+class="title-slide slide level1">
+<h1>主题 7：【器】靶场平台与复盘模板</h1>
+
+</section>
+<section id="器演练平台-你自己的综合实践项目靶场" class="slide level2">
+<h2>【器】演练平台 = 你自己的综合实践项目靶场</h2>
+<ul>
+<li>起点 = <code>milestone/m6</code> 分支 tip（已加固 + AI 能力 +
+加固证据 + 集中日志）</li>
+<li>按 <a href="../../unit00-intro/labs/git-guide.html">Git 规范</a>
+<strong>从 <code>milestone/m6</code> 切
+<code>milestone/m7</code></strong>，MR 目标 =
+<code>milestone/m6</code></li>
+<li>攻击面 = <code>/login</code> / <code>/orders</code> /
+<code>/api/agent</code> / <code>AUDIT</code>
+日志（种子工程（seed）预留，M0-M6 逐步加固）</li>
+</ul>
+</section>
+<section id="器复盘模板docsm7-四件套" class="slide level2">
+<h2>【器】复盘模板（<code>docs/m7/</code> 四件套）</h2>
+<pre ><code >docs/m7/
+├── redblue-record.md   # 任务 A/B/C：场景 + 红队链 + 蓝队复盘 + 纵深度量
+├── forensics-report.md # 取证报告（时间线 + IoC）
+├── self-matrix.md      # 任务 D：能力自评矩阵（6 簇 × 3 级 → 证据 + 范式）
+└── report.md           # AI 综合评估（含局限）+ 演示录屏引用 + 自评</code></pre>
+<blockquote>
+<p>模板不是填空——每一段都要能<strong>指回仓库证据</strong>。空模板 =
+自评虚点亮 = 扣分。</p>
+</blockquote>
+</section>
+<section id="器现场演示-录屏动态证据" class="slide level2">
+<h2>【器】现场演示 / 录屏（动态证据）</h2>
+<ul>
+<li>红蓝对抗是<strong>动态过程</strong>：攻击载荷、响应、告警、取证——静态
+markdown 无法核验</li>
+<li>因此 M7 设<strong>现场演示</strong>：课内跑一次，或提交<strong>录屏
+/ 动态证据包</strong></li>
+<li><strong>不交录屏 → 降级
+observation</strong>（动态证据缺失，最高只能拿 observation 档）</li>
+</ul>
+<blockquote>
+<p>录屏要点：覆盖一条完整攻击链（红队）+
+一次闭环响应（蓝队），每步有屏幕标注；存仓库或可信链接，在
+<code>report.md</code> 引用。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-8造器衔接实验-m7-与作品收口"
+class="title-slide slide level1">
+<h1>主题 8：【造器】衔接实验 M7 与作品收口</h1>
+
+</section>
+<section id="造器lab-m7-能力成绩单" class="slide level2">
+<h2>【造器】lab M7 = 能力成绩单</h2>
+<ul>
+<li>本课件衔接 <a
+href="../labs/lab07-redblue.html"><code>labs/lab07-redblue.md</code></a>：
+<ul>
+<li><strong>红蓝取证报告</strong>（redblue-record + forensics）=
+你能打、能守、能复盘</li>
+<li><strong>能力自评矩阵</strong>（self-matrix）=
+你的「能力成绩单」，逐簇 × 级挂证据</li>
+</ul></li>
+<li>完成后，<code>milestone/m7</code>
+就是你的<strong>最终作品分支</strong></li>
+</ul>
+</section>
+<section id="造器8-个里程碑分支齐备校验" class="slide level2">
+<h2>【造器】8 个里程碑分支齐备校验</h2>
+<pre ><code class="bash"># 节奏完整性：8 个里程碑分支都应在
+git branch --list 'milestone/m[0-7]' | wc -l    # 应 = 8
+
+# 评审会校验 m7_branch_chain：m0 → m1 → ... → m7 串成一条线
+git log --oneline milestone/m7 | head</code></pre>
+<ul>
+<li>缺任一分支 = 节奏断裂，<strong>节奏完整性</strong>被扣</li>
+<li>学期全部评审完成后，由<strong>助教统一</strong>把
+<code>milestone/m7</code> 合回
+<code>main</code>（学生<strong>不要自己合</strong>）</li>
+</ul>
+<blockquote>
+<p>Git 工作流详见 <a
+href="../../unit00-intro/labs/git-guide.html"><code>courseware/unit00-intro/labs/git-guide.md</code></a>（学生提交用堆叠分支
+<code>milestone/m{n}</code> + 开 MR，<strong>不是 tag</strong>）。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-9能力自评与红线" class="title-slide slide level1">
+<h1>主题 9：能力自评与红线</h1>
+
+</section>
+<section id="能力自评本单元点亮全簇-l3" class="slide level2">
+<h2>能力自评：本单元点亮全簇 · L3</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①·L3 / ②·L3 / ③·L3</td>
+<td style="text-align: left;">综合工程化：编排利用链（复用 M2/M3）</td>
+<td style="text-align: center;">☐（逐簇回看）</td>
+<td style="text-align: left;">M7 攻击链 + M2/M3 产物</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">④·L3 / ⑤·L3</td>
+<td style="text-align: left;">纵深防御 + 检测-取证-欺骗闭环（复用
+M4/M5）</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M7 纵深表 + 取证报告</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⑥·L3</td>
+<td style="text-align: left;">AI 综合评估（赋能 + 对抗 + 局限）</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M7 AI 评估（含局限）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>无虚点亮</strong>：自评矩阵每一项都要能指回 M0-M6 仓库证据 +
+标注思维范式。本里程碑自评权重 <strong>0.20</strong>。</p>
+</blockquote>
+</section>
+<section id="红线演练仅在自己系统" class="slide level2">
+<h2>⚠️ 红线：演练仅在自己系统</h2>
+<ul>
+<li>所有红蓝演练<strong>仅对自己的综合实践项目靶场、授权环境</strong>进行</li>
+<li><strong>禁止</strong>对任何真实 /
+第三方系统做未授权攻击（即便「只是看看」）</li>
+<li>触及第三方 = <strong>安全严谨不合格 + 上报</strong></li>
+<li>课程<strong>不教授</strong>编写恶意代码；本单元工具同时是<strong>防御自查</strong>手段</li>
+</ul>
+</section>
+<section id="小结学期末带走的三件事" class="slide level2">
+<h2>小结：学期末带走的三件事</h2>
+<ol type="1">
+<li><strong>综合</strong>：红蓝对抗把 M0-M6
+串成利用链与防御链，<strong>度量纵深</strong>——单点会做 ≠
+综合能编排</li>
+<li><strong>诚实</strong>：能力自评矩阵是「能力成绩单」，<strong>无虚点亮</strong>——点的每一项都指回证据</li>
+<li><strong>收口</strong>：<code>milestone/m7</code> = 最终作品分支；8
+分支齐备 → 学期末由助教合回 main</li>
+</ol>
+<blockquote>
+<p>学期末：把 <code>milestone/m7</code> 合回
+<code>main</code>，作品完成。</p>
+</blockquote>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

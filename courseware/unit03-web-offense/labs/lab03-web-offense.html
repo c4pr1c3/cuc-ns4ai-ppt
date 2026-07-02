@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 03：Web 漏洞挖掘与利用（综合实践项目 M3）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 03：Web 漏洞挖掘与利用（综合实践项目 M3）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-03web-漏洞挖掘与利用综合实践项目-m3"
+id="toc-实验-03web-漏洞挖掘与利用综合实践项目-m3">实验 03：Web
+漏洞挖掘与利用（综合实践项目 M3）</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-asql-注入利用-概念验证"
+id="toc-任务-asql-注入利用-概念验证">任务 A：SQL 注入利用 +
+概念验证</a></li>
+<li><a href="#任务-bxss反射-存储利用-概念验证"
+id="toc-任务-bxss反射-存储利用-概念验证">任务 B：XSS（反射 / 存储）利用
++ 概念验证</a></li>
+<li><a href="#任务-c文件上传漏洞利用"
+id="toc-任务-c文件上传漏洞利用">任务 C：文件上传漏洞利用</a></li>
+<li><a href="#任务-dcsrf-场景构造" id="toc-任务-dcsrf-场景构造">任务
+D：CSRF 场景构造</a></li>
+<li><a href="#任务-eai-赋能渗透-可选对应-m3_ai_compare"
+id="toc-任务-eai-赋能渗透-可选对应-m3_ai_compare">任务 E（AI 赋能渗透 ·
+可选，对应 <code>m3_ai_compare</code>）</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-03web-漏洞挖掘与利用综合实践项目-m3">实验 03：Web
+漏洞挖掘与利用（综合实践项目 M3）</h1>
+<blockquote>
+<p>本实验即综合实践项目 <strong>M3</strong>。对自己的靶场应用（M1
+末）发现并利用预设漏洞，每类写概念验证（PoC） + 复现步骤。⚠️
+<strong>仅在自己派生的应用 / <code>127.0.0.1</code> /
+授权环境</strong>——触及第三方系统是红线。 种子工程 <code>app.py</code>
+的 <code>/orders?user=</code> 用 f-string 拼接
+SQL，是<strong>故意预留</strong>的注入点。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定簇③·L2 · 攻击与渗透）</strong>:
+<ol type="1">
+<li>能够发现并利用 SQL 注入、XSS、文件上传、CSRF 四类典型 Web
+漏洞。</li>
+<li>能够为每类漏洞编写可复现的概念验证（含原理、触发条件、影响）。</li>
+<li>能够（可选）用 AI 辅助漏洞挖掘，并与人工对比命中 / 误报。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验 后，在 <code>docs/m3/report.md</code> 自评：点亮
+<strong>簇③·L2</strong>。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><strong>本地</strong>：Git、Python 3.10+；Yakit / Burp / sqlmap /
+curl。</li>
+<li><strong>起点</strong>：你的 <code>milestone/m2</code> 分支 tip（M2
+末应用，已加固 + 已自侦察）。按 <a
+href="../../unit00-intro/labs/git-guide.html">Git 规范</a> <strong>从
+<code>milestone/m2</code> 切 <code>milestone/m3</code></strong>，MR 目标
+= <code>milestone/m2</code>。</li>
+<li><strong>靶场</strong>：自己派生的应用（含种子工程预留的
+<code>/orders</code> SQL
+注入点；可按需在<strong>自己的</strong>代码里再加 XSS / 上传 / CSRF
+教学锚点再利用）。</li>
+<li><strong>学术诚信</strong>：⚠️ 仅对自己靶场；禁止对真实 /
+第三方系统做任何未授权测试。</li>
+</ul>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-asql-注入利用-概念验证">任务 A：SQL 注入利用 +
+概念验证</h3>
+<p>指向 <code>/orders?user=</code> 的字符串拼接注入：写概念验证（如
+<code>'; UPDATE orders --</code>、<code>UNION SELECT sql,name FROM sqlite_master --</code>），dump
+全表 / 篡改 / 越权读他人订单；记录原理（「数据即程序」）+ 触发条件 +
+影响。</p>
+<h3 id="任务-bxss反射-存储利用-概念验证">任务 B：XSS（反射 / 存储）利用
++ 概念验证</h3>
+<p>在自己的应用里构造一个可控回显 / 存储点，写概念验证（窃取 cookie /
+演示会话劫持）；说明反射型 vs 存储型区别。</p>
+<h3 id="任务-c文件上传漏洞利用">任务 C：文件上传漏洞利用</h3>
+<p>绕过类型校验上传可执行 / 脚本文件（如
+<code>.php</code>/<code>.html</code>/图片马），写概念验证 + 复现。</p>
+<h3 id="任务-dcsrf-场景构造">任务 D：CSRF 场景构造</h3>
+<p>构造一个跨站请求（改密 / 下单），写概念验证 + 说明 SameSite / Token
+防御原理。</p>
+<h3 id="任务-eai-赋能渗透-可选对应-m3_ai_compare">任务 E（AI 赋能渗透 ·
+可选，对应 <code>m3_ai_compare</code>）</h3>
+<p>用 <a href="https://github.com/GreyDGL/PentestGPT">PentestGPT</a>
+或国产安全大模型跑一遍 M3 靶场，对比「AI 辅助 vs
+人工」的效率与盲区；讨论自主挖掘 agent
+的能力边界。<strong>不替代人工概念验证，仅作对比</strong>，命中 /
+误报给数字。</p>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<ul>
+<li><strong>常见扣分</strong>：概念验证不足 4 类、仅贴攻击载荷无原理 /
+触发条件 / 影响分析、复现步骤缺失、概念验证指向非
+<code>127.0.0.1</code>（<strong>红线</strong>）。</li>
+<li><strong>授权红线（硬性）</strong>：所有概念验证仅指向
+<code>127.0.0.1</code> /
+自己派生的应用；报告须显式声明授权范围。触及第三方 = 安全严谨不合格 +
+上报。</li>
+<li><strong>AI 双向</strong>：用 AI 辅助挖掘须注明范围 +
+人工复核；禁止国外大模型。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+对照簇③·L2，每项附证据路径。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在 <code>docs/m3/</code> 下提交（在 <code>milestone/m3</code>
+分支上完成、push、开 MR @ 助教，目标 = <code>milestone/m2</code>）：</p>
+<pre><code>docs/m3/
+├── sqli-poc.*       # 任务 A
+├── xss-poc.*        # 任务 B
+├── upload-poc.*     # 任务 C
+├── csrf-poc.*       # 任务 D
+└── report.md        # 每类：原理 + 触发条件 + 影响 + 复现步骤 + （可选）AI 对比 + 自评</code></pre>
+<p><strong>评分量规（绑定簇③·L2，满分 100；详细维度释义见 <a
+href="../../../capstone/evaluation-guide.html">评价指南</a>）</strong>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 (95)</th>
+<th style="text-align: left;">合格 (70)</th>
+<th style="text-align: left;">不合格 (40)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">≥4 类漏洞概念验证（SQLi/XSS/上传/CSRF
+全覆盖）+ 复现步骤 + 分支 milestone/m3 + MR</td>
+<td style="text-align: left;">主要类别（≥2 类）有概念验证</td>
+<td style="text-align: left;">仅 1 类或无概念验证</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">每类概念验证含漏洞原理 + 触发条件 +
+影响评估；能编排多阶段</td>
+<td style="text-align: left;">能复现单类漏洞</td>
+<td style="text-align: left;">仅贴攻击载荷无分析</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">用
+AI（PentestGPT/国产安全模型）辅助挖掘并对比命中 / 误报</td>
+<td style="text-align: left;">仅人工</td>
+<td style="text-align: left;">无 AI 内容（M3 对 AI 挖掘有期望，故权重
+0.10）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;">0.25</td>
+<td
+style="text-align: left;">仅对自己靶场；概念验证含边界声明；规避真实破坏</td>
+<td style="text-align: left;">基本合规</td>
+<td style="text-align: left;">触及第三方系统（红线）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">自评（簇③·L2）与作品一致</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">③·L2</td>
+<td style="text-align: left;">发现并利用 ≥4 类 Web 漏洞，每类写概念验证
++ 复现</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M3 的 sqli/xss/upload/csrf 概念验证 +
+report</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>下一单元 U4（M4 加固）将给这个被攻破的应用套上 WAF/IDS
+纵深防御——这里的概念验证就是 M4 规则命中 / 误报复盘的「弹药」。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

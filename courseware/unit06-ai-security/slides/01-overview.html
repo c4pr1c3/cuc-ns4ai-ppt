@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第六单元: AI 赋能与对抗</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第六单元: AI 赋能与对抗</h1>
+  <p class="subtitle">单元导览 · AI 双向能力 · 治理框架</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-1单元导览" class="title-slide slide level1">
+<h1>主题 1：单元导览</h1>
+
+</section>
+<section id="真实问题" class="slide level2">
+<h2>真实问题</h2>
+<blockquote>
+<p><strong>如何给你的系统装上 AI 能力，并反过来攻防它的 AI
+能力？</strong></p>
+</blockquote>
+<ul>
+<li>前五个单元：你在搭一个「已加固、有日志、有蜜罐」的靶场 Web 应用</li>
+<li>本单元对应综合实践项目（capstone）的里程碑
+<strong>M6</strong>，权重最高：给它装 AI，再攻防这个 AI</li>
+<li>同时命中两大维度——课程唯一这样的单元</li>
+</ul>
+</section>
+<section id="ai-双向能力" class="slide level2">
+<h2>AI 双向能力</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">含义</th>
+<th style="text-align: center;">本单元</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span style="color:#1a73e8"><strong>AI
+赋能</strong></span></td>
+<td style="text-align: left;">用 AI 提升检测/分析/响应/渗透效率</td>
+<td style="text-align: center;">课件 03 + 实验赋能侧</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span style="color:#d93025"><strong>AI
+作为对象</strong></span></td>
+<td style="text-align: left;">攻防 AI 系统本身（模型、智能体、RAG）</td>
+<td style="text-align: center;">课件 02 + 实验对抗侧</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>不是「用不用
+AI」，而是「<strong>在哪层用、如何评、如何兜底</strong>」</li>
+</ul>
+</section>
+<section id="本单元地图" class="slide level2">
+<h2>本单元地图</h2>
+<ul>
+<li><strong>课件 01（本页）</strong>：导览 + LLM/对齐速通 +
+治理框架</li>
+<li><strong>课件 02</strong>：AI 作为攻击面 +
+智能体安全（对抗理论）</li>
+<li><strong>课件 03</strong>：AI 赋能安全 + 红队速成（赋能理论）</li>
+<li><strong>实验</strong>：M6 —— 赋能（集成 LLM + AI 检测）+
+对抗（注入/投毒，产出概念验证（PoC）并加固）</li>
+</ul>
+<blockquote>
+<p>深度理论见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md</code>；本课件只讲「做
+M6 所需」。</p>
+</blockquote>
+</section>
+<section id="能力框架对应" class="slide level2">
+<h2>能力框架对应</h2>
+<ul>
+<li>簇 ⑥「AI×网络安全（贯穿轴）」· <strong>L1 / L2（双向）</strong></li>
+<li>L1：区分两类场景（认知）</li>
+<li>L2（对象）：对 AI 功能做注入/越狱/RAG 投毒并加固</li>
+<li>L2（赋能）：集成 AI 检测/分诊组件并解读结果</li>
+<li>详见 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a></li>
+</ul>
+</section></section>
+<section>
+<section id="主题-2速通-llm-与对齐" class="title-slide slide level1">
+<h1>主题 2：速通 LLM 与对齐</h1>
+
+</section>
+<section id="三大架构分支一句话" class="slide level2">
+<h2>三大架构分支（一句话）</h2>
+<ul>
+<li><strong>仅编码器（Encoder-only，BERT）</strong>：双向理解，擅长分类/抽取</li>
+<li><strong>编码器-解码器（Encoder-Decoder，T5/BART）</strong>：翻译/摘要</li>
+<li><strong>仅解码器（Decoder-only，GPT
+系）</strong>：自回归生成，当前主流对话模型</li>
+<li>训练范式：<strong>预训练 → 微调 → 对齐</strong></li>
+</ul>
+</section>
+<section id="对齐alignment与-hhh" class="slide level2">
+<h2>对齐（Alignment）与 HHH</h2>
+<ul>
+<li><strong>对齐</strong>：让模型行为符合人类意图与价值</li>
+<li><strong>HHH</strong>：有用 / 诚实 / 无害（Helpful / Honest /
+Harmless）</li>
+<li>手段：指令微调（SFT）、人类反馈强化学习（RLHF）</li>
+</ul>
+</section>
+<section id="关键判断对齐-安全" class="slide level2">
+<h2>⚠️ 关键判断：对齐 ≠ 安全</h2>
+<ul>
+<li>对齐让模型「默认表现好」，但<strong>可被注入绕过</strong></li>
+<li>间接注入（藏在模型会读的内容里）普遍有效 → 见课件 02</li>
+<li>所以「我用了 RLHF」<strong>不能</strong>作为安全结论</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-3治理框架速览" class="title-slide slide level1">
+<h1>主题 3：治理框架速览</h1>
+
+</section>
+<section id="人工智能安全治理框架" class="slide level2">
+<h2>《人工智能安全治理框架》</h2>
+<ul>
+<li>AI 系统<strong>全生命周期</strong>各阶段的安全考量</li>
+<li>风险分类：
+<ul>
+<li><strong>内生</strong>：模型/数据/算法自身（幻觉、投毒、后门）</li>
+<li><strong>衍生</strong>：滥用/误用（深度伪造、自动化攻击）</li>
+</ul></li>
+</ul>
+</section>
+<section id="本单元与治理" class="slide level2">
+<h2>本单元与治理</h2>
+<ul>
+<li>本单元聚焦「<strong>技术上怎么攻、怎么守</strong>」</li>
+<li>合规/审计闭环见课件 03 红队速成 +
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md</code></li>
+<li>落到工程：实验 M6
+必须给出<strong>度量</strong>与<strong>加固证据</strong></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

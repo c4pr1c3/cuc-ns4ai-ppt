@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 02：自侦察</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 02：自侦察</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-02自侦察" id="toc-实验-02自侦察">实验 02：自侦察</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a>
+<ul>
+<li><a href="#跑起你的-flask-靶场" id="toc-跑起你的-flask-靶场">2.1
+跑起你的 Flask 靶场</a></li>
+<li><a href="#确认工具就绪" id="toc-确认工具就绪">2.2
+确认工具就绪</a></li>
+<li><a href="#冒烟验证" id="toc-冒烟验证">2.3 冒烟验证</a></li>
+</ul></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-a端口与服务测绘nmap"
+id="toc-任务-a端口与服务测绘nmap">任务
+A：端口与服务测绘（nmap）</a></li>
+<li><a href="#任务-bweb-应用指纹" id="toc-任务-bweb-应用指纹">任务
+B：Web / 应用指纹</a></li>
+<li><a href="#任务-c可复用侦察脚本l3-核心"
+id="toc-任务-c可复用侦察脚本l3-核心">任务 C：可复用侦察脚本（L3
+核心）</a></li>
+<li><a href="#任务-d暴露面清单与风险标注"
+id="toc-任务-d暴露面清单与风险标注">任务
+D：暴露面清单与风险标注</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-02自侦察">实验 02：自侦察</h1>
+<blockquote>
+<p>对应综合实践项目（capstone）里程碑 <strong>M2（自侦察）</strong> ·
+能力簇 ②「侦察与发现」· <strong>L2 / L3</strong></p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付</strong>：
+<ol type="1">
+<li>能解释网络监听（混杂模式、ARP 欺骗直觉）与 TCP/UDP/ICMP
+扫描的原理（<strong>簇②·L1</strong>）。</li>
+<li>用 <strong>Wireshark / nmap</strong>
+对自己的靶场应用完成端口/服务/指纹测绘，并解读结果（<strong>簇②·L2</strong>）。</li>
+<li>编写<strong>可复用侦察脚本</strong>，产出<strong>结构化暴露面清单</strong>并做风险标注与治理建议（<strong>簇②·L3</strong>）。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>⚠️
+<strong>红线</strong>：所有测试<strong>仅对自己的靶场、自己的应用、<code>127.0.0.1</code>
+或明确授权的环境</strong>进行。<strong>禁止</strong>对任何真实/第三方系统做未授权探测。本实验同时是「防御自查」训练。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<h3 id="跑起你的-flask-靶场">2.1 跑起你的 Flask 靶场</h3>
+<p>实验的目标 = 对 <code>capstone/seed/app.py</code>
+做侦察。先把它跑起来：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> capstone/seed</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt     <span class="co"># Flask 等</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> app.py                        <span class="co"># 监听 127.0.0.1:5000</span></span></code></pre></div>
+<blockquote>
+<p>也可以用<strong>你自己派生后的靶场应用</strong>（M0/M1 的产物）替代
+<code>seed/app.py</code>——若如此，请在报告中说明并确保它跑在本机
+<code>127.0.0.1</code>。</p>
+</blockquote>
+<h3 id="确认工具就绪">2.2 确认工具就绪</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nmap</span> <span class="at">--version</span>            <span class="co"># 主力扫描器（Kali 自带）</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> tshark wireshark    <span class="co"># 监听（可选，Kali 自带）</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span>         <span class="co"># 解析脚本</span></span></code></pre></div>
+<ul>
+<li>缺失：<code>sudo apt install nmap tshark</code>（Kali
+通常已装）。</li>
+<li>SYN 扫描（<code>-sS</code>）与 OS 指纹（<code>-O</code>）需
+<strong>root</strong>：<code>sudo</code>。</li>
+</ul>
+<h3 id="冒烟验证">2.3 冒烟验证</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:5000/orders      <span class="co"># 应返回 401（未登录），证明服务在</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nmap</span> <span class="at">-sn</span> 127.0.0.1                         <span class="co"># 主机发现：应报告 Host is up</span></span></code></pre></div>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-a端口与服务测绘nmap">任务 A：端口与服务测绘（nmap）</h3>
+<p>对 <code>127.0.0.1</code>
+完成一次完整扫描，并记录每条命令与关键输出：</p>
+<ol type="1">
+<li><strong>主机发现</strong>：<code>nmap -sn 127.0.0.1</code>，确认靶场主机存活。</li>
+<li><strong>TCP SYN
+扫描（全端口）</strong>：<code>sudo nmap -sS -p- 127.0.0.1</code>，记录
+5000 端口状态。</li>
+<li><strong>服务/版本探测</strong>：<code>nmap -sV -p 5000 127.0.0.1</code>，识别
+<code>Werkzeug</code>/<code>Flask</code>/Python 版本。</li>
+<li><strong>OS
+指纹（可选，本机自扫可能不准）</strong>：<code>sudo nmap -O 127.0.0.1</code>，记录
+nmap 对 OS 的猜测，并<strong>解释为什么对 127.0.0.1 自扫 OS
+指纹意义有限</strong>。</li>
+<li><strong>结构化输出</strong>：至少用一次 <code>-oX</code>（XML）或
+<code>-oG</code>，<strong>为任务 C 的脚本解析做准备</strong>。</li>
+</ol>
+<blockquote>
+<p>解读要求：在报告中说明 SYN 与 Connect 扫描的区别、为什么
+<code>-sS</code> 更隐蔽、UDP 扫描为何慢。</p>
+</blockquote>
+<h3 id="任务-bweb-应用指纹">任务 B：Web / 应用指纹</h3>
+<p>在端口之上，识别应用层指纹（这部分是 U3 漏洞利用的「弹药」）：</p>
+<ol type="1">
+<li><strong>HTTP
+响应头</strong>：<code>curl -sv http://127.0.0.1:5000/ 2&gt;&amp;1 | grep -iE 'server|x-powered|content-type'</code>，记录
+<code>Server</code>、<code>Content-Type</code>。</li>
+<li><strong>http-title /
+脚本探测</strong>：<code>nmap -sV -sC -p 5000 127.0.0.1</code>，记录
+<code>http-server-header</code>、<code>http-title</code> 等。</li>
+<li><strong>(可选) 监听佐证</strong>：用 <code>tshark</code>/Wireshark
+抓一次登录（<code>POST /login</code>），观察是否<strong>明文传输</strong>凭证、是否能看到
+<code>/orders</code> 的 SQL——作为「监听能暴露什么」的证据。</li>
+<li><strong>版本→漏洞</strong>：基于 <code>-sV</code> 得到的
+<code>Werkzeug</code>/<code>Flask</code> 版本，查一个已知
+CVE（仅查询、<strong>不在本实验利用</strong>），说明「指纹 →
+可利用性」的关联。</li>
+</ol>
+<blockquote>
+<p>仅查询公开 CVE
+信息做风险评估；<strong>本实验不包含任何漏洞利用</strong>（漏洞利用在
+U3/M3）。</p>
+</blockquote>
+<h3 id="任务-c可复用侦察脚本l3-核心">任务 C：可复用侦察脚本（L3
+核心）</h3>
+<p>编写一个<strong>可复用</strong>的侦察脚本（bash 或 python
+均可），满足：</p>
+<ol type="1">
+<li><strong>参数化目标</strong>：<code>recon.sh &lt;target&gt;</code>，默认
+<code>127.0.0.1</code>，输出带时间戳的目录。</li>
+<li><strong>流水线</strong>：主机发现 → 全端口 SYN 扫描 → 服务版本探测 →
+<strong>结构化输出</strong>（XML/grep/JSON）。</li>
+<li><strong>可复用</strong>：能对任意授权目标重复执行；不写死单一目标的逻辑。</li>
+<li><strong>结果解析</strong>：用脚本把 nmap 的 XML
+解析为<strong>结构化暴露面清单</strong>（至少含
+<code>host / port / state / service / product / version</code>
+字段）。</li>
+</ol>
+<p>参考最小实现（本单元课件已给 bash 与 python
+解析骨架，可直接扩展）：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># recon.sh &lt;target&gt; —— 仅对授权环境使用</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">TARGET</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${1</span><span class="op">:-</span>127.0.0.1<span class="va">}</span><span class="st">&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">DIR</span><span class="op">=</span><span class="st">&quot;recon-</span><span class="va">${TARGET}</span><span class="st">-</span><span class="va">$(</span><span class="fu">date</span> +%Y%m%d-%H%M<span class="va">)</span><span class="st">&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nmap</span> <span class="at">-sn</span> <span class="st">&quot;</span><span class="va">$TARGET</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">tee</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/01-host.txt&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nmap <span class="at">-sS</span> <span class="at">-sV</span> <span class="at">-p-</span> <span class="st">&quot;</span><span class="va">$TARGET</span><span class="st">&quot;</span> <span class="at">-oA</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/02-full&quot;</span> <span class="kw">|</span> <span class="fu">tee</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/02-full.txt&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> parse_nmap.py <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/02-full.xml&quot;</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/03-surfaces.json&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;输出目录: </span><span class="va">$DIR</span><span class="st">&quot;</span></span></code></pre></div>
+<blockquote>
+<p>python 解析器见 slides「进阶：用 Python 解析 XML」一页；亦可
+<code>pip install python-nmap</code>。</p>
+</blockquote>
+<h3 id="任务-d暴露面清单与风险标注">任务 D：暴露面清单与风险标注</h3>
+<p>基于任务 C
+的结构化输出，产出一份<strong>暴露面清单</strong>（Markdown
+表格）并对每条做风险标注：</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">host</th>
+<th style="text-align: center;">port</th>
+<th style="text-align: center;">state</th>
+<th style="text-align: center;">service</th>
+<th style="text-align: center;">product/version</th>
+<th style="text-align: center;">风险等级</th>
+<th style="text-align: left;">处置建议</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">127.0.0.1</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">open</td>
+<td style="text-align: center;">http</td>
+<td style="text-align: center;">Werkzeug x.y (Flask)</td>
+<td style="text-align: center;">中/高</td>
+<td style="text-align: left;">升级至无 CVE 版本；生产环境禁用
+debug；最小暴露</td>
+</tr>
+</tbody>
+</table>
+<p>要求：</p>
+<ol type="1">
+<li><strong>清单完整</strong>：覆盖所有 open 端口，不漏。</li>
+<li><strong>风险标注</strong>：每条给出「风险等级（高/中/低）」+
+理由（过时版本/明文传输/过度暴露/不必要端口）。</li>
+<li><strong>处置建议</strong>：给出可执行的加固建议（关闭端口、升级、隐藏指纹、加
+TLS 等）——<strong>为 M4 加固预热</strong>。</li>
+<li><strong>治理视角</strong>：用 1 段说明「如何把这个脚本接进 CI /
+每次部署后自动跑」。</li>
+</ol>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<p>本里程碑由 AI 助教（<code>ns4ai-review</code>）按 §4
+量规评审（确定性证据 + LLM 档位裁定）。提交时注意：</p>
+<ul>
+<li><strong>常见扣分</strong>：脚本硬编码单一目标（不可复用）、无结构化输出（仅贴
+nmap 默认结果）、暴露面无风险标注/处置/治理、未声明仅授权环境、未开 MR
+或分支命名不符规范。</li>
+<li><strong>授权红线（硬性）</strong>：仅扫
+<code>127.0.0.1</code>/自己派生的靶场；对真实/第三方系统未授权扫描 =
+<strong>红线违规，直接判不合格并上报</strong>。</li>
+<li><strong>AI 双向</strong>：可用<strong>国产大模型</strong>（如
+<code>deepseek-v4-flash</code>）辅助解析 nmap
+结果、标注暴露面风险，但须在报告注明 AI 辅助范围 +
+人工复核；禁止选用国外大模型。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+对照簇②·L1/L2/L3，每项附证据，「无虚点亮」。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>提交 <code>lab02/report.md</code>（含以下小节）：</p>
+<ol type="1">
+<li><strong>环境</strong>：靶场地址、是否用 <code>seed/app.py</code>
+还是自有应用。</li>
+<li><strong>任务 A</strong>：nmap 命令流 + 关键输出 +
+原理解读（SYN/Connect/UDP 区别）。</li>
+<li><strong>任务 B</strong>：HTTP 指纹表 + （可选）监听证据 +
+一个版本对应的公开 CVE（仅查询）。</li>
+<li><strong>任务 C</strong>：<code>recon.sh</code> /
+<code>parse_nmap.py</code> 源码 + 一次运行的输出目录清单。</li>
+<li><strong>任务 D</strong>：暴露面清单（Markdown 表）+ 风险标注 +
+处置建议 + 治理说明。</li>
+<li><strong>操作录屏</strong>：asciinema 录屏转存
+<code>lab02/lab02.cast</code>（便于智能批改）。</li>
+<li><strong>问题复盘</strong>：至少 1 个遇到的问题及解决方法。</li>
+</ol>
+<p><strong>评分量规（绑定簇 ② · L2 / L3）</strong>：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">优秀 (90+)</th>
+<th style="text-align: left;">合格 (60-80)</th>
+<th style="text-align: left;">不合格 (&lt;60)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>L2 测绘</strong></td>
+<td style="text-align: left;">全端口 + 版本 + OS + 解读到位</td>
+<td style="text-align: left;">主要端口 + 版本</td>
+<td style="text-align: left;">仅 <code>nmap 127.0.0.1</code>
+贴默认输出</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>L3 脚本</strong></td>
+<td style="text-align: left;">可复用、结构化、可入 CI</td>
+<td style="text-align: left;">能跑、能解析</td>
+<td style="text-align: left;">手动硬编码、无结构化输出</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>暴露面清单</strong></td>
+<td style="text-align: left;">完整 + 风险标注 + 处置 + 治理</td>
+<td style="text-align: left;">有清单</td>
+<td style="text-align: left;">无清单或无风险标注</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>授权合规</strong></td>
+<td style="text-align: left;">全程仅授权环境 + 明确声明</td>
+<td style="text-align: left;">仅本机</td>
+<td style="text-align: left;">触及第三方/未授权系统</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: left;">自评与作品一致</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<p>对照簇 ②「侦察与发现」，勾选本次 lab 点亮的级别：</p>
+<ul class="task-list">
+<li><label><input type="checkbox" /><strong>L1
+认知</strong>：能解释监听（混杂模式/ARP
+欺骗）与扫描（SYN/Connect/UDP/ICMP）原理、指纹识别（<code>-sV</code>/<code>-O</code>）。</label></li>
+<li><label><input type="checkbox" /><strong>L2 实践</strong>：用
+Wireshark/nmap 完成测绘、解读结果、产出报告。</label></li>
+<li><label><input type="checkbox" /><strong>L3
+工程化</strong>：编写可复用侦察脚本 + 结构化暴露面清单 +
+风险标注与治理建议。</label></li>
+</ul>
+<blockquote>
+<p>提交时在报告中给出本自评勾选结果，并附一句「本次我点亮了哪些簇×级」。能力框架详见
+<a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>。</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>⚠️ <strong>再次强调</strong>：仅对自己的靶场 / <code>127.0.0.1</code>
+/
+授权环境测试。对真实系统做未授权扫描属违规，本课程不支持、不教授此类行为。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

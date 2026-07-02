@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 05：日志 · 取证 · 蜜罐（综合实践项目 M5）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 05：日志 · 取证 · 蜜罐（综合实践项目 M5）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-05日志-取证-蜜罐综合实践项目-m5"
+id="toc-实验-05日志-取证-蜜罐综合实践项目-m5">实验 05：日志 · 取证 ·
+蜜罐（综合实践项目 M5）</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-a集中日志与关联" id="toc-任务-a集中日志与关联">任务
+A：集中日志与关联</a></li>
+<li><a href="#任务-b取证应对手册-证据保全"
+id="toc-任务-b取证应对手册-证据保全">任务 B：取证应对手册 +
+证据保全</a></li>
+<li><a href="#任务-c部署蜜罐诱饵" id="toc-任务-c部署蜜罐诱饵">任务
+C：部署蜜罐诱饵</a></li>
+<li><a href="#任务-d复盘一次针对己方应用的攻击"
+id="toc-任务-d复盘一次针对己方应用的攻击">任务
+D：复盘一次针对己方应用的攻击</a></li>
+<li><a href="#任务-e落实-m0-r5-强制日志防篡改"
+id="toc-任务-e落实-m0-r5-强制日志防篡改">任务 E（落实 M0 R5 ·
+强制）：日志防篡改</a></li>
+<li><a href="#任务-f为-m6-铺路-可选" id="toc-任务-f为-m6-铺路-可选">任务
+F（为 M6 铺路 · 可选）</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-05日志-取证-蜜罐综合实践项目-m5">实验 05：日志 · 取证 ·
+蜜罐（综合实践项目 M5）</h1>
+<blockquote>
+<p>本实验即综合实践项目（capstone）
+<strong>M5</strong>。检测到攻击后做取证溯源、用蜜罐诱捕，并复盘一次针对己方应用的攻击。它<strong>落实
+M0 风险登记表 R5（审计可被篡改）</strong>——把日志做成只读追加 / 防篡改。
+本里程碑「安全严谨」权重 0.30（日志防篡改 + 蜜罐隔离是重点）。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定簇⑤·L2 · 检测 / 取证 / 欺骗）</strong>:
+<ol type="1">
+<li>能够搭建集中日志管线并做关联。</li>
+<li>能够编写取证应对手册（playbook）并保全证据。</li>
+<li>能够部署蜜罐诱饵（且不引入新风险）。</li>
+<li>能够复盘一次针对己方应用的攻击（还原攻击链 + 时间线 +
+威胁情报指标（IoC））。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验后，在 <code>docs/m5/report.md</code> 自评：点亮
+<strong>簇⑤·L2</strong>。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><strong>本地</strong>：Git、Python 3.10+；fluentd / filebeat /
+rsyslog / vector（任选）；Cowrie / HFish / 低交互蜜罐（任选）。</li>
+<li><strong>起点</strong>：你的 <code>milestone/m4</code> 分支 tip（M4
+末，已有 IDS / 日志）。按 <a
+href="../../unit00-intro/labs/git-guide.html">Git 规范</a> <strong>从
+<code>milestone/m4</code> 切 <code>milestone/m5</code></strong>，MR 目标
+= <code>milestone/m4</code>。</li>
+<li><strong>靶场</strong>：自己派生（fork）的应用（M4 已加固）；M3
+概念验证（PoC）用作「复盘一次攻击」的触发器。</li>
+<li><strong>学术诚信</strong>：所有实验仅在自己靶场 /
+授权环境；蜜罐不得对外暴露成攻击跳板。</li>
+</ul>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-a集中日志与关联">任务 A：集中日志与关联</h3>
+<p>把 app / IDS / WAF 的日志接到一条集中管线（filebeat → ELK 思路，或
+rsyslog / vector → 文件 /
+SIEM）；结构化（JSON）可检索；做一条关联规则（如「登录失败 &gt; 阈值 →
+告警」）。</p>
+<h3 id="任务-b取证应对手册-证据保全">任务 B：取证应对手册 +
+证据保全</h3>
+<p>写取证应对手册（接报 → 取证镜像 → 时间线 → IoC 提取 →
+报告）；证据保全（哈希校验、链路完整）。</p>
+<h3 id="任务-c部署蜜罐诱饵">任务 C：部署蜜罐诱饵</h3>
+<p>部署 Cowrie / HFish / 低交互蜜罐（<strong>仅监听本机 /
+内网，不对外暴露</strong>）；记录一次「捕获」并说明隔离措施。</p>
+<h3 id="任务-d复盘一次针对己方应用的攻击">任务
+D：复盘一次针对己方应用的攻击</h3>
+<p>用 M3 的 PoC 触发一次攻击（在自己靶场），从日志 / IDS
+还原<strong>完整攻击链 + 时间线 + IoC</strong>，产出复盘报告。</p>
+<h3 id="任务-e落实-m0-r5-强制日志防篡改">任务 E（落实 M0 R5 ·
+强制）：日志防篡改</h3>
+<p>日志<strong>只读追加 / 防篡改</strong>：append-only、HMAC
+签名、或时间戳签名（落实 M0
+R5「审计可被篡改」）。这是本里程碑「安全严谨」维度的硬要求。</p>
+<h3 id="任务-f为-m6-铺路-可选">任务 F（为 M6 铺路 · 可选）</h3>
+<p>用<strong>国产</strong> LLM 对告警做分诊 / 合并攻击链（为 M6 的「AI
+检测组件」铺垫）。</p>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<ul>
+<li><strong>常见扣分</strong>：日志可被篡改（R5
+未闭环）、蜜罐对外暴露成跳板、仅部署无复盘、无攻击链时间线。</li>
+<li><strong>授权红线</strong>：蜜罐仅本机 / 授权内网；不得扫描 /
+诱捕第三方。</li>
+<li><strong>AI 双向</strong>：可用国产 LLM 辅助日志分诊，注明范围 +
+人工复核；禁止国外大模型。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+对照簇⑤·L2。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在 <code>docs/m5/</code> 下提交（在 <code>milestone/m5</code>
+分支上完成、push、开 MR @ 助教，目标 = <code>milestone/m4</code>）：</p>
+<pre><code>docs/m5/
+├── logging.*           # 任务 A：管线配置 + 关联规则
+├── playbook.md         # 任务 B
+├── honeypot.*          # 任务 C：部署证据 + 隔离说明
+├── attack-replay.md    # 任务 D：攻击链 + 时间线 + IoC
+└── report.md           # 含防篡改（R5）说明 + 自评</code></pre>
+<p><strong>评分量规（绑定簇⑤·L2，满分 100；详细维度释义见 <a
+href="../../../capstone/evaluation-guide.html">评价指南</a>）</strong>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 (95)</th>
+<th style="text-align: left;">合格 (70)</th>
+<th style="text-align: left;">不合格 (40)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">集中日志 + 取证应对手册 + 蜜罐 +
+攻击复盘四项齐备 + 分支 milestone/m5 + MR</td>
+<td style="text-align: left;">主要项（如日志+取证）</td>
+<td style="text-align: left;">关键项缺失（无日志或无取证）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">复盘含完整攻击链还原 + 时间线 +
+IoC；日志结构化可检索</td>
+<td style="text-align: left;">能复盘但缺细节</td>
+<td style="text-align: left;">仅部署无复盘</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: left;">用 AI 辅助日志分诊 / 异常检测（为 M6
+赋能铺垫）</td>
+<td style="text-align: left;">无</td>
+<td style="text-align: left;">无</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">日志只读追加 / 防篡改（落实 M0
+R5）；蜜罐隔离不引入新风险</td>
+<td style="text-align: left;">基本日志收集</td>
+<td style="text-align: left;">审计可被篡改；蜜罐反成跳板</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">自评（簇⑤·L2）与作品一致</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">⑤·L2</td>
+<td style="text-align: left;">集中日志 + 取证应对手册 + 蜜罐 + 攻击复盘
++ 日志防篡改</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M5 的日志管线 + 应对手册 + 蜜罐 +
+复盘报告</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>下一单元 U6（M6 AI 赋能与对抗，核心
+30%）会给这个已加固、已可观测的应用装上 AI 能力，并反过来攻防它的 AI——M5
+的集中日志正是 M6「AI 检测组件」的数据源。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

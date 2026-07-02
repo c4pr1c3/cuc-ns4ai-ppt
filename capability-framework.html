@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>网络安全能力框架 v2</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="./css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="./index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">网络安全能力框架 v2</h1>
+<p class="author">黄玮</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#网络安全能力框架-v2"
+id="toc-网络安全能力框架-v2">网络安全能力框架 v2</a>
+<ul>
+<li><a href="#为什么需要能力框架"
+id="toc-为什么需要能力框架">为什么需要能力框架</a></li>
+<li><a href="#设计思路" id="toc-设计思路">设计思路</a></li>
+<li><a href="#六大能力簇-八单元" id="toc-六大能力簇-八单元">六大能力簇 ×
+八单元</a></li>
+<li><a href="#三级熟练度定义"
+id="toc-三级熟练度定义">三级熟练度定义</a></li>
+<li><a href="#簇-①-安全基石与风险u0-u1"
+id="toc-簇-①-安全基石与风险u0-u1">簇 ① 安全基石与风险（U0-U1）</a></li>
+<li><a href="#簇-②-侦察与发现u2" id="toc-簇-②-侦察与发现u2">簇 ②
+侦察与发现（U2）</a></li>
+<li><a href="#簇-③-攻击与渗透u3" id="toc-簇-③-攻击与渗透u3">簇 ③
+攻击与渗透（U3）</a></li>
+<li><a href="#簇-④-防御与加固u4" id="toc-簇-④-防御与加固u4">簇 ④
+防御与加固（U4）</a></li>
+<li><a href="#簇-⑤-检测-取证-欺骗u5" id="toc-簇-⑤-检测-取证-欺骗u5">簇 ⑤
+检测 / 取证 / 欺骗（U5）</a></li>
+<li><a href="#簇-⑥-ai网络安全贯穿轴u6"
+id="toc-簇-⑥-ai网络安全贯穿轴u6">簇 ⑥
+AI×网络安全（贯穿轴）⭐（U6）</a></li>
+<li><a href="#覆盖矩阵簇-级-单元-里程碑"
+id="toc-覆盖矩阵簇-级-单元-里程碑">覆盖矩阵（簇 × 级 → 单元 /
+里程碑）</a></li>
+<li><a href="#如何用这个框架"
+id="toc-如何用这个框架">如何用这个框架</a></li>
+<li><a href="#能力簇-ai-时代岗位图谱就业映射"
+id="toc-能力簇-ai-时代岗位图谱就业映射">能力簇 ↔︎ AI
+时代岗位图谱（就业映射）</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="网络安全能力框架-v2">网络安全能力框架 v2</h1>
+<hr />
+<h2 id="为什么需要能力框架">为什么需要能力框架</h2>
+<ul>
+<li>旧考核 =
+碎片化「分章实验报告」，<strong>无法度量综合能力</strong>，也<strong>无法串联知识体系</strong></li>
+<li>本课程已转为「<strong>8 实战单元 · 边学边做</strong>」（16 讲授 + 48
+实践，且讲授继续精简）</li>
+<li><strong>能力框架 v2</strong> 用「簇 × 级 ×
+证据」三维度，把每一次单元实战 / 作品迭代都绑定到可观测能力</li>
+<li>经典理论通过 <a
+href="https://github.com/c4pr1c3/cuc-ns-ppt/">cuc-ns-ppt 在线仓库</a>
+按需自学；本仓库不保留副本，课堂只保留「做出来所需」最小集</li>
+</ul>
+<hr />
+<h2 id="设计思路">设计思路</h2>
+<ul>
+<li><strong>能力簇（Cluster）</strong>：6 簇（经典攻防 5 簇 + AI 贯穿轴
+1 簇）</li>
+<li><strong>熟练度（Level）</strong>：L1 认知 / L2 实践 / L3 工程化</li>
+<li><strong>贯穿轴</strong>：簇
+⑥「AI×网络安全」<strong>双向</strong>贯穿（作为对象 + 赋能）</li>
+<li><strong>证据</strong>：每格绑定 <strong>单元 U + 作品里程碑
+M</strong>（U0-U7 ≡ M0-M7），<strong>无空格</strong></li>
+</ul>
+<hr />
+<h2 id="六大能力簇-八单元">六大能力簇 × 八单元</h2>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 18%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">能力簇</th>
+<th style="text-align: center;">主单元</th>
+<th style="text-align: center;">来源经典（参考）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①</td>
+<td style="text-align: left;">安全基石与风险</td>
+<td style="text-align: center;">U0-U1</td>
+<td style="text-align: center;">第 1-3 章</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">②</td>
+<td style="text-align: left;">侦察与发现</td>
+<td style="text-align: center;">U2</td>
+<td style="text-align: center;">第 4-5 章（含第 13 章社工）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">③</td>
+<td style="text-align: left;">攻击与渗透</td>
+<td style="text-align: center;">U3</td>
+<td style="text-align: center;">第 6-7 章</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">④</td>
+<td style="text-align: left;">防御与加固</td>
+<td style="text-align: center;">U4</td>
+<td style="text-align: center;">第 8-10 章</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⑤</td>
+<td style="text-align: left;">检测 / 取证 / 欺骗</td>
+<td style="text-align: center;">U5</td>
+<td style="text-align: center;">第 11-13 章</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">⑥</td>
+<td
+style="text-align: left;"><strong>AI×网络安全（贯穿轴）</strong></td>
+<td style="text-align: center;"><strong>U6</strong>（+U4/U5 埋伏）</td>
+<td style="text-align: center;">AI 安全专题（新增）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="三级熟练度定义">三级熟练度定义</h2>
+<ul>
+<li><strong>L1
+认知</strong>：能复述概念、识别场景、解释原理（「知道是什么/为什么」）</li>
+<li><strong>L2
+实践</strong>：能在给定环境下用工具完成一次完整操作并解读结果（「会做一次」）</li>
+<li><strong>L3
+工程化</strong>：能设计、集成、评估一个可持续运行的方案，并权衡取舍（「能造、能守、能评」）</li>
+</ul>
+<hr />
+<h2 id="簇-①-安全基石与风险u0-u1">簇 ① 安全基石与风险（U0-U1）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">复述 CIA/STRIDE/CVSS，识别资产与威胁</td>
+<td style="text-align: center;">U0</td>
+<td style="text-align: left;">课堂快问快答</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2</td>
+<td style="text-align: left;">对一个系统做威胁建模 + CVSS 评分</td>
+<td style="text-align: center;">U0</td>
+<td style="text-align: left;"><strong>M0</strong> 立项与威胁建模</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">设计 RBAC/风险登记表并随项目演进</td>
+<td style="text-align: center;">U1</td>
+<td style="text-align: left;"><strong>M1</strong> 安全基线</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="簇-②-侦察与发现u2">簇 ② 侦察与发现（U2）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">解释监听/扫描原理与指纹识别</td>
+<td style="text-align: center;">U2</td>
+<td style="text-align: left;">题库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2</td>
+<td style="text-align: left;">用 Wireshark/nmap 完成测绘并出报告</td>
+<td style="text-align: center;">U2</td>
+<td style="text-align: left;"><strong>M2</strong> 自侦察</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">编写可复用侦察脚本 + 暴露面清单治理</td>
+<td style="text-align: center;">U2</td>
+<td style="text-align: left;"><strong>M2</strong> 脚本交付</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="簇-③-攻击与渗透u3">簇 ③ 攻击与渗透（U3）</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">复述杀伤链/Web 漏洞分类</td>
+<td style="text-align: center;">U3</td>
+<td style="text-align: left;">题库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2</td>
+<td style="text-align: left;">发现并利用 SQLi/XSS/上传/CSRF</td>
+<td style="text-align: center;">U3</td>
+<td style="text-align: left;"><strong>M3</strong> 漏洞利用 +
+概念验证（PoC）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">编排多阶段利用链并编写报告</td>
+<td style="text-align: center;">U3+U7</td>
+<td style="text-align: left;"><strong>M7</strong> 红蓝对抗</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="簇-④-防御与加固u4">簇 ④ 防御与加固（U4）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">解释防火墙/IDS/加固原理</td>
+<td style="text-align: center;">U4</td>
+<td style="text-align: left;">题库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2</td>
+<td style="text-align: left;">配置 iptables/WAF/IDS 规则</td>
+<td style="text-align: center;">U4</td>
+<td style="text-align: left;"><strong>M4</strong> 加固与边界</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">设计纵深防御体系并度量效能</td>
+<td style="text-align: center;">U4+U7</td>
+<td style="text-align: left;"><strong>M7</strong> 防御复盘</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="簇-⑤-检测-取证-欺骗u5">簇 ⑤ 检测 / 取证 / 欺骗（U5）</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">解释蜜罐/取证/日志分析原理</td>
+<td style="text-align: center;">U5</td>
+<td style="text-align: left;">题库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2</td>
+<td style="text-align: left;">部署蜜罐 + 取证应对手册 +
+复盘一次攻击</td>
+<td style="text-align: center;">U5</td>
+<td style="text-align: left;"><strong>M5</strong> 日志取证蜜罐</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">构建检测-取证-欺骗闭环并溯源</td>
+<td style="text-align: center;">U5+U7</td>
+<td style="text-align: left;"><strong>M7</strong> 取证报告</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="簇-⑥-ai网络安全贯穿轴u6">簇 ⑥ AI×网络安全（贯穿轴）⭐（U6）</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述（双向）</th>
+<th style="text-align: center;">单元</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">区分「AI 赋能」vs「AI
+作为对象」两类场景</td>
+<td style="text-align: center;">U6</td>
+<td style="text-align: left;">题库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2（对象）</td>
+<td style="text-align: left;">对 AI 功能做提示词注入/越狱/RAG
+投毒并加固</td>
+<td style="text-align: center;">U6</td>
+<td style="text-align: left;"><strong>M6</strong> 对抗</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">L2（赋能）</td>
+<td style="text-align: left;">集成一个 AI 检测/分诊组件并解读其结果</td>
+<td style="text-align: center;">U4/U5/U6</td>
+<td style="text-align: left;"><strong>M6</strong> 赋能</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L3</td>
+<td style="text-align: left;">在红蓝对抗中综合运用攻防 + AI，并评估 AI
+局限</td>
+<td style="text-align: center;">U6+U7</td>
+<td style="text-align: left;"><strong>M7</strong> 自评矩阵</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="覆盖矩阵簇-级-单元-里程碑">覆盖矩阵（簇 × 级 → 单元 /
+里程碑）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇＼级</th>
+<th style="text-align: center;">L1 认知</th>
+<th style="text-align: center;">L2 实践</th>
+<th style="text-align: center;">L3 工程化</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">① 基石</td>
+<td style="text-align: center;">U0 / 题库</td>
+<td style="text-align: center;">U0 / <strong>M0</strong></td>
+<td style="text-align: center;">U1 / <strong>M1</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">② 侦察</td>
+<td style="text-align: center;">U2 / 题库</td>
+<td style="text-align: center;">U2 / <strong>M2</strong></td>
+<td style="text-align: center;">U2 / <strong>M2</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">③ 渗透</td>
+<td style="text-align: center;">U3 / 题库</td>
+<td style="text-align: center;">U3 / <strong>M3</strong></td>
+<td style="text-align: center;">U7 / <strong>M7</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">④ 防御</td>
+<td style="text-align: center;">U4 / 题库</td>
+<td style="text-align: center;">U4 / <strong>M4</strong></td>
+<td style="text-align: center;">U7 / <strong>M7</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⑤ 检测取证</td>
+<td style="text-align: center;">U5 / 题库</td>
+<td style="text-align: center;">U5 / <strong>M5</strong></td>
+<td style="text-align: center;">U7 / <strong>M7</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">⑥ AI×安全</td>
+<td style="text-align: center;">U6 / 题库</td>
+<td style="text-align: center;">U6 / <strong>M6</strong></td>
+<td style="text-align: center;">U7 / <strong>M7</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>完备性约束</strong>：每个「簇 × 级」均至少有一个「单元 +
+里程碑」证据，<strong>无空格</strong>。单元 U0-U7（≡ 作品
+M0-M7）即是该矩阵的可执行化。</p>
+</blockquote>
+<hr />
+<h2 id="如何用这个框架">如何用这个框架</h2>
+<ul>
+<li><strong>学生</strong>：每个单元/里程碑提交时，对照自评「这次我点亮了哪些簇
+× 级」</li>
+<li><strong>教师</strong>：评分量规直接绑定「簇 × 级」，避免主观；M7
+自评矩阵作为综合收口</li>
+<li><strong>课程迭代</strong>：框架簇/级稳定，单元内容可随 AI
+趋势持续刷新</li>
+</ul>
+<hr />
+<h2 id="能力簇-ai-时代岗位图谱就业映射">能力簇 ↔︎ AI
+时代岗位图谱（就业映射）</h2>
+<blockquote>
+<p>对标《AI 时代网络安全产业人才发展报告（2025）》的「AI
+驱动网安岗位图谱」。每个能力簇指向可观测就业岗位，强化「学—做—就业」闭环。</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">能力簇</th>
+<th style="text-align: left;">对应 AI 时代岗位（举例）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">① 基石与风险</td>
+<td style="text-align: left;">安全合规/风险评估工程师、<strong>AI
+风险顾问</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">② 侦察与发现</td>
+<td style="text-align: left;">攻击面管理、威胁情报分析师</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">③ 攻击与渗透</td>
+<td style="text-align: left;">渗透测试工程师、<strong>AI 渗透 /
+智能体红队</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">④ 防御与加固</td>
+<td style="text-align: left;">安全架构师、AI 检测工程师</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⑤ 检测取证欺骗</td>
+<td style="text-align: left;">SOC
+分析师、取证工程师、<strong>模型安全红队</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">⑥ AI×安全（贯穿）</td>
+<td style="text-align: left;"><strong>智能体架构师</strong>、AI
+安全测评、LLM 应用安全工程师</td>
+</tr>
+</tbody>
+</table>
+<script src="./js/toc.js"></script></body>
+</html>

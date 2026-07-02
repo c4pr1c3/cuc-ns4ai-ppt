@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第五单元: 检测·取证·欺骗</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第五单元: 检测·取证·欺骗</h1>
+  <p class="subtitle">日志 · 取证 · 蜜罐（综合实践项目 M5）</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-0攻击发生了如何复盘" class="title-slide slide level1">
+<h1>主题 0：攻击发生了，如何复盘？</h1>
+
+</section>
+<section id="问题引入检测到攻击之后" class="slide level2">
+<h2>问题引入：检测到攻击之后</h2>
+<blockquote>
+<p><strong>攻击发生了，如何复盘？</strong></p>
+</blockquote>
+<ul>
+<li>检测到攻击只是第一步——还要<strong>取证溯源</strong>（谁、何时、怎么进来的）、<strong>用蜜罐诱捕</strong>（主动欺骗）</li>
+<li>三件事绑在一起，构成簇⑤「检测 / 取证 / 欺骗」的完整闭环</li>
+<li>本单元 =
+把你的靶场应用做成「<strong>可观测、可取证、可诱捕</strong>」（综合实践项目（capstone）
+<strong>M5</strong>）</li>
+</ul>
+</section>
+<section id="本单元地图2-学时日志-取证-蜜罐" class="slide level2">
+<h2>本单元地图（≤2 学时）：日志 · 取证 · 蜜罐</h2>
+<ol type="1">
+<li>集中日志与关联分析（ELK 思路：filebeat → 日志库 + 结构化 JSON +
+关联规则）</li>
+<li><strong>日志防篡改（强制 · 落实 M0 R5）</strong>：append-only / HMAC
+签名 / 只读追加</li>
+<li>取证应对手册（playbook）（接报 → 镜像 → 时间线 → IoC → 报告）+
+证据保全</li>
+<li>蜜罐与欺骗（Cowrie / HFish，<strong>仅本机 / 内网</strong>）</li>
+<li>攻击复盘：用 M3 概念验证（PoC）触发 → 还原攻击链 + 时间线 + IoC</li>
+</ol>
+</section>
+<section id="本单元地图2-学时ai-埋伏" class="slide level2">
+<h2>本单元地图（≤2 学时）：AI 埋伏</h2>
+<ol start="6" type="1">
+<li>（可选）国产 LLM 告警分诊（为 U6「AI 检测组件」铺垫）</li>
+<li>能力自评：点亮簇⑤·L2，收尾衔接 M6</li>
+</ol>
+<blockquote>
+<p>深度理论（取证历史、证据法理、蜜网体系）见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x11.md</code>、<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x12.md</code>。本课件只讲「做
+M5 所需」。</p>
+</blockquote>
+</section>
+<section id="能力框架对应-本里程碑权重" class="slide level2">
+<h2>能力框架对应 + 本里程碑权重</h2>
+<ul>
+<li>簇 ⑤「<strong>检测 / 取证 / 欺骗</strong>」·
+<strong>L2</strong>（本单元只到 L2：会做一次完整闭环）</li>
+<li>L2 = 搭集中日志 + 写取证应对手册 + 部署蜜罐 + 复盘一次攻击 +
+<strong>日志防篡改</strong></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 37%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">重点提示</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;"><strong>0.30</strong></td>
+<td style="text-align: left;"><strong>R5 日志防篡改 +
+蜜罐隔离</strong>是本里程碑的硬要求</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">完成度</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">日志 + 取证 + 蜜罐 + 复盘 四项齐备</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">深度</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">复盘含完整攻击链 + 时间线 + IoC</td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section>
+<section id="主题-1道可观测性-取证思维-欺骗"
+class="title-slide slide level1">
+<h1>主题 1：【道】可观测性 · 取证思维 · 欺骗</h1>
+
+</section>
+<section id="道-1可观测性看不见就防不住" class="slide level2">
+<h2>道 1：可观测性——「看不见就防不住」</h2>
+<ul>
+<li><strong>可观测性（Observability）</strong>：从系统外部行为推断内部状态的能力</li>
+<li>安全的三层「看见」：
+<ul>
+<li><strong>日志（Log）</strong>：发生了什么（离散事件）</li>
+<li><strong>指标（Metric）</strong>：聚合了多少（计数/延迟）</li>
+<li><strong>追踪（Trace）</strong>：一次请求穿过哪些组件</li>
+</ul></li>
+<li>没有日志 = 攻击发生后<strong>无从复盘</strong>；日志散落各机 =
+<strong>无法关联</strong></li>
+</ul>
+<blockquote>
+<p>经典理论（日志架构、SIEM 体系）见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x11.md</code>「日志与安全审计」。</p>
+</blockquote>
+</section>
+<section id="道-2取证思维时间线-ioc" class="slide level2">
+<h2>道 2：取证思维——时间线 + IoC</h2>
+<ul>
+<li><strong>计算机取证（Forensics）</strong>：用<strong>可复现、可质证</strong>的方法还原事件真相</li>
+<li>两个核心产物：
+<ul>
+<li><strong>时间线（Timeline）</strong>：按时间排序的事件链（谁在 t₀
+做了什么 → t₁ → t₂…）</li>
+<li><strong>威胁情报指标（IoC）</strong>：可机读的「失陷指纹」（恶意 IP
+/ 域名 / 文件哈希 / 注册表键）</li>
+</ul></li>
+<li>关键原则：<strong>证据保全</strong>——原始数据不被污染、过程可追溯</li>
+</ul>
+</section>
+<section id="道-3欺骗蜜罐的不对称价值" class="slide level2">
+<h2>道 3：欺骗——蜜罐的「不对称」价值</h2>
+<ul>
+<li><strong>蜜罐（Honeypot）</strong>：故意暴露的「假目标」，吸引攻击者进入<strong>受控环境</strong></li>
+<li>价值是<strong>不对称</strong>的：
+<ul>
+<li>攻击者碰它 → 暴露手法、工具、IP（<strong>你获得情报</strong>）</li>
+<li>你碰它 → 几乎无业务损失（因为是假的）</li>
+</ul></li>
+<li><strong>低交互 vs
+高交互</strong>：模拟得越像，情报越多，但<strong>被攻陷成跳板的风险也越大</strong></li>
+<li>⚠️ 蜜罐是<strong>双刃剑</strong>——本课程严守「<strong>仅本机 /
+授权内网</strong>」</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-2术集中日志与关联分析"
+class="title-slide slide level1">
+<h1>主题 2：【术】集中日志与关联分析</h1>
+
+</section>
+<section id="术-1为什么要集中日志" class="slide level2">
+<h2>术 1：为什么要「集中」日志</h2>
+<ul>
+<li>单机日志的问题：<strong>散落、异构、易被本地篡改、无法跨机关联</strong></li>
+<li>集中日志 = 把 app / IDS / WAF /
+系统的日志汇到<strong>一条管线</strong>，统一存储、统一检索</li>
+<li>经典管线（ELK 思路）：</li>
+</ul>
+<pre ><code >app / IDS / WAF  ──采集(filebeat)──▶  缓冲/过滤(logstash)
+        ──▶  存储+索引(Elasticsearch)  ──▶  可视化+告警(Kibana)</code></pre>
+<blockquote>
+<p>国产替代同样成熟：用 <strong>fluentd / filebeat / rsyslog /
+vector</strong> 任一作采集器；存储端可用国产
+SIEM。实验不绑定具体产品。</p>
+</blockquote>
+</section>
+<section id="术-2结构化日志json让日志可机读可关联" class="slide level2">
+<h2>术 2：结构化日志（JSON）——让日志「可机读、可关联」</h2>
+<ul>
+<li>非结构化（一行文本）：人能读，但<strong>机器难解析、难关联</strong></li>
+<li>结构化（JSON 字段）：每条日志带 <strong>who / when / what / where /
+result</strong></li>
+</ul>
+<pre ><code class="json">{"ts":"2026-07-01T09:13:22Z","src_ip":"10.0.0.5","event":"login_failed",
+ "user":"admin","app":"flask","action":"/login","result":"401"}</code></pre>
+<ul>
+<li>关联规则示例：<strong>「同一 src_ip 在 60s 内 login_failed &gt; 5 →
+触发爆破告警」</strong></li>
+<li>结构化是后续（U6）让 <strong>LLM
+做告警分诊</strong>的前提——机器读得懂才能归并</li>
+</ul>
+</section>
+<section id="术-3关联规则从事件event到安全事件incident"
+class="slide level2">
+<h2>术 3：关联规则——从「事件（event）」到「安全事件（incident）」</h2>
+<ul>
+<li>单条日志 = 噪声（event）；<strong>多条日志按时间/主体关联</strong> =
+incident（安全事件）</li>
+<li>典型关联维度：
+<ul>
+<li><strong>按主体</strong>：同一 <code>src_ip</code> /
+<code>user</code> 的连续行为</li>
+<li><strong>按时间窗口</strong>：短时间高频（爆破、扫描）</li>
+<li><strong>按攻击链阶段</strong>：侦察（nmap）→ 利用（PoC）→ 横向（SSH
+爆破）</li>
+</ul></li>
+<li>把规则<strong>写成代码/配置</strong>（detection-as-code），可版本化、可复核</li>
+</ul>
+<blockquote>
+<p>实验任务 A
+要求：至少实现<strong>一条</strong>可工作的关联规则（如登录失败阈值告警）。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-3术日志防篡改强制-落实-m0-r5"
+class="title-slide slide level1">
+<h1>主题 3：【术】日志防篡改（强制 · 落实 M0 R5）</h1>
+
+</section>
+<section id="为什么日志必须防篡改" class="slide level2">
+<h2>为什么日志必须防篡改</h2>
+<blockquote>
+<p><strong>攻破之后的第一件事，往往是清日志。</strong> ——
+攻击者擦除痕迹，让你无从复盘。</p>
+</blockquote>
+<ul>
+<li>回顾 M0 风险登记表
+<strong>R5：审计可被篡改</strong>——管理员/攻击者可改写或删除本地日志</li>
+<li>若日志可篡改 → 取证证据<strong>不可信</strong> → 时间线/IoC
+全部失真</li>
+<li>因此 M5 把 <strong>「日志只读追加 / 防篡改」</strong>
+列为<strong>强制项</strong>（安全严谨权重 0.30 的核心）</li>
+</ul>
+<blockquote>
+<p>这是本里程碑「安全严谨」维度的硬要求；不做 = R5 未闭环 =
+该维度直接扣分。</p>
+</blockquote>
+</section>
+<section id="防-1append-only只读追加" class="slide level2">
+<h2>防 1：append-only（只读追加）</h2>
+<ul>
+<li><strong>append-only
+文件</strong>：日志文件设为<strong>只能追加，不能改/删</strong>
+<ul>
+<li>Linux：<code>chattr +a /var/log/app.log</code>（仅 root 可设，root
+也只能 append）</li>
+<li>或写入 <strong>WORM（Write-Once-Read-Many）</strong> 存储 /
+只读卷</li>
+</ul></li>
+<li>效果：即便攻击者拿到
+root，<strong>也无法静默删除</strong>历史日志（除非先解除属性，留痕）</li>
+<li>局限：依赖文件系统属性；本地属性可被同权限者重置 →
+需配合<strong>远端转发</strong></li>
+</ul>
+</section>
+<section id="防-2hmac-签名-链式哈希" class="slide level2">
+<h2>防 2：HMAC 签名 / 链式哈希</h2>
+<ul>
+<li><strong>HMAC
+签名</strong>：每条（或每批）日志用<strong>只有日志服务知道的密钥</strong>计算
+HMAC，与日志一同存储
+<ul>
+<li>校验时重算 HMAC：不一致 = <strong>被篡改过</strong></li>
+</ul></li>
+<li><strong>链式哈希（如 blockchain
+思路）</strong>：每条日志含<strong>上一条的哈希</strong> →
+篡改任意一条会断链</li>
+<li>国产可用：SM3 密码杂凑算法 / SM2 数字签名（密码合规场景）</li>
+</ul>
+<pre ><code class="text">log[i].hmac = HMAC(key, log[i].payload || log[i-1].hmac)   # 链式 + 签名</code></pre>
+</section>
+<section id="防-3实时转发到独立信任域" class="slide level2">
+<h2>防 3：实时转发到「独立信任域」</h2>
+<ul>
+<li>最稳妥的防篡改 = <strong>日志一产生就送出本地</strong>
+<ul>
+<li>app/IDS →
+<strong>远端集中日志服务器</strong>（不同主机、不同权限）</li>
+<li>攻击者攻陷单机，<strong>够不到</strong>集中日志库</li>
+</ul></li>
+<li>配合 <strong>时间戳签名（RFC 3161 /
+TSA）</strong>：第三方可信时间戳固化「这条日志在 t 时刻已存在」</li>
+<li>三层递进：<code>append-only（本机）→ HMAC 签名（本机可校验）→ 实时转发（独立域）</code></li>
+</ul>
+<blockquote>
+<p>实验任务 E（强制）要求至少实现其一，并在 <code>report.md</code>
+说明如何落实 R5。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-4术取证应对手册-证据保全"
+class="title-slide slide level1">
+<h1>主题 4：【术】取证应对手册 + 证据保全</h1>
+
+</section>
+<section id="取证应对手册五步法上" class="slide level2">
+<h2>取证应对手册：五步法（上）</h2>
+<ol type="1">
+<li><strong>接报（Triage）</strong>：确认是否真为安全事件、影响范围、是否需取证</li>
+<li><strong>取证镜像（Imaging）</strong>：对受影响主机/磁盘做<strong>位级镜像</strong>（不在原盘上分析）</li>
+<li><strong>时间线（Timeline）</strong>：把各来源日志按时间排序，重建事件序列</li>
+</ol>
+</section>
+<section id="取证应对手册五步法下" class="slide level2">
+<h2>取证应对手册：五步法（下）</h2>
+<ol start="4" type="1">
+<li><strong>IoC 提取</strong>：从镜像/日志中提炼恶意 IP / 文件哈希 /
+异常进程</li>
+<li><strong>报告（Report）</strong>：可复现的过程 + 证据链 + 结论 +
+处置建议</li>
+</ol>
+<blockquote>
+<p>删去早期取证历史与法律条文（详见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x12.md</code>「计算机取证」）。课堂只讲「做
+M5 所需」应对手册。</p>
+</blockquote>
+</section>
+<section id="证据保全可质证的三原则" class="slide level2">
+<h2>证据保全：可质证的三原则</h2>
+<ul>
+<li><strong>完整性（Integrity）</strong>：原始证据不被污染——用<strong>哈希校验</strong>（SHA-256
+/ SM3）证明镜像 = 原盘
+<ul>
+<li>取证前后各算一次哈希，比对一致 → 证明未被改动</li>
+</ul></li>
+<li><strong>链路完整（Chain of
+Custody）</strong>：证据从采集到呈堂的<strong>每一次交接都有记录</strong>（谁、何时、做了什么）</li>
+<li><strong>最小侵入</strong>：能不在原盘操作就不在原盘；先镜像后分析</li>
+</ul>
+<pre ><code class="bash"># 取证镜像 + 哈希校验（仅授权环境）
+dd if=/dev/sda1 of=disk.img bs=4M status=progress
+sha256sum disk.img  &gt; disk.img.sha256   # 保全证据完整性</code></pre>
+</section>
+<section id="时间线-ioc取证的两件交付物" class="slide level2">
+<h2>时间线 + IoC：取证的两件「交付物」</h2>
+<ul>
+<li><strong>时间线</strong>：把 app 日志、IDS
+告警、系统日志、蜜罐记录<strong>统一按时间排序</strong>
+<ul>
+<li>例：<code>09:13 扫描 → 09:14 爆破 /login → 09:15 PoC 成功 → 09:16 异常命令执行</code></li>
+</ul></li>
+<li><strong>IoC</strong>：可机读、可共享的失陷指纹
+<ul>
+<li>类型：<strong>恶意 IP/域名、文件哈希、C2 URL、异常
+user-agent、注册表键</strong></li>
+<li>格式：可导出为 <strong>STIX / OpenIOC / 简单
+CSV</strong>，供防御侧联动封禁</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>实验任务 B 要求：写出应对手册文档；任务 D
+要求：在复盘报告里给出<strong>完整时间线 + IoC 清单</strong>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-5术蜜罐与欺骗" class="title-slide slide level1">
+<h1>主题 5：【术】蜜罐与欺骗</h1>
+
+</section>
+<section id="蜜罐分类低交互-vs-高交互" class="slide level2">
+<h2>蜜罐分类：低交互 vs 高交互</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: left;">低交互（Low-Interaction）</th>
+<th style="text-align: left;">高交互（High-Interaction）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>实现</strong></td>
+<td style="text-align: left;">模拟服务（假 SSH/Telnet）</td>
+<td style="text-align: left;">真实系统当诱饵</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>情报量</strong></td>
+<td style="text-align: left;">少（只记登录尝试/命令）</td>
+<td style="text-align: left;">多（完整攻击行为）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>风险</strong></td>
+<td style="text-align: left;">低（难以被真正攻陷）</td>
+<td
+style="text-align: left;"><strong>高</strong>（可能被当跳板横向）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>代表</strong></td>
+<td
+style="text-align: left;"><strong>HFish</strong>、Cowrie（中低交互）</td>
+<td style="text-align: left;">真实虚机蜜网</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>本课程</strong></td>
+<td style="text-align: left;">✅ 优先（隔离简单）</td>
+<td style="text-align: left;">❌ 不要求（风险高）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Cowrie：中低交互 SSH/Telnet 蜜罐，记录攻击者命令与下载物</li>
+<li><strong>HFish</strong>（国产）：多协议、Web
+管理面、社区活跃——<strong>本课程推荐</strong></li>
+</ul>
+</section>
+<section id="蜜罐部署三条铁律安全严谨-0.30" class="slide level2">
+<h2>蜜罐部署：三条铁律（安全严谨 0.30）</h2>
+<ol type="1">
+<li><strong>仅监听本机 / 授权内网</strong>——绑 <code>127.0.0.1</code>
+或内网网卡，<strong>绝不</strong>绑公网 IP</li>
+<li><strong>网络隔离</strong>——蜜罐单独网段 /
+单独容器，<strong>不能</strong>路由到生产网（防横向）</li>
+<li><strong>不引入新风险</strong>——不得被攻陷后用作<strong>攻击跳板</strong>（这是常见扣分项
++ 红线）</li>
+</ol>
+<blockquote>
+<p>授权红线：蜜罐仅本机 / 授权内网；<strong>不得</strong>扫描 /
+诱捕第三方。<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x12.md</code>「蜜罐与蜜网」有完整风险讨论。</p>
+</blockquote>
+</section>
+<section id="蜜罐捕获一次诱捕长什么样" class="slide level2">
+<h2>蜜罐捕获：一次「诱捕」长什么样</h2>
+<ul>
+<li>攻击者扫描 → 命中蜜罐端口（假 SSH）→ 尝试弱口令字典 → 进入「假
+shell」→ 执行命令（被完整记录）</li>
+<li>产出情报：
+<ul>
+<li>攻击源 IP / 地理位置 / 扫描时间段</li>
+<li>使用的<strong>口令字典</strong>（可反哺弱口令检测）</li>
+<li>进入后执行的命令、下载的恶意样本 URL（<strong>IoC
+直接来源</strong>）</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>实验任务 C
+要求：记录一次「捕获」并<strong>明确写出隔离措施</strong>（绑哪个网卡、如何防横向）。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-6术攻击复盘用-m3-poc-触发"
+class="title-slide slide level1">
+<h1>主题 6：【术】攻击复盘——用 M3 PoC 触发</h1>
+
+</section>
+<section id="复盘把检测-取证-蜜罐-串起来" class="slide level2">
+<h2>复盘：把检测 / 取证 / 蜜罐 串起来</h2>
+<ul>
+<li>复盘 = 用 <strong>M3 的
+PoC</strong>（漏洞利用）在自己的靶场<strong>触发一次真实攻击</strong></li>
+<li>然后从<strong>集中日志 + IDS + 蜜罐</strong>三处还原：
+<ul>
+<li><strong>攻击链（Kill Chain）</strong>：侦察 → 利用 → 执行
+→（横向/持久化）</li>
+<li><strong>时间线</strong>：每个阶段的精确时刻</li>
+<li><strong>IoC</strong>：攻击源 IP、payload 特征、异常命令</li>
+</ul></li>
+<li>这是 M5
+的「集大成」交付——验证整条检测/取证管线<strong>真的能工作</strong></li>
+</ul>
+</section>
+<section id="复盘报告的最小骨架" class="slide level2">
+<h2>复盘报告的最小骨架</h2>
+<pre ><code class="markdown">## 攻击复盘（M3 PoC 触发）
+- 触发：用 M3 的 SQLi/RCE PoC 打自己的 /orders（仅授权靶场）
+- 时间线：
+  - T0  侦察：nmap 全端口扫描（IDS 命中 scan）
+  - T1  利用：PoC 成功（app 日志 result=500 + 异常 SQL）
+  - T2  执行：异常命令（蜜罐/audit 捕获）
+- IoC：src_ip=..., payload_hash=..., signature=...
+- 证据保全：disk.img sha256=...（完整性校验通过）
+- 处置：封禁 src_ip / 修复漏洞 / 加固日志</code></pre>
+<blockquote>
+<p>实验任务 D 要求：产出
+<code>attack-replay.md</code>，含<strong>完整攻击链 + 时间线 +
+IoC</strong>。仅部署无复盘 = 该维度不合格。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-7器用器与造器" class="title-slide slide level1">
+<h1>主题 7：【器】用器与造器</h1>
+
+</section>
+<section id="器m5-的工具箱上-日志与取证" class="slide level2">
+<h2>器：M5 的工具箱（上 · 日志与取证）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">用途</th>
+<th style="text-align: left;">工具（国产优先标注 🇨🇳）</th>
+<th style="text-align: left;">课堂定位</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">日志采集</td>
+<td style="text-align: left;"><strong>fluentd</strong> / filebeat /
+rsyslog / vector</td>
+<td style="text-align: left;">任务 A 管线</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">日志存储/检索</td>
+<td style="text-align: left;">ELK（Elasticsearch+Kibana）/ 国产
+SIEM</td>
+<td style="text-align: left;">任务 A</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">关联/告警</td>
+<td style="text-align: left;">ELK 告警 / detection-as-code</td>
+<td style="text-align: left;">任务 A 规则</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="器m5-的工具箱下-蜜罐与防篡改" class="slide level2">
+<h2>器：M5 的工具箱（下 · 蜜罐与防篡改）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">用途</th>
+<th style="text-align: left;">工具（国产优先标注 🇨🇳）</th>
+<th style="text-align: left;">课堂定位</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">蜜罐</td>
+<td style="text-align: left;">🇨🇳 <strong>HFish</strong> / Cowrie</td>
+<td style="text-align: left;">任务 C</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">证据校验</td>
+<td style="text-align: left;"><code>sha256sum</code> / SM3</td>
+<td style="text-align: left;">任务 B 保全</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">日志防篡改</td>
+<td style="text-align: left;"><code>chattr +a</code> / HMAC / SM2
+签名</td>
+<td style="text-align: left;">任务 E（强制）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>国产化原则：存储端、签名算法（SM2/SM3）、蜜罐（HFish）优先国产；采集器按团队熟悉度任选。详见
+syllabus.md「国产优先」。</p>
+</blockquote>
+</section>
+<section id="造器从会用工具到搭出一条管线" class="slide level2">
+<h2>造器：从「会用工具」到「搭出一条管线」</h2>
+<ul>
+<li>「器」是单个工具；<strong>「造器」=
+把工具串成属于你靶场的可复用管线</strong></li>
+<li>M5 的「造器」产物（落进 <code>docs/m5/</code>）：
+<ul>
+<li><code>logging.*</code> —— 集中日志配置 +
+关联规则（<strong>可重跑</strong>）</li>
+<li><code>playbook.md</code> ——
+取证五步应对手册（<strong>可复用</strong>）</li>
+<li><code>honeypot.*</code> —— 蜜罐部署 +
+<strong>隔离说明</strong>（可复现）</li>
+</ul></li>
+</ul>
+</section>
+<section id="造器交付物续-分水岭" class="slide level2">
+<h2>造器：交付物（续）+ 分水岭</h2>
+<ul>
+<li>其余「造器」产物：
+<ul>
+<li><code>attack-replay.md</code> —— 攻击链 + 时间线 +
+IoC（<strong>可质证</strong>）</li>
+<li><code>report.md</code> —— 含 <strong>R5 防篡改说明</strong> +
+自评</li>
+</ul></li>
+<li>这是从 L2「会做一次」走向 L3「能持续运营」的分水岭</li>
+</ul>
+<blockquote>
+<p>衔接实验：<code>../labs/lab05-forensics.md</code> 是 M5
+的完整任务清单与量规。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-8收尾与衔接" class="title-slide slide level1">
+<h1>主题 8：收尾与衔接</h1>
+
+</section>
+<section id="能力自评本单元点亮簇⑤l2" class="slide level2">
+<h2>能力自评：本单元点亮簇⑤·L2</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">自评勾选</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>⑤·L2</strong></td>
+<td style="text-align: left;">搭集中日志 + 写取证应对手册 + 部署蜜罐 +
+复盘一次攻击 + <strong>日志防篡改</strong></td>
+<td style="text-align: center;">☐ M5 交付</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>自检信号（实验 AI 助教也会 grep 这些）：
+<ul>
+<li>集中日志：<code>fluentd|filebeat|集中日志</code></li>
+<li>取证 playbook：<code>playbook|取证|timeline</code></li>
+<li>蜜罐：<code>cowrie|hfish|蜜罐</code></li>
+<li>日志防篡改（R5）：<code>append.?only|hmac|只读</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="红线仅本机-授权内网" class="slide level2">
+<h2>⚠️ 红线：仅本机 / 授权内网</h2>
+<ul>
+<li>所有实验<strong>仅在自己靶场、授权环境</strong>内进行</li>
+<li><strong>蜜罐仅监听本机 /
+授权内网</strong>，不得对外暴露成攻击跳板，不得诱捕第三方</li>
+<li>课程<strong>不教授</strong>对外攻击；本单元工具同时是<strong>防御自查</strong>手段</li>
+<li>禁止国外大模型辅助（国产 LLM 可用于任务 F 告警分诊，注明范围 +
+人工复核）</li>
+</ul>
+</section>
+<section id="小结今天带走的三件事" class="slide level2">
+<h2>小结：今天带走的三件事</h2>
+<ol type="1">
+<li><strong>可观测 + 可取证 + 可诱捕</strong> = 簇⑤·L2
+的完整闭环；缺一不可</li>
+<li><strong>日志防篡改（R5）是本里程碑的硬要求</strong>：append-only /
+HMAC / 实时转发，至少做一项</li>
+<li><strong>蜜罐只在本机/内网</strong>：情报价值大，但<strong>不得成为新攻击面</strong>（安全严谨
+0.30 的另一半）</li>
+</ol>
+<blockquote>
+<p>经典理论全文：<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x11.md</code>、<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x12.md</code>（按需自学）。</p>
+</blockquote>
+</section>
+<section id="下一单元-u6ai-赋能与对抗" class="slide level2">
+<h2>下一单元 U6：AI 赋能与对抗</h2>
+<blockquote>
+<p><strong>M5 的集中日志 = M6「AI 检测组件」的数据源。</strong></p>
+</blockquote>
+<ul>
+<li>U6（M6，<strong>核心
+30%</strong>）给这个<strong>已加固、已可观测</strong>的应用装上 AI
+能力，并反过来攻防它的 AI</li>
+<li>M5 的结构化日志 + 关联规则 → 喂给 <strong>国产 LLM</strong>
+做告警分诊 / 异常检测（任务 F 已铺垫）</li>
+<li>攻防闭环：<strong>搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的
+AI</strong>，全程同一仓库</li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>

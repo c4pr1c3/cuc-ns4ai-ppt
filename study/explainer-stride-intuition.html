@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>STRIDE 威胁建模的实战直觉</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">STRIDE 威胁建模的实战直觉</h1>
+<p class="author">黄玮</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#stride-威胁建模的实战直觉"
+id="toc-stride-威胁建模的实战直觉">STRIDE 威胁建模的实战直觉</a>
+<ul>
+<li><a href="#动机stride-是被拍脑袋漏威胁逼出来的"
+id="toc-动机stride-是被拍脑袋漏威胁逼出来的">1. 动机：STRIDE
+是被「拍脑袋漏威胁」逼出来的</a></li>
+<li><a href="#直觉6-个坏事对应-6-个安全目标"
+id="toc-直觉6-个坏事对应-6-个安全目标">2. 直觉：6 个「坏事」对应 6
+个「安全目标」</a></li>
+<li><a href="#弯路做-stride-时最常走的岔路"
+id="toc-弯路做-stride-时最常走的岔路">3. 弯路：做 STRIDE
+时最常走的岔路</a></li>
+<li><a href="#形式化stride-的穷举性从哪来"
+id="toc-形式化stride-的穷举性从哪来">4. 形式化：STRIDE
+的「穷举性」从哪来</a></li>
+<li><a href="#代码实例对-seedapp.py-做一次-stridem0-的真实任务"
+id="toc-代码实例对-seedapp.py-做一次-stridem0-的真实任务">5.
+代码实例：对 <code>seed/app.py</code> 做一次 STRIDE（M0
+的真实任务）</a></li>
+<li><a href="#常见误区" id="toc-常见误区">6. 常见误区</a></li>
+<li><a href="#延伸" id="toc-延伸">7. 延伸</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="stride-威胁建模的实战直觉">STRIDE 威胁建模的实战直觉</h1>
+<blockquote>
+<p>这是 <strong>U0 / M0</strong>
+的基石技能。课件只能给定义表，这篇把它讲成「<strong>你能上手用的思维工具</strong>」——做完
+M0 的 <code>stride.md</code>，你就在用 STRIDE。</p>
+</blockquote>
+<hr />
+<h2 id="动机stride-是被拍脑袋漏威胁逼出来的">1. 动机：STRIDE
+是被「拍脑袋漏威胁」逼出来的</h2>
+<p>威胁建模最大的敌人不是「想不出威胁」，而是<strong>漏掉某一类</strong>。1999
+年微软的 Loren Kohnfelder 提出
+STRIDE，目的只有一个：<strong>给你一张「不漏」的清单</strong>——把「坏事」分成
+6
+个互斥又穷举的类，逼你对每个组件/数据流<strong>逐一过一遍</strong>，不靠灵感、不靠经验、不漏类。</p>
+<p><strong>反事实</strong>：没有
+STRIDE，新手做威胁建模往往只想到「攻击者会注入」(Tampering)
+或「数据会泄露」(Information Disclosure)，<strong>漏掉
+Repudiation（赖账）和 Denial of Service（搞挂）</strong>——而本课 M0 的
+medium 档样本恰好就是漏了这两类（见 <code>lab00</code>
+与校准语料）。STRIDE 的价值就是「<strong>用清单代替记忆</strong>」。</p>
+<hr />
+<h2 id="直觉6-个坏事对应-6-个安全目标">2. 直觉：6 个「坏事」对应 6
+个「安全目标」</h2>
+<p>STRIDE 的 6 个字母，每个对应一个<strong>你熟悉的 CIA /
+扩充属性</strong>——一旦建立这个映射，就不用死记：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>STRIDE</th>
+<th>坏事一句话</th>
+<th>破坏的安全属性</th>
+<th>课程锚点（<code>capstone/seed/app.py</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>S</strong>poofing 假冒</td>
+<td>「我不是我，我是别人」</td>
+<td><strong>认证</strong>（Authentication）</td>
+<td><code>/login</code> 明文弱口令
+<code>USERS={admin:admin123}</code>，可爆破冒充</td>
+</tr>
+<tr class="even">
+<td><strong>T</strong>ampering 篡改</td>
+<td>「我改了你的数据」</td>
+<td><strong>完整性</strong>（Integrity）</td>
+<td><code>/orders</code> SQL 拼接，<code>'; UPDATE orders --</code>
+改订单</td>
+</tr>
+<tr class="odd">
+<td><strong>R</strong>epudiation 否认</td>
+<td>「这事我没干过」</td>
+<td><strong>不可抵赖/审计</strong>（Accountability）</td>
+<td><code>AUDIT</code> 日志只记 info/warning，缺 user/tool 完整链路 →
+操作可抵赖</td>
+</tr>
+<tr class="even">
+<td><strong>I</strong>nformation Disclosure 信息泄露</td>
+<td>「我看到了不该看的」</td>
+<td><strong>机密性</strong>（Confidentiality）</td>
+<td><code>secret_key</code> 硬编码 + <code>UNION SELECT</code> dump
+全表</td>
+</tr>
+<tr class="odd">
+<td><strong>D</strong>enial of Service 拒绝服务</td>
+<td>「我把你搞挂了」</td>
+<td><strong>可用性</strong>（Availability）</td>
+<td><code>/api/agent</code> 无速率限制 + Flask 单进程 → 高频打挂</td>
+</tr>
+<tr class="even">
+<td><strong>E</strong>levation of Privilege 提权</td>
+<td>「我拿到了本不属于我的权限」</td>
+<td><strong>授权</strong>（Authorization）</td>
+<td><code>/orders</code> 无行级授权，alice 登录后
+<code>?user=admin</code> 横向越权</td>
+</tr>
+</tbody>
+</table>
+<p><strong>直觉口诀</strong>：<strong>S</strong>
+是「<strong>假冒身份</strong>」、<strong>T</strong>
+是「<strong>改数据</strong>」、<strong>R</strong>
+是「<strong>赖账</strong>」、<strong>I</strong>
+是「<strong>泄密</strong>」、<strong>D</strong>
+是「<strong>搞挂</strong>」、<strong>E</strong>
+是「<strong>提权</strong>」。前三对（S/E）是身份相关，中间（T/I）是数据相关，<strong>D</strong>
+单独是可用性，<strong>R</strong> 单独是审计。</p>
+<hr />
+<h2 id="弯路做-stride-时最常走的岔路">3. 弯路：做 STRIDE
+时最常走的岔路</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>弯路</th>
+<th>错在哪</th>
+<th>正解</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>「STRIDE 就是 6 个词，我脑子里过一遍就行」</td>
+<td>脑内过 = 一定会漏；STRIDE
+的价值在<strong>逐对象、逐类、落到代码位置</strong></td>
+<td>对<strong>每个组件/数据流</strong>建表，6
+类<strong>逐一</strong>写一条威胁 + <strong>挂 <code>app.py</code>
+具体行/路由</strong></td>
+</tr>
+<tr class="even">
+<td>「威胁建模 = 列已知漏洞」</td>
+<td>那叫漏洞扫描，不是建模。建模是<strong>对系统结构与数据流</strong>推威胁</td>
+<td>先画组件/数据流（如
+<code>/login → session</code>、<code>/orders → app.db</code>），再对每条过
+STRIDE</td>
+</tr>
+<tr class="odd">
+<td>「只覆盖 4 类就够了，R/D 罕见」</td>
+<td>本课校准语料的 medium 档就是<strong>漏
+R/D</strong>被判扣分；R（审计缺失）和 D（无速率限制）在你
+<code>seed/app.py</code> 里<strong>真实存在</strong></td>
+<td><strong>六类必须穷举</strong>，每类至少一条真实威胁；漏类 = STRIDE
+建模不合格</td>
+</tr>
+<tr class="even">
+<td>「威胁描述泛泛即可」</td>
+<td>「系统可能不安全」不是威胁</td>
+<td>威胁要<strong>具体</strong>：<code>/orders?user=</code> 拼接 →
+攻击者 <code>'; UPDATE --</code> 篡改订单（<strong>T</strong>）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="形式化stride-的穷举性从哪来">4. 形式化：STRIDE
+的「穷举性」从哪来</h2>
+<p>STRIDE
+之所以能保证「不漏类」，是因为它<strong>对齐了安全属性的完整集合</strong>：</p>
+<ul>
+<li>信息安全的<strong>三大目标</strong>：C（机密性）、I（完整性）、A（可用性）——
+STRIDE 里的 <strong>I / T / D</strong>。</li>
+<li>加上<strong>三个「是谁干的」相关属性</strong>：Authentication（认证）、Authorization（授权）、Accountability/Non-repudiation（不可抵赖）——
+STRIDE 里的 <strong>S / E / R</strong>。</li>
+</ul>
+<p>这 6 个属性是<strong>信息安全目标的正交分解</strong>，所以基于它们的
+STRIDE 是（近似）穷举的。<strong>应用方式</strong>（这就是 M0 的
+<code>stride.md</code> 要你做的）：</p>
+<blockquote>
+<p>对系统里每个「<strong>组件</strong>」（端点、数据存储、外部依赖）或「<strong>数据流</strong>」（用户→<code>/login</code>、<code>/orders</code>→<code>app.db</code>），逐一过
+S/T/R/I/D/E
+六类，<strong>每类写至少一条真实威胁</strong>，并标注它<strong>对应代码的哪一行/哪一个路由</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="代码实例对-seedapp.py-做一次-stridem0-的真实任务">5.
+代码实例：对 <code>seed/app.py</code> 做一次 STRIDE（M0
+的真实任务）</h2>
+<p>以 <code>/orders</code> 端点（<code>app.py:67-74</code>）为例，这是
+M0 <code>stride.md</code> 里应该出现的<strong>真实建模</strong>：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>对象</th>
+<th>STRIDE</th>
+<th>威胁（挂代码位置）</th>
+<th>破坏属性</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/orders</code></td>
+<td><strong>T</strong> 篡改</td>
+<td><code>q=f"...WHERE user='{user}'"</code> 拼接 →
+<code>'; UPDATE orders --</code> 改订单</td>
+<td>完整性</td>
+</tr>
+<tr class="even">
+<td><code>/orders</code></td>
+<td><strong>E</strong> 提权</td>
+<td>无行级授权，<code>?user=admin</code> 越权读他人订单</td>
+<td>授权</td>
+</tr>
+<tr class="odd">
+<td><code>/orders</code></td>
+<td><strong>I</strong> 信息泄露</td>
+<td><code>UNION SELECT sql,name FROM sqlite_master --</code> dump
+库结构</td>
+<td>机密性</td>
+</tr>
+<tr class="even">
+<td><code>AUDIT</code> 日志</td>
+<td><strong>R</strong> 否认</td>
+<td><code>AUDIT.info</code> 字段不全（无 user/tool 完整链路）→
+操作可抵赖</td>
+<td>不可抵赖</td>
+</tr>
+<tr class="odd">
+<td><code>/api/agent</code></td>
+<td><strong>D</strong> 拒绝服务</td>
+<td>无速率限制 + Flask 单进程 → 高频请求耗尽资源</td>
+<td>可用性</td>
+</tr>
+<tr class="even">
+<td><code>/login</code></td>
+<td><strong>S</strong> 假冒</td>
+<td><code>USERS={admin:admin123}</code> 明文弱口令可爆破</td>
+<td>认证</td>
+</tr>
+</tbody>
+</table>
+<p><strong>这就是 lab00 任务 C
+要你产出的东西</strong>——不是空谈，是逐端点、逐类、挂行号。你的
+<code>docs/m0/stride.md</code> 越像这张表，STRIDE 这关分数越高。</p>
+<hr />
+<h2 id="常见误区">6. 常见误区</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>误区</th>
+<th>真相</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>「STRIDE 只适用于 Web」</td>
+<td>它对<strong>任何有组件与数据流的系统</strong>都适用（API、智能体、CI/CD、甚至
+RAG 管线）</td>
+</tr>
+<tr class="even">
+<td>「STRIDE 列完就完事」</td>
+<td>列威胁只是第一步；每条要配 <strong>CVSS 评分 +
+责任里程碑</strong>（M0 的 <code>risk-register.md</code>）</td>
+</tr>
+<tr class="odd">
+<td>「STRIDE = OWASP Top 10」</td>
+<td>OWASP Top 10 是<strong>统计出来的常见漏洞</strong>；STRIDE
+是<strong>结构化穷举框架</strong>——前者告诉你「大家常犯什么」，后者逼你「对自己的系统不漏类」</td>
+</tr>
+<tr class="even">
+<td>「威胁要越多越好」</td>
+<td>关键是<strong>穷举六类 +
+每条真实挂代码</strong>，不是数量；泛泛堆砌会被判「精度一般」</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="延伸">7. 延伸</h2>
+<ul>
+<li><strong>前置</strong>：本篇是 M0 的地基——做完
+<code>docs/m0/stride.md</code> 你就掌握 STRIDE。</li>
+<li><strong>进阶框架</strong>：STRIDE
+是「<strong>我能想到哪些坏事</strong>」；想系统化「<strong>攻击者实际会怎么打</strong>」可进一步了解
+<strong>Cyber Kill Chain</strong> 与 <strong>MITRE
+ATT&amp;CK</strong>（U2/U3 会用到）。</li>
+<li><strong>AI 扩展</strong>：到了 U6，STRIDE 同样适用于 LLM 智能体——把
+<code>/api/agent</code>
+当一个组件，<strong>T</strong>（提示词注入篡改智能体行为）、<strong>I</strong>（RAG
+投毒泄露训练/检索数据）、<strong>E</strong>（提示词注入越权调用高危工具）都能套进去。STRIDE
+是<strong>可迁移</strong>的思维工具。</li>
+<li><strong>自测要点</strong>：
+<ol type="1">
+<li>默写 STRIDE 6 类 × 对应安全属性的映射。</li>
+<li>对 <code>/login</code> 端点，6 类各写出一条挂代码的真实威胁。</li>
+<li>解释为什么「漏掉 R 和 D」在 M0 会被扣分（提示：穷举性）。</li>
+</ol></li>
+</ul>
+<hr />
+<blockquote>
+<p><strong>本文件由 <a
+href="https://github.com/c4pr1c3/teachme">teachme</a>
+的「七要素」教学法生成</strong>，是 U0 课件 + lab00 的助学补充——把
+STRIDE 讲成可上手的思维工具。想为别的主题产同款材料，调
+<code>/teachme</code>。</p>
+</blockquote>
+<script src="../js/toc.js"></script></body>
+</html>

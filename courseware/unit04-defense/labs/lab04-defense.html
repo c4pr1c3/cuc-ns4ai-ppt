@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 04：加固与边界防护（综合实践项目 M4）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 04：加固与边界防护（综合实践项目 M4）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-04加固与边界防护综合实践项目-m4"
+id="toc-实验-04加固与边界防护综合实践项目-m4">实验
+04：加固与边界防护（综合实践项目 M4）</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-a防火墙规则暴露面收敛"
+id="toc-任务-a防火墙规则暴露面收敛">任务
+A：防火墙规则（暴露面收敛）</a></li>
+<li><a href="#任务-bids-规则-命中-误报度量"
+id="toc-任务-bids-规则-命中-误报度量">任务 B：IDS 规则 + 命中 /
+误报度量</a></li>
+<li><a href="#任务-cwaf-拦截-sqli-xss-变种"
+id="toc-任务-cwaf-拦截-sqli-xss-变种">任务 C：WAF 拦截 SQLi / XSS
+变种</a></li>
+<li><a href="#任务-d应用-运行环境加固"
+id="toc-任务-d应用-运行环境加固">任务 D：应用 / 运行环境加固</a></li>
+<li><a href="#任务-e为-m6-铺路-可选" id="toc-任务-e为-m6-铺路-可选">任务
+E（为 M6 铺路 · 可选）</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-04加固与边界防护综合实践项目-m4">实验
+04：加固与边界防护（综合实践项目 M4）</h1>
+<blockquote>
+<p>本实验即综合实践项目（capstone） <strong>M4</strong>。给被 M3
+攻破的应用套上纵深防御——防火墙 / WAF / IDS 规则 +
+运行环境加固，并<strong>度量命中 / 误报</strong>。它落实 M2
+暴露面清单里的处置建议。 「规则 vs
+误报」的权衡是本里程碑的核心思维（攻防不对称 → 纵深 + 度量）。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定簇④·L2 · 防御与加固）</strong>:
+<ol type="1">
+<li>能够编写防火墙规则收敛暴露面。</li>
+<li>能够编写 IDS 规则（Snort / Suricata）命中 M3 的攻击流量，并度量 FPR
+/ FNR。</li>
+<li>能够用 WAF 拦截 SQLi / XSS 变种。</li>
+<li>能够加固应用 / 运行环境（关 debug、隐藏指纹、最小暴露）。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验后，在 <code>docs/m4/report.md</code> 自评：点亮
+<strong>簇④·L2</strong>。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><strong>本地</strong>：Git、Python 3.10+；Snort / Suricata；iptables
+/ nftables；ModSecurity（或 OWASP CRS）可选。</li>
+<li><strong>起点</strong>：你的 <code>milestone/m3</code> 分支 tip（M3
+末，已有 PoC 弹药）。按 <a
+href="../../unit00-intro/labs/git-guide.html">Git 规范</a> <strong>从
+<code>milestone/m3</code> 切 <code>milestone/m4</code></strong>，MR 目标
+= <code>milestone/m3</code>。</li>
+<li><strong>弹药</strong>：M3 的概念验证（PoC）流量就是你 IDS/WAF
+规则要命中 / 度量的对象。</li>
+<li><strong>学术诚信</strong>：所有防御实验在自己靶场。</li>
+</ul>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-a防火墙规则暴露面收敛">任务
+A：防火墙规则（暴露面收敛）</h3>
+<p>用 iptables / nftables
+收敛暴露面（仅放行必要端口，默认拒绝）；说明规则与 M2
+暴露面清单的对应（落实处置建议）。</p>
+<h3 id="任务-bids-规则-命中-误报度量">任务 B：IDS 规则 + 命中 /
+误报度量</h3>
+<p>写 Snort / Suricata 规则命中 M3 的攻击流量（SQLi / XSS /
+上传）；<strong>用 M3 PoC 重放 +
+正常流量</strong>度量命中率与误报（TP/FP/precision/recall），给出数字。</p>
+<h3 id="任务-cwaf-拦截-sqli-xss-变种">任务 C：WAF 拦截 SQLi / XSS
+变种</h3>
+<p>ModSecurity + OWASP CRS（或自写规则）拦截 M3 的攻击载荷（payload）
+<strong>变种</strong>（不是只挡原
+PoC）；记录绕过与反绕过的一轮博弈。</p>
+<h3 id="任务-d应用-运行环境加固">任务 D：应用 / 运行环境加固</h3>
+<p>关 <code>debug=False</code>、隐藏 <code>Server</code>/Werkzeug
+指纹、最小权限运行、容器 / SSH 加固。</p>
+<h3 id="任务-e为-m6-铺路-可选">任务 E（为 M6 铺路 · 可选）</h3>
+<p>叠加一个 Isolation Forest 异常打分（对请求 / 日志），与规则版对比——为
+M6 的「AI 检测组件」埋伏。</p>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<ul>
+<li><strong>常见扣分</strong>：有规则无度量（深度仅贴规则）、debug 仍
+True、指纹未隐藏、未对照 M2 处置建议。</li>
+<li><strong>授权红线</strong>：规则测试仅在自己靶场。</li>
+<li><strong>AI 双向</strong>：可用国产 LLM 辅助生成 / 调优 WAF
+规则或解释误报，注明范围 + 人工复核；禁止国外大模型。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+对照簇④·L2。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在 <code>docs/m4/</code> 下提交（在 <code>milestone/m4</code>
+分支上完成、push、开 MR @ 助教，目标 = <code>milestone/m3</code>）：</p>
+<pre><code>docs/m4/
+├── ids.rules / suricata.yaml   # 任务 B
+├── waf/ 或 modsec/             # 任务 C
+└── report.md                   # 规则集 + 加固 diff + 命中/误报度量（数字）+ 自评</code></pre>
+<p><strong>评分量规（绑定簇④·L2，满分 100；详细维度释义见 <a
+href="../../../capstone/evaluation-guide.html">评价指南</a>）</strong>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 (95)</th>
+<th style="text-align: left;">合格 (70)</th>
+<th style="text-align: left;">不合格 (40)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">WAF + IDS + 运行环境加固三项齐备 + 分支
+milestone/m4 + MR</td>
+<td style="text-align: left;">主要项（如 WAF 或 IDS 之一）</td>
+<td style="text-align: left;">无加固</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">规则集有命中 /
+误报度量（数字对比），权衡规则严格度 vs 误报</td>
+<td style="text-align: left;">有规则集无度量</td>
+<td style="text-align: left;">仅贴规则无分析</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: left;">用 AI 辅助生成 / 调优 WAF
+规则或解释误报</td>
+<td style="text-align: left;">无</td>
+<td style="text-align: left;">无</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">最小权限、纵深防御、关
+debug、隐藏指纹（落实 M2 处置建议）</td>
+<td style="text-align: left;">基本防护</td>
+<td style="text-align: left;">高危裸奔（仍 debug）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">自评（簇④·L2）与作品一致</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">④·L2</td>
+<td style="text-align: left;">配置 WAF / IDS / 防火墙规则 + 运行环境加固
++ 命中 / 误报度量</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M4 的规则集 + 度量报告</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>下一单元 U5（M5
+日志取证蜜罐）会把这里的告警接入集中日志，并复盘一次针对己方应用的攻击。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

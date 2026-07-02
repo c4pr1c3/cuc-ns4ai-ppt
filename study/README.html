@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>AI 助学层是什么</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">AI 助学层是什么</h1>
+<p class="author">黄玮</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#ai-助学层是什么" id="toc-ai-助学层是什么">AI
+助学层是什么</a>
+<ul>
+<li><a href="#目录约定" id="toc-目录约定">目录约定</a></li>
+<li><a href="#与课件的关系" id="toc-与课件的关系">与课件的关系</a></li>
+</ul></li>
+<li><a href="#teachme-标准调用约定"
+id="toc-teachme-标准调用约定">teachme 标准调用约定</a>
+<ul>
+<li><a href="#四个对齐维度第一阶段固定答法"
+id="toc-四个对齐维度第一阶段固定答法">四个对齐维度（第一阶段固定答法）</a></li>
+<li><a href="#按单元调用-teachme-的可复用-prompt-模板"
+id="toc-按单元调用-teachme-的可复用-prompt-模板">按单元调用 teachme
+的可复用 prompt 模板</a></li>
+</ul></li>
+<li><a href="#题库格式与-quiz-generator-的映射"
+id="toc-题库格式与-quiz-generator-的映射">题库格式与 quiz-generator
+的映射</a></li>
+<li><a href="#再生与刷新" id="toc-再生与刷新">再生与刷新</a>
+<ul>
+<li><a href="#质量底线生成后自检"
+id="toc-质量底线生成后自检">质量底线（生成后自检）</a></li>
+<li><a href="#当前覆盖" id="toc-当前覆盖">当前覆盖</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="ai-助学层是什么">AI 助学层是什么</h1>
+<blockquote>
+<p>每个实战单元配套一份「<strong>学习指南</strong> +
+<strong>题库</strong>」，由 <code>/teachme</code>
+按「七要素」生成，把课件里的「点」展开为「网」与「练」，供学生自学自测。</p>
+</blockquote>
+<h2 id="目录约定">目录约定</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">文件</th>
+<th style="text-align: left;">角色</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>study/unitNN-guide.md</code></td>
+<td
+style="text-align: left;">学习指南（七要素：动机/直觉/流程/实战/误区/自测/延伸）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>study/unitNN-quiz.md</code></td>
+<td style="text-align: left;">题库（单选/多选/判断 + 场景题）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a
+href="https://github.com/c4pr1c3/cuc-ns-ppt/">cuc-ns-ppt 在线</a></td>
+<td style="text-align: left;">经典 13 章 + <code>llm-security.md</code>
++
+<code>vuls-awd.md</code>（按需自学，<strong>本仓库不保留副本</strong>）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>study/README.md</code></td>
+<td style="text-align: left;">本说明</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>当前样板：<a
+href="unit06-guide.html"><code>unit06-guide.md</code></a> / <a
+href="unit06-quiz.html"><code>unit06-quiz.md</code></a></li>
+<li>由 <code>build_slides.sh</code> 渲染为<strong>纯 HTML
+文档</strong>（<code>css/linux4ai.css</code> + 侧边 toc）。</li>
+</ul>
+<h2 id="与课件的关系">与课件的关系</h2>
+<ul>
+<li>课件（<code>courseware/unitNN/slides/</code>）=
+教师<strong>按需</strong>讲授主线</li>
+<li>助学层（<code>study/</code>）= 学生自学 +
+自测的伴生层；经典深度理论在 <code>reference/</code></li>
+</ul>
+<h1 id="teachme-标准调用约定">teachme 标准调用约定</h1>
+<blockquote>
+<p><strong>技能源码</strong>：<a
+href="https://github.com/c4pr1c3/teachme">c4pr1c3/teachme</a> ——
+交互式苏格拉底式讲解技能（3 阶段：反问对齐 → 七要素 Markdown 讲解 →
+可选蒸馏课件）。 注意区分粒度：teachme <strong>逐主题讲深</strong>（补
+slides/labs 讲不透的「为什么/直觉」，示例见
+<code>study/explainer-*.md</code>）；<strong>逐单元学习指南/题库</strong>
+用下面的可复用 prompt 模板（由教师用任意国产 LLM
+跑），<strong>题库随机组卷</strong>用独立的 <code>quiz-generator</code>
+技能。</p>
+</blockquote>
+<h2
+id="四个对齐维度第一阶段固定答法">四个对齐维度（第一阶段固定答法）</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">维度</th>
+<th style="text-align: left;">本课取值</th>
+<th style="text-align: left;">理由</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>受众</strong></td>
+<td style="text-align: left;">网安本科生</td>
+<td style="text-align: left;">有系统/网络基础，AI 工具新手</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>核心目标</strong></td>
+<td style="text-align: left;">建立直觉 + 掌握使用</td>
+<td style="text-align: left;">追求「能上手」</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>输出形式</strong></td>
+<td style="text-align: left;">pandoc-markdown</td>
+<td style="text-align: left;">直接进 <code>build_slides.sh</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>深度</strong></td>
+<td style="text-align: left;">配套一个单元的助学</td>
+<td style="text-align: left;">一单元一指南 + 一题库</td>
+</tr>
+</tbody>
+</table>
+<h2 id="按单元调用-teachme-的可复用-prompt-模板">按单元调用 teachme
+的可复用 prompt 模板</h2>
+<pre class="text"><code>请为「第 N 单元 &lt;单元标题&gt;」生成助学产物，受众=网安本科生，
+核心目标=建立直觉+掌握使用，输出形式=pandoc-markdown，深度=配套本单元的助学。
+阅读 courseware/unitNN-* / slides 与 labs 原文，确保口径一致。
+
+产出两个文件到 study/：
+1) study/unitNN-guide.md —— 学习指南（七要素：动机/直觉/关键流程/实战要点/
+   常见误区/自测要点/延伸），frontmatter: title / author: 黄玮，中文为主。
+2) study/unitNN-quiz.md —— 题库：8-10 单选 + 3-4 多选 + 3-4 判断 + 2-3 场景题，
+   难度从认知到实践判断。每题格式：
+       ### Qn  [题型]
+       题干……
+       - A. ……
+       &gt; 答案：B
+       &gt; 解析：……</code></pre>
+<h1 id="题库格式与-quiz-generator-的映射">题库格式与 quiz-generator
+的映射</h1>
+<blockquote>
+<p><strong>一句话</strong>：题库的「题型标签 + 题干 + 选项 +
+<code>&gt; 答案</code> + <code>&gt; 解析</code>」五段，对应
+<code>quiz-generator</code> 的「题型 / stem / options / answer /
+explanation」，按单元抽取即可随机组卷。</p>
+</blockquote>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">### Q1  [单选]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>中型 SOC 每天产生数万告警，真阳性占比通常约为？</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A. &gt;50%</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>B. 20% 左右</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>C. &lt; 1%</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>D. 100%</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 答案：&lt;公开题库不含答案 · 见 internal 版&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 解析：&lt;答案与解析仅存于 internal 分支的 study/unitNN-quiz-answers.md&gt;</span></span></code></pre></div>
+<h1 id="再生与刷新">再生与刷新</h1>
+<ul>
+<li>AI（尤其 LLM
+安全）迭代快，<strong>每学期可按模板重新生成</strong></li>
+<li>流程：更新单元 slides/labs → 重跑 teachme prompt →
+<code>bash build_slides.sh</code></li>
+<li><code>reference/</code> 的经典章随教材更新而同步</li>
+</ul>
+<h2 id="质量底线生成后自检">质量底线（生成后自检）</h2>
+<ul class="task-list">
+<li><label><input
+type="checkbox" />指南覆盖七要素；题库覆盖本单元全部知识点、难度有梯度</label></li>
+<li><label><input
+type="checkbox" />每题答案/解析准确、无幻觉</label></li>
+<li><label><input type="checkbox" /><code>bash build_slides.sh</code>
+渲染退出码为 0、clean</label></li>
+</ul>
+<h2 id="当前覆盖">当前覆盖</h2>
+<ul>
+<li><strong>已覆盖（样板）</strong>：U6 AI
+赋能与对抗（<code>unit06-guide.md</code> /
+<code>unit06-quiz.md</code>）</li>
+<li><strong>待覆盖</strong>：U0-U5、U7 按同一模板生成</li>
+</ul>
+<script src="../js/toc.js"></script></body>
+</html>

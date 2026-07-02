@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 00：立项与威胁建模</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 00：立项与威胁建模</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-00立项与威胁建模" id="toc-实验-00立项与威胁建模">实验
+00：立项与威胁建模</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-a-技术选型-仓库骨架"
+id="toc-任务-a-技术选型-仓库骨架">任务 A: 技术选型 + 仓库骨架</a></li>
+<li><a href="#任务-b-资产清单-cia-标注"
+id="toc-任务-b-资产清单-cia-标注">任务 B: 资产清单 + CIA 标注</a></li>
+<li><a href="#任务-c-stride-威胁建模"
+id="toc-任务-c-stride-威胁建模">任务 C: STRIDE 威胁建模</a></li>
+<li><a href="#任务-d-风险登记表含-cvss-评分"
+id="toc-任务-d-风险登记表含-cvss-评分">任务 D: 风险登记表（含 CVSS
+评分）</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-00立项与威胁建模">实验 00：立项与威胁建模</h1>
+<blockquote>
+<p>本实验即综合实践项目（capstone）<strong>M0</strong>。你将从零立项，并对派生的种子工程完成第一份<strong>威胁建模
++ 风险登记表</strong>。这是整学期工程的「地基」，后续 M1-M7
+都在它之上演进。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定簇①·L2）</strong>:
+<ol type="1">
+<li>能够派生种子工程并建立可演进的项目仓库骨架。</li>
+<li>能够对一个具体 Web 应用做<strong>资产清单 + CIA 标注</strong>。</li>
+<li>能够用 <strong>STRIDE</strong> 对系统威胁进行穷举式建模。</li>
+<li>能够用 <strong>CVSS 3.1</strong>
+对识别出的风险打分，并产出一份<strong>风险登记表</strong>。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验后，在里程碑报告中对照能力框架自评：点亮
+<strong>簇①·L1（认知）+ 簇①·L2（实践）</strong>。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><p><strong>本地</strong>: Windows 10/11（推荐 WSL 2 Ubuntu 22.04）或
+macOS，已安装 Git、Python 3.10+。</p></li>
+<li><p><strong>仓库</strong>: 课程 GitLab。每个学生在课程 GitLab Group
+下派生 <a
+href="../../../capstone/seed/README.html"><code>capstone/seed/</code></a>
+为自己的私有仓库（命名建议 <code>cuc-ns-&lt;学号&gt;</code>）。</p></li>
+<li><p><strong>Git 规范</strong>（重要）：本学期用「<strong>分支 +
+MR</strong>」标记里程碑，<strong>不打 tag</strong>。M0 流程 = 从
+<code>main</code> 切 <code>milestone/m0</code> → 完成下述产物 → push →
+开 MR（源=<code>milestone/m0</code>、目标=<code>main</code>）→ @ 助教 →
+保持 Open。完整步骤见 <a href="git-guide.html">Git
+操作指南</a>；一键开分支：<code>bash scripts/new-milestone.sh 0</code>。</p></li>
+<li><p><strong>种子工程最小可运行</strong>:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="op">&lt;</span>你的 GitLab 仓库地址<span class="op">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> cuc-ns-<span class="op">&lt;</span>学号<span class="op">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> app.py          <span class="co"># 监听 127.0.0.1:5000</span></span></code></pre></div></li>
+<li><p><strong>学术诚信</strong>:
+所有攻击实验<strong>仅在你派生的靶场、授权环境</strong>内进行；课程不教授编写恶意代码。本实验只做<strong>建模与评分</strong>，不写任何攻击载荷（payload）（攻击在
+M3）。</p></li>
+</ul>
+<blockquote>
+<p>种子应用 <code>app.py</code> 故意预留了攻击面（弱口令、SQL
+拼接、智能体（Agent）端点），它们就是本次威胁建模的<strong>真实素材</strong>。</p>
+</blockquote>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-a-技术选型-仓库骨架">任务 A: 技术选型 + 仓库骨架</h3>
+<ol type="1">
+<li><strong>派生种子工程</strong>到课程 GitLab，克隆到本地，确认
+<code>python app.py</code> 可启动并访问 <code>/login</code>。</li>
+<li>在仓库根创建 <code>docs/</code> 目录，本实验的所有产物<strong>提交到
+<code>docs/m0/</code></strong> 下。</li>
+<li>在 <code>docs/m0/tech-stack.md</code> 记录技术选型：
+<ul>
+<li>运行时（Python 版本）、Web
+框架（Flask）、数据库（SQLite）、部署目标（本机/容器）。</li>
+<li>你计划在 M6 接入的 LLM
+提供方与接入方式（API/本地推理）——先写意向，后续可改。</li>
+</ul></li>
+<li>建立<strong>里程碑节奏</strong>：在仓库根 <code>README.md</code>
+追加一节「里程碑进度」，列出 M0-M7 及计划截止日期。</li>
+</ol>
+<blockquote>
+<p>交付物：可运行的仓库 + <code>docs/m0/tech-stack.md</code> + 更新后的
+<code>README.md</code>。</p>
+</blockquote>
+<h3 id="任务-b-资产清单-cia-标注">任务 B: 资产清单 + CIA 标注</h3>
+<p>阅读 <code>app.py</code>
+全文，识别系统中的<strong>信息资产</strong>，为每个资产标注其最受关注的
+CIA 属性。</p>
+<p>在 <code>docs/m0/assets.md</code>
+产出下表（至少覆盖以下资产，可补充）：</p>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">资产</th>
+<th style="text-align: left;">类型</th>
+<th style="text-align: left;">位置</th>
+<th style="text-align: center;">C</th>
+<th style="text-align: center;">I</th>
+<th style="text-align: center;">A</th>
+<th style="text-align: left;">说明（为何该属性最重要）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">用户口令（明文存储）</td>
+<td style="text-align: left;">凭证</td>
+<td style="text-align: left;"><code>USERS</code> 字典</td>
+<td style="text-align: center;"><strong>H</strong></td>
+<td style="text-align: center;">M</td>
+<td style="text-align: center;">L</td>
+<td style="text-align: left;">泄露即等于账户沦陷 → 机密性优先</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">会话 cookie</td>
+<td style="text-align: left;">状态</td>
+<td style="text-align: left;"><code>session</code></td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;">M</td>
+<td style="text-align: left;">劫持 = 身份冒充</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">订单数据</td>
+<td style="text-align: left;">业务数据</td>
+<td style="text-align: left;"><code>orders</code> 表</td>
+<td style="text-align: center;">M</td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;">M</td>
+<td style="text-align: left;">篡改/越权读取</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">应用密钥 <code>secret_key</code></td>
+<td style="text-align: left;">配置</td>
+<td style="text-align: left;"><code>app.secret_key</code></td>
+<td style="text-align: center;"><strong>H</strong></td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;">L</td>
+<td style="text-align: left;">泄露可伪造会话</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">智能体查询输入</td>
+<td style="text-align: left;">不可信输入</td>
+<td style="text-align: left;"><code>/api/agent</code> body</td>
+<td style="text-align: center;">M</td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;">M</td>
+<td style="text-align: left;">注入入口</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">审计日志</td>
+<td style="text-align: left;">取证依据</td>
+<td style="text-align: left;"><code>AUDIT</code></td>
+<td style="text-align: center;">L</td>
+<td style="text-align: center;"><strong>H</strong></td>
+<td style="text-align: center;">M</td>
+<td style="text-align: left;">被篡改则无法追责</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>提示：结合种子代码中的
+<code>USERS</code>、<code>session</code>、<code>orders</code>、<code>secret_key</code>、<code>/api/agent</code>、<code>AUDIT</code>
+逐一对照。</p>
+</blockquote>
+<h3 id="任务-c-stride-威胁建模">任务 C: STRIDE 威胁建模</h3>
+<p>对种子工程的关键<strong>组件/数据流</strong>逐一过 STRIDE
+六类，<strong>不漏威胁</strong>。建议建模对象至少包含：</p>
+<ul>
+<li><code>/login</code> 端点（口令校验、会话签发）</li>
+<li><code>/orders</code> 端点（带 <code>user</code> 参数的 SQL
+拼接）</li>
+<li><code>/api/agent</code> 端点（LLM + 工具调用）</li>
+<li><code>call_tool</code> 护栏（白名单/黑名单/人在回路）</li>
+<li>SQLite 数据文件 <code>app.db</code></li>
+</ul>
+<p>在 <code>docs/m0/stride.md</code> 产出下表（每个对象至少识别 2-3
+条真实威胁）：</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">对象</th>
+<th style="text-align: left;">STRIDE 类别</th>
+<th style="text-align: left;">威胁描述</th>
+<th style="text-align: left;">触发条件/代码位置</th>
+<th style="text-align: left;">对应破坏的属性</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>/login</code></td>
+<td style="text-align: left;"><strong>S</strong> 假冒</td>
+<td style="text-align: left;">弱口令（admin/admin123）可被字典爆破</td>
+<td style="text-align: left;"><code>USERS</code> 明文弱口令</td>
+<td style="text-align: left;">认证</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>/login</code></td>
+<td style="text-align: left;"><strong>I</strong> 信息泄露</td>
+<td style="text-align: left;">登录失败/成功响应可枚举有效用户名</td>
+<td style="text-align: left;"><code>login.fail</code> vs
+<code>login.success</code></td>
+<td style="text-align: left;">机密性</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>/orders</code></td>
+<td style="text-align: left;"><strong>T</strong> 篡改</td>
+<td style="text-align: left;"><code>user</code> 参数字符串拼接 → SQL
+注入可改/删数据</td>
+<td
+style="text-align: left;"><code>q = f"... WHERE user = '{user}'"</code></td>
+<td style="text-align: left;">完整性</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>/orders</code></td>
+<td style="text-align: left;"><strong>E</strong> 提权</td>
+<td style="text-align: left;">注入可读取/篡改他人订单，越权访问</td>
+<td style="text-align: left;">同上，无行级授权</td>
+<td style="text-align: left;">授权</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>/api/agent</code></td>
+<td style="text-align: left;"><strong>T</strong> 篡改</td>
+<td style="text-align: left;">间接提示词注入让 LLM 调用非白名单工具</td>
+<td style="text-align: left;"><code>body.get("tool")</code> 直传</td>
+<td style="text-align: left;">完整性/授权</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>call_tool</code></td>
+<td style="text-align: left;"><strong>R</strong> 否认</td>
+<td style="text-align: left;">审计仅记
+<code>info/warning</code>，缺用户/tool 完整链路</td>
+<td style="text-align: left;"><code>AUDIT.info</code> 字段不全</td>
+<td style="text-align: left;">不可抵赖</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>app.db</code></td>
+<td style="text-align: left;"><strong>I</strong> 信息泄露</td>
+<td style="text-align: left;">SQLite 文件可直接下载/读取</td>
+<td style="text-align: left;">部署时未隔离文件</td>
+<td style="text-align: left;">机密性</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>严格要求：威胁必须<strong>对应到 <code>app.py</code>
+的具体代码或部署事实</strong>，禁止泛泛而谈。每条至少给出「代码位置」或「触发条件」。</p>
+</blockquote>
+<h3 id="任务-d-风险登记表含-cvss-评分">任务 D: 风险登记表（含 CVSS
+评分）</h3>
+<p>为任务 C 识别出的<strong>高优先级威胁</strong>（建议至少 5 条）打
+CVSS 3.1 Base 分，产出 <code>docs/m0/risk-register.md</code>：</p>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 11%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">威胁（来自任务 C）</th>
+<th style="text-align: left;">CVSS 向量</th>
+<th style="text-align: center;">Base 分</th>
+<th style="text-align: center;">等级</th>
+<th style="text-align: left;">缓解措施（留给后续 M）</th>
+<th style="text-align: center;">责任里程碑</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">R1</td>
+<td style="text-align: left;">弱口令爆破 <code>/login</code></td>
+<td
+style="text-align: left;"><code>AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</code></td>
+<td style="text-align: center;">9.8</td>
+<td style="text-align: center;">严重</td>
+<td style="text-align: left;">口令哈希 + 失败计数 + 锁定</td>
+<td style="text-align: center;">M1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: left;"><code>/orders</code> SQL 注入</td>
+<td
+style="text-align: left;"><code>AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H</code></td>
+<td style="text-align: center;">8.8</td>
+<td style="text-align: center;">高</td>
+<td style="text-align: left;">参数化查询 + 输入校验</td>
+<td style="text-align: center;">M3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R3</td>
+<td style="text-align: left;">智能体间接注入调用高危工具</td>
+<td
+style="text-align: left;"><code>AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N</code></td>
+<td style="text-align: center;">8.1</td>
+<td style="text-align: center;">高</td>
+<td style="text-align: left;">强化白名单 + 人在回路 + 输出过滤</td>
+<td style="text-align: center;">M6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R4</td>
+<td style="text-align: left;">会话密钥泄露致伪造</td>
+<td
+style="text-align: left;"><code>AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:N</code></td>
+<td style="text-align: center;">8.6</td>
+<td style="text-align: center;">高</td>
+<td style="text-align: left;">安全随机密钥 + 密钥轮换</td>
+<td style="text-align: center;">M1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R5</td>
+<td style="text-align: left;">审计日志可被篡改</td>
+<td
+style="text-align: left;"><code>AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N</code></td>
+<td style="text-align: center;">4.5</td>
+<td style="text-align: center;">中</td>
+<td style="text-align: left;">集中日志 + 只读追加 + 时间戳签名</td>
+<td style="text-align: center;">M5</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>评分工具：<a
+href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator">NVD CVSS 3.1
+计算器</a>。等级划分：0.1-3.9 低 / 4.0-6.9 中 / 7.0-8.9 高 / 9.0-10.0
+严重。 CVSS 完整推导见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x02.md</code>。</p>
+</blockquote>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<p>本里程碑由 AI 助教（<code>ns4ai-review</code>）按 §4
+量规做确定性证据采集 + LLM 档位裁定。提交时注意：</p>
+<ul>
+<li><strong>常见扣分</strong>：STRIDE 漏类（必须六类逐项过）、CVSS
+向量与分数不自洽、威胁不挂 <code>app.py</code> 代码位置（泛泛而谈）、CIA
+一刀切全标 C+I+A、无 <code>report.md</code> 自评矩阵。</li>
+<li><strong>授权红线</strong>：仅对自己派生的 <code>app.py</code>
+建模；不得对真实/第三方系统做任何探测。</li>
+<li><strong>AI 双向</strong>：鼓励用<strong>国产大模型</strong>（如
+<code>deepseek-v4-flash</code>）辅助起草建模/资产识别，但须在
+<code>report.md</code> 注明用了哪些 AI 辅助 +
+人工复核了什么；本课程禁止选用国外大模型（GPT/Claude/Gemini）。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+逐项对照簇①·L1/L2，每项附证据路径，「无虚点亮」。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在仓库 <code>docs/m0/</code> 下提交以下文件——在
+<code>milestone/m0</code> 分支上完成、push、开 MR @ 助教（详见 <a
+href="git-guide.html">Git 操作指南</a>）：</p>
+<pre><code>docs/m0/
+├── tech-stack.md        # 任务 A：技术选型 + 里程碑节奏
+├── assets.md            # 任务 B：资产清单 + CIA 标注
+├── stride.md            # 任务 C：STRIDE 威胁建模
+└── risk-register.md     # 任务 D：风险登记表（含 CVSS）</code></pre>
+<p>里程碑报告（<code>docs/m0/report.md</code>）需包含：做了什么 /
+点亮哪些能力簇×级 / 踩到什么坑 / 对后续 M 的建议。</p>
+<p><strong>评分量规（绑定簇①·L2，满分 100）</strong>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 (90+)</th>
+<th style="text-align: left;">合格 (60-80)</th>
+<th style="text-align: left;">不合格 (&lt;60)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>资产清单</strong></td>
+<td style="text-align: center;">20</td>
+<td style="text-align: left;">资产识别完整，CIA 标注有依据</td>
+<td style="text-align: left;">覆盖主要资产</td>
+<td style="text-align: left;">关键资产缺失</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>STRIDE 建模</strong></td>
+<td style="text-align: center;">30</td>
+<td style="text-align: left;">六类穷举，每条挂代码位置</td>
+<td style="text-align: left;">过多数对象</td>
+<td style="text-align: left;">仅泛泛列举</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>CVSS 评分</strong></td>
+<td style="text-align: center;">30</td>
+<td style="text-align: left;">向量与分数自洽，等级合理</td>
+<td style="text-align: left;">能打分但依据弱</td>
+<td style="text-align: left;">分数随意</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>工程规范</strong></td>
+<td style="text-align: center;">20</td>
+<td style="text-align: left;">仓库可运行 + 分支/MR 规范 + 报告完整</td>
+<td style="text-align: left;">基本规范</td>
+<td style="text-align: left;">无法运行/未开 MR</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<p>完成本实验后，在 <code>docs/m0/report.md</code>
+末尾填写能力自评（对照 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>）：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①·L1</td>
+<td style="text-align: left;">复述 CIA/STRIDE/CVSS，识别资产与威胁</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">课堂快问快答 + 本实验资产/威胁识别</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">①·L2</td>
+<td style="text-align: left;">对一个系统做威胁建模 + CVSS 评分</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M0 的 <code>stride.md</code> +
+<code>risk-register.md</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>自评须与作品一致；M7 综合收口时会回看这份自评矩阵。下一单元 U1（M1
+安全基线）将把这里识别出的认证/会话/口令风险<strong>落到代码</strong>。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

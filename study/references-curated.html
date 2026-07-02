@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>精选高质量参考链接（国产优先 · 道术器标注）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">精选高质量参考链接（国产优先 · 道术器标注）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#精选高质量参考链接国产优先-道术器标注"
+id="toc-精选高质量参考链接国产优先-道术器标注">精选高质量参考链接（国产优先
+· 道术器标注）</a>
+<ul>
+<li><a href="#u0-立项与威胁建模m0簇①" id="toc-u0-立项与威胁建模m0簇①">U0
+· 立项与威胁建模（M0，簇①）</a></li>
+<li><a href="#u1-安全基线m1簇①" id="toc-u1-安全基线m1簇①">U1 ·
+安全基线（M1，簇①）</a></li>
+<li><a href="#u2-自侦察m2簇②" id="toc-u2-自侦察m2簇②">U2 ·
+自侦察（M2，簇②）</a></li>
+<li><a href="#u3-漏洞挖掘与利用m3簇③" id="toc-u3-漏洞挖掘与利用m3簇③">U3
+· 漏洞挖掘与利用（M3，簇③）</a></li>
+<li><a href="#u4-加固与边界防护m4簇④" id="toc-u4-加固与边界防护m4簇④">U4
+· 加固与边界防护（M4，簇④）</a></li>
+<li><a href="#u5-日志取证蜜罐m5簇⑤" id="toc-u5-日志取证蜜罐m5簇⑤">U5 ·
+日志·取证·蜜罐（M5，簇⑤）</a></li>
+<li><a href="#u6-ai-赋能与对抗m6簇⑥核心"
+id="toc-u6-ai-赋能与对抗m6簇⑥核心">U6 · AI
+赋能与对抗（M6，簇⑥·核心）</a></li>
+<li><a href="#u7-红蓝对抗-复盘m7全簇" id="toc-u7-红蓝对抗-复盘m7全簇">U7
+· 红蓝对抗 + 复盘（M7，全簇）</a></li>
+<li><a href="#工程基础全单元"
+id="toc-工程基础全单元">工程基础（全单元）</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1
+id="精选高质量参考链接国产优先-道术器标注">精选高质量参考链接（国产优先
+· 道术器标注）</h1>
+<blockquote>
+<p>课程《网络安全（AI 时代版)》分单元精选参考。每条标 [道]/[术]/[器] +
+为何推荐 + 访问日期（2026-06）。
+<strong>国产优先</strong>：有国产替代处首选国产（蜜罐 HFish、大模型
+DeepSeek/Qwen/GLM/Kimi）；国际标准（CVSS/OWASP/MITRE）无国产替代，引用官方一手源。课程禁止选用国外大模型（GPT/Claude/Gemini）作为接入模型。</p>
+</blockquote>
+<h2 id="u0-立项与威胁建模m0簇①">U0 · 立项与威胁建模（M0，簇①）</h2>
+<ul>
+<li>【道/术】<strong>STRIDE 威胁建模</strong> — Microsoft SDL Threat
+Modeling:
+https://learn.microsoft.com/en-us/azure/architecture/guide/security/security-threat-modeling
+（STRIDE 六类权威出处）</li>
+<li>【道/术】<strong>CVSS v3.1 标准</strong> — FIRST.org:
+https://www.first.org/cvss/v3-1/ ；计算器:
+https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator
+（评分唯一权威源，向量可追溯）</li>
+<li>【器】<strong>OWASP Cheat Sheet Series</strong> —
+https://cheatsheetseries.owasp.org/ （各漏洞防御速查）</li>
+</ul>
+<h2 id="u1-安全基线m1簇①">U1 · 安全基线（M1，簇①）</h2>
+<ul>
+<li>【道/术】<strong>OWASP Authentication Cheat Sheet</strong> —
+https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html</li>
+<li>【术】<strong>口令哈希（bcrypt/argon2）</strong> —
+https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html</li>
+<li>【器】<strong>hashcat</strong>（攻击侧验证弱口令）—
+https://hashcat.net/wiki/</li>
+</ul>
+<h2 id="u2-自侦察m2簇②">U2 · 自侦察（M2，簇②）</h2>
+<ul>
+<li>【道/术】<strong>nmap 官方文档</strong> — https://nmap.org/book/
+（SYN/Connect/UDP/指纹原理权威）</li>
+<li>【器】<strong>Wireshark / tshark</strong> —
+https://www.wireshark.org/docs/wsug_html_chunked/</li>
+<li>【器】<strong>NVD 漏洞库</strong>（版本→CVE）—
+https://nvd.nist.gov/</li>
+</ul>
+<h2 id="u3-漏洞挖掘与利用m3簇③">U3 · 漏洞挖掘与利用（M3，簇③）</h2>
+<ul>
+<li>【道/术】<strong>PortSwigger Web Security Academy</strong> —
+https://portswigger.net/web-security （SQLi/XSS/CSRF/上传
+一手实训，免费）</li>
+<li>【道/术】<strong>OWASP Top 10</strong> —
+https://owasp.org/www-project-top-ten/</li>
+<li>【器】<strong>sqlmap</strong> —
+https://github.com/sqlmapproject/sqlmap/wiki/Usage</li>
+</ul>
+<h2 id="u4-加固与边界防护m4簇④">U4 · 加固与边界防护（M4，簇④）</h2>
+<ul>
+<li>【道/术】<strong>纵深防御</strong> — OWASP Security by Design / NIST
+SP 800-53 思路</li>
+<li>【术/器】<strong>OWASP CRS（ModSecurity 规则集）</strong> —
+https://coreruleset.org/</li>
+<li>【术/器】<strong>Suricata IDS</strong> — https://docs.suricata.io/
+；<strong>Snort</strong> — https://www.snort.org/documents</li>
+</ul>
+<h2 id="u5-日志取证蜜罐m5簇⑤">U5 · 日志·取证·蜜罐（M5，簇⑤）</h2>
+<ul>
+<li>【道/术】<strong>MITRE ATT&amp;CK</strong> —
+https://attack.mitre.org/ （攻击链/IoC 思维框架）</li>
+<li>【术/器】<strong>ELK / Elastic Security</strong> —
+https://www.elastic.co/guide/ （集中日志）</li>
+<li>【器·国产】<strong>HFish 蜜罐</strong>（国产，推荐）—
+https://github.com/hacklcx/HFish ；对照 Cowrie
+https://github.com/cowrie/cowrie</li>
+</ul>
+<h2 id="u6-ai-赋能与对抗m6簇⑥核心">U6 · AI
+赋能与对抗（M6，簇⑥·核心）</h2>
+<ul>
+<li>【道】<strong>OWASP LLM Top 10</strong> —
+https://owasp.org/www-project-top-10-for-large-language-model-applications/</li>
+<li>【道】<strong>MITRE ATLAS</strong>（AI 系统攻击知识库）—
+https://atlas.mitre.org/</li>
+<li>【道】<strong>NIST AI RMF Generative AI Profile</strong> —
+https://www.nist.gov/itl/ai-risk-management-framework</li>
+<li>【术/器·国产】<strong>国产大模型（课程唯一允许的接入模型）</strong>：
+<ul>
+<li>DeepSeek — https://www.deepseek.com/ （OpenAI 兼容协议）</li>
+<li>Qwen（通义千问）— https://github.com/QwenLM/Qwen2</li>
+<li>GLM（智谱）— https://open.bigmodel.cn/</li>
+<li>Kimi（Moonshot）— https://platform.moonshot.cn/</li>
+</ul></li>
+<li>【术】<strong>scikit-learn IsolationForest</strong> —
+https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html
+（AI 检测组件）</li>
+</ul>
+<h2 id="u7-红蓝对抗-复盘m7全簇">U7 · 红蓝对抗 + 复盘（M7，全簇）</h2>
+<ul>
+<li>【道/术】<strong>GenAI Red Teaming Guide</strong> —
+https://github.com/requie/AI-Red-Teaming-Guide</li>
+<li>【术】<strong>紫队/复盘方法论</strong> — 参考 ATT&amp;CK Evaluations
++ 课程内部复盘模板</li>
+</ul>
+<h2 id="工程基础全单元">工程基础（全单元）</h2>
+<ul>
+<li>【器】<strong>Git</strong> — https://git-scm.com/book/zh/v2 （中文
+Pro Git）</li>
+<li>【器】<strong>GitLab CI/CD</strong> — https://docs.gitlab.com/ee/ci/
+；<strong>python-gitlab</strong> —
+https://python-gitlab.readthedocs.io/</li>
+<li>【器】<strong>reveal.js</strong>（课件渲染）—
+https://revealjs.com/</li>
+</ul>
+<blockquote>
+<p>维护：链接每学期开课前复核（标注访问日期）；失效即换一手源；新增国产工具优先收录。</p>
+</blockquote>
+<script src="../js/toc.js"></script></body>
+</html>

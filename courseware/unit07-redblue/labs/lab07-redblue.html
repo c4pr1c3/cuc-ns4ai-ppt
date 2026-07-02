@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 07：红蓝对抗与综合复盘（综合实践项目 M7）</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 07：红蓝对抗与综合复盘（综合实践项目 M7）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-07红蓝对抗与综合复盘综合实践项目-m7"
+id="toc-实验-07红蓝对抗与综合复盘综合实践项目-m7">实验
+07：红蓝对抗与综合复盘（综合实践项目 M7）</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-a红蓝对抗场景与规则设计"
+id="toc-任务-a红蓝对抗场景与规则设计">任务
+A：红蓝对抗场景与规则设计</a></li>
+<li><a href="#任务-b红队编排" id="toc-任务-b红队编排">任务
+B：红队编排</a></li>
+<li><a href="#任务-c蓝队防御复盘" id="toc-任务-c蓝队防御复盘">任务
+C：蓝队防御复盘</a></li>
+<li><a href="#任务-d能力框架自评矩阵核心"
+id="toc-任务-d能力框架自评矩阵核心">任务
+D：能力框架自评矩阵（核心）</a></li>
+<li><a href="#任务-eai-综合评估簇⑥l3"
+id="toc-任务-eai-综合评估簇⑥l3">任务 E：AI 综合评估（簇⑥·L3）</a></li>
+<li><a href="#任务-f现场演示" id="toc-任务-f现场演示">任务
+F：现场演示</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-07红蓝对抗与综合复盘综合实践项目-m7">实验
+07：红蓝对抗与综合复盘（综合实践项目 M7）</h1>
+<blockquote>
+<p>本实验即综合实践项目（capstone）
+<strong>M7</strong>，全学期收口。在「已加固 + 自带 AI 能力 +
+已可观测」的集成系统上跑一次红蓝演练 → 取证复盘 +
+<strong>能力框架自评矩阵</strong>。本里程碑「自评」权重上调到
+0.20（回看整学期 M0–M6），并设<strong>现场演示</strong>。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定全簇 · L3 · 综合工程化）</strong>:
+<ol type="1">
+<li>能够编排一场红蓝对抗（侦察 → 渗透 → AI 对抗 → 防御 →
+取证闭环）。</li>
+<li>能够在演练中综合运用 M0–M6 全部能力，并度量纵深防御。</li>
+<li>能够产出<strong>能力框架自评矩阵</strong>（逐簇 × 级回看 M0–M6
+证据，无虚点亮）。</li>
+<li>能够评估 AI 在攻防中的综合表现与局限（簇⑥·L3）。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验后，在 <code>docs/m7/report.md</code>
+自评：点亮<strong>全簇 · L3</strong>。M7 评审会<strong>回看
+M0–M6</strong>——自评矩阵每项都要能指回仓库证据。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><strong>本地</strong>：你的 <code>milestone/m6</code> 分支 tip（M6
+末系统：已加固 + AI 能力 + 加固证据 + 集中日志）。</li>
+<li>按 <a href="../../unit00-intro/labs/git-guide.html">Git 规范</a>
+<strong>从 <code>milestone/m6</code> 切
+<code>milestone/m7</code></strong>，MR 目标 =
+<code>milestone/m6</code>。</li>
+<li><strong>角色</strong>：分组 / 自扮红蓝；攻击面 = 你自己的系统。</li>
+<li><strong>学术诚信</strong>：仅在自己靶场 /
+授权环境；不教授编写恶意代码。</li>
+</ul>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-a红蓝对抗场景与规则设计">任务
+A：红蓝对抗场景与规则设计</h3>
+<p>设计演练场景（攻击面 = 自己的系统）、目标 / 规则 /
+停战条件、评分维度；明确仅授权环境。</p>
+<h3 id="任务-b红队编排">任务 B：红队编排</h3>
+<p>复用 M3 / M6 的概念验证（PoC）编排一条多阶段攻击链（侦察 → 渗透 → AI
+对抗 / 提示词注入 → 横向），记录每步。</p>
+<h3 id="任务-c蓝队防御复盘">任务 C：蓝队防御复盘</h3>
+<p>检测 / 取证 / 欺骗闭环（复用 M4 /
+M5）：哪些被拦、哪些漏检、纵深防御各层命中率；度量防御纵深度。</p>
+<h3 id="任务-d能力框架自评矩阵核心">任务
+D：能力框架自评矩阵（核心）</h3>
+<p>对照 <a
+href="../../../capability-framework.html"><code>capability-framework.md</code></a>
+的 6 簇 × 3 级，逐项回看 M0–M6 证据，标注是否点亮 + 证据路径 +
+<strong>本里程碑练了哪个思维范式</strong>。覆盖 <strong>≥3
+个簇</strong>，无虚点亮。</p>
+<h3 id="任务-eai-综合评估簇⑥l3">任务 E：AI 综合评估（簇⑥·L3）</h3>
+<p>评估 AI 在本次演练中的综合表现：赋能侧（检测 / 分诊）+ 对抗侧（AI
+被攻破的路径）+ <strong>局限</strong>（什么场景 AI 失效 / 误报）。</p>
+<h3 id="任务-f现场演示">任务 F：现场演示</h3>
+<p>现场跑一次红蓝对抗演示（或提交<strong>录屏 /
+动态证据包</strong>——动态证据静态无法核验，不交录屏则降级
+observation）。</p>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<ul>
+<li><strong>常见扣分</strong>：自评虚点亮（点了簇×级但找不到 M0–M6
+证据）、覆盖 &lt; 3 簇、无现场演示 / 录屏、缺 AI 局限分析。</li>
+<li><strong>授权红线</strong>：演练仅在自己系统；触及第三方 =
+安全严谨不合格 + 上报。</li>
+<li><strong>AI 双向</strong>：M7 的 AI 双向按「是否在演练中综合评估
+AI（攻防 + 局限）」给档（权重 0.20）。</li>
+<li><strong>自评矩阵</strong>：本里程碑自评权重 0.20（最高之一），逐簇 ×
+级附证据，「无虚点亮」是硬要求。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在 <code>docs/m7/</code> 下提交（在 <code>milestone/m7</code>
+分支上完成、push、开 MR @ 助教，目标 = <code>milestone/m6</code>）：</p>
+<pre><code>docs/m7/
+├── redblue-record.md   # 任务 A/B/C：场景 + 红队攻击链 + 蓝队复盘 + 纵深度量
+├── forensics-report.md # 取证报告（时间线 + IoC）
+├── self-matrix.md      # 任务 D：能力自评矩阵（6 簇 × 3 级 → 证据 + 范式）
+└── report.md           # AI 综合评估（含局限）+ 演示录屏引用 + 自评</code></pre>
+<p><strong>评分量规（绑定全簇 · L3，满分 100；详细维度释义见 <a
+href="../../../capstone/evaluation-guide.html">评价指南</a>）</strong>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 (95)</th>
+<th style="text-align: left;">合格 (70)</th>
+<th style="text-align: left;">不合格 (40)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: left;">红蓝演练 + 取证报告 + 自评矩阵齐备 + 分支
+milestone/m7 + MR + 现场演示</td>
+<td style="text-align: left;">主要项完成</td>
+<td style="text-align: left;">关键项缺失</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">红蓝含编排多阶段利用链 +
+纵深防御度量；复盘有权衡取舍</td>
+<td style="text-align: left;">能跑通演练</td>
+<td style="text-align: left;">仅贴记录无复盘</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: left;">红蓝中综合运用攻防 + AI，并评估 AI
+局限（簇⑥·L3）</td>
+<td style="text-align: left;">仅提及 AI</td>
+<td style="text-align: left;">无 AI 综合评估</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;">0.15</td>
+<td
+style="text-align: left;">全链路审计、人在回路、最小权限贯穿全簇验证</td>
+<td style="text-align: left;">基本防护验证</td>
+<td style="text-align: left;">高危裸奔未修复</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: left;">自评矩阵与作品一致（逐簇 × 级回看 M0–M6
+证据，无虚点亮）</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>M7 是全簇 L3 收口，评审会校验<strong>全部 8
+个里程碑分支</strong>齐备（<code>m7_branch_chain</code>）。学期全部评审完成后，由助教统一把
+<code>milestone/m7</code> 合回 <code>main</code>。</p>
+</blockquote>
+<h2 id="能力自评">5. 能力自评</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">①·L3 / ②·L3 / ③·L3 / ④·L3 / ⑤·L3 /
+⑥·L3</td>
+<td
+style="text-align: left;">综合工程化：在集成系统上编排红蓝、纵深防御、检测-取证-欺骗闭环、AI
+综合评估</td>
+<td style="text-align: center;">☐（逐簇回看 M0–M6）</td>
+<td style="text-align: left;">M7 自评矩阵（每项挂 M0–M6 证据路径）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>本实验是整学期综合实践项目的收口——自评矩阵即你的「能力成绩单」。完成后
+<code>milestone/m7</code> 就是你的最终作品分支。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>

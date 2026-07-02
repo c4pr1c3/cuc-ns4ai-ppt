@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>第一单元: 安全基线</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../../../reveal.js/dist/reveal.css">
+  <style>
+      </style>
+  <link rel="stylesheet" href="../../../reveal.js/dist/theme/white.css" id="theme">
+  <style>
+.reveal .iframe-wrapper { position: relative; width: 100%; }
+.reveal .iframe-wrapper iframe { display: block; max-width: none; max-height: none; }
+.reveal .iframe-newwindow-btn {
+  position: absolute; top: 8px; right: 12px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 5px 12px; border-radius: 4px;
+  font-size: 13px; text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+  z-index: 10;
+}
+.reveal .iframe-newwindow-btn:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css"/>
+  <link rel="stylesheet" href="../../../reveal.js/dist/plugin/highlight/monokai.css">
+  <!-- Printing and PDF exports -->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">第一单元: 安全基线</h1>
+  <p class="subtitle">【道·术·器·造器】 认证 · 会话 · RBAC ·
+网络基线</p>
+  <p class="author">黄玮</p>
+  <p class="date">2026-秋</p>
+</section>
+
+<section>
+<section id="主题-0从入门级漏洞说起" class="title-slide slide level1">
+<h1>主题 0：从「入门级漏洞」说起</h1>
+
+</section>
+<section id="问题引入你的应用如何避免入门级漏洞" class="slide level2">
+<h2>问题引入：你的应用如何避免「入门级」漏洞？</h2>
+<blockquote>
+<p>每年泄露报告里排第一的，几乎不是零日漏洞（0day），而是<strong>弱口令、明文会话、越权</strong>——都不高级，但年年致命。</p>
+</blockquote>
+<ul>
+<li>M0 已做完威胁建模；<strong>M1
+把「基线安全」落到代码与配置上</strong></li>
+<li>种子工程（seed）故意预留攻击面：<code>secret_key="REPLACE_ME"</code>(:21)、<code>USERS={admin:admin123}</code>
+明文(:28)、<code>USERS.get(u)==p</code> 比对(:46)</li>
+<li>本单元 = 关掉 M0 登记表的 <strong>R1（弱口令）</strong> 与
+<strong>R4（会话密钥）</strong></li>
+</ul>
+</section>
+<section id="本单元地图1-学时道-术-器-造器" class="slide level2">
+<h2>本单元地图（≤1 学时）：道 → 术 → 器 → 造器</h2>
+<ol type="1">
+<li><strong>【道】</strong>：认证 vs
+授权、会话信任根、最小权限——三条安全观</li>
+<li><strong>【术】</strong>：口令哈希+盐 / 失败锁定 / 会话加固 / RBAC
+行级授权</li>
+<li><strong>【器】</strong>：hashcat（攻击侧验证弱口令）/
+flask-login（造器之前的器）</li>
+<li><strong>【造器】</strong>：落到你派生的应用 =
+综合实践项目（capstone）<strong>M1</strong></li>
+</ol>
+<blockquote>
+<p>深度理论见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x03.md</code>。本课件只讲「做
+M1 所需」。</p>
+</blockquote>
+</section>
+<section id="能力框架对应" class="slide level2">
+<h2>能力框架对应</h2>
+<ul>
+<li>簇 ①「<strong>安全基石与风险</strong>」· <strong>L3</strong>（U1 把
+U0 的 L1/L2 推到工程化）</li>
+<li>L1（U0）：复述 CIA/STRIDE/CVSS——<strong>题库</strong></li>
+<li>L2（U0）：威胁建模 + 风险登记表——<strong>M0</strong></li>
+<li><strong>L3（U1）：设计 RBAC / 风险登记表随项目演进 → 证据
+M1</strong></li>
+</ul>
+<blockquote>
+<p>本单元实验 = M1，证据就是你的「加固代码 + 种子工程弱实现 vs 新实现
+加固对照表」。实验见 <code>labs/lab01-baseline.md</code>。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-1道三条不变的安全观" class="title-slide slide level1">
+<h1>主题 1：【道】三条不变的安全观</h1>
+
+</section>
+<section id="认证-vs-授权你是谁-你能做什么" class="slide level2">
+<h2>认证 vs 授权：你是谁 ≠ 你能做什么</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: left;">认证（Authentication）</th>
+<th style="text-align: left;">授权（Authorization）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>回答</strong></td>
+<td style="text-align: left;"><strong>你是谁</strong></td>
+<td style="text-align: left;"><strong>你能做什么</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>失败后果</strong></td>
+<td style="text-align: left;">冒充（Spoofing，破坏认证属性）</td>
+<td style="text-align: left;">越权（Elevation，破坏授权属性）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>本单元对应</strong></td>
+<td style="text-align: left;">口令哈希 + 失败锁定（任务 A）</td>
+<td style="text-align: left;">RBAC 行级授权（任务 C）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>混淆二者是常见根因：很多人把「登录成功」当成「可以做任何事」——种子工程的
+<code>/orders</code> 正是只 <code>login_required</code>、无授权校验 →
+越权可读他人订单。</p>
+</blockquote>
+</section>
+<section id="会话信任根拿到-cookie-拿到你" class="slide level2">
+<h2>会话信任根：拿到 cookie = 拿到你</h2>
+<ul>
+<li>登录成功后，服务器发一张<strong>会话凭证（session
+cookie）</strong>；之后所有请求<strong>只凭这张凭证</strong>认人</li>
+<li>因此会话 =
+第二个「<strong>信任根</strong>」（第一个是口令），它一旦被窃/被猜/被固定，认证就被绕过</li>
+<li>三个常见致命点：
+<ul>
+<li><strong>secret_key 可猜/硬编码</strong> →
+攻击者可<strong>伪造</strong>任意会话（种子工程 :21 就是
+<code>REPLACE_ME</code>）</li>
+<li><strong>cookie 明文可读</strong>（HTTP）/ <strong>可被 JS
+读取</strong>（无 HttpOnly）→ 中间人/XSS 偷取</li>
+<li><strong>会话不轮换</strong>（登录后不 <code>regenerate</code>）→
+会话固定攻击</li>
+</ul></li>
+</ul>
+</section>
+<section id="最小权限默认-denyallow-显式" class="slide level2">
+<h2>最小权限：默认 deny，allow 显式</h2>
+<ul>
+<li><strong>最小权限原则</strong>：每个主体只授予「完成任务所需的最小权限」，且<strong>默认拒绝、显式允许</strong></li>
+<li>落到代码：<code>/orders</code>
+不能只问「你登录了吗」，要问「<strong>这个 user
+参数你是否有权读</strong>」</li>
+<li>落到角色：<code>admin</code> 能管账户、<code>alice</code>
+只能读自己的单——<strong>行级</strong>而非端点级</li>
+<li>这一条是 RBAC（任务 C）的灵魂，也是 M6 Agent
+护栏（工具白名单）的同一思想</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-2术口令安全" class="title-slide slide level1">
+<h1>主题 2：【术】口令安全</h1>
+
+</section>
+<section id="不存明文哈希-盐" class="slide level2">
+<h2>不存明文：哈希 + 盐</h2>
+<ul>
+<li><strong>绝不要</strong>存明文口令（种子工程 :28
+<code>USERS={admin:admin123}</code> 是反面教材）</li>
+<li>存「<strong>哈希值 +
+随机盐</strong>」：即便库被脱，攻击者也无法反推原口令
+<ul>
+<li>盐 = 每用户一段随机串 → 相同口令哈希值不同，废掉彩虹表</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>原理（慢哈希、cost、pepper）见
+<code>https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x03.md</code>「口令安全」。</p>
+</blockquote>
+</section>
+<section id="三种等价选型择一禁自造算法" class="slide level2">
+<h2>三种等价选型（择一，禁自造算法）</h2>
+<ul>
+<li><code>werkzeug.security.generate_password_hash(pw)</code> /
+<code>check_password_hash(hash, pw)</code> —— Flask 自带、最省事</li>
+<li><code>bcrypt</code> —— 工业标准，可调 cost</li>
+<li><code>pbkdf2</code> —— 标准库 / 通用框架常见</li>
+</ul>
+</section>
+<section id="失败计数-锁定让爆破不划算" class="slide level2">
+<h2>失败计数 + 锁定：让爆破「不划算」</h2>
+<ul>
+<li>仅哈希不够——在线爆破仍可穷举弱口令 → 加<strong>失败计数 +
+阈值锁定</strong></li>
+<li>策略：连续失败 N 次（如 5）→ 锁账户 T 分钟（如 5）→
+提升单位攻击成本</li>
+<li>落到
+<code>/login</code>：失败累计、阈值后拒、成功/超时清零；<strong>审计每条
+<code>login.fail</code></strong>（种子工程 :50 留了钩子，M6 可挂 AI
+打分）</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-3术会话加固" class="title-slide slide level1">
+<h1>主题 3：【术】会话加固</h1>
+
+</section>
+<section id="cookie-三件套secure-httponly-samesite"
+class="slide level2">
+<h2>Cookie 三件套：Secure / HttpOnly / SameSite</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">属性</th>
+<th style="text-align: left;">防什么</th>
+<th style="text-align: left;">配置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Secure</strong></td>
+<td style="text-align: left;">明文 HTTP 下被窃听</td>
+<td style="text-align: left;">仅 HTTPS 发送</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>HttpOnly</strong></td>
+<td style="text-align: left;">JS 读取（XSS 偷 cookie）</td>
+<td style="text-align: left;"><code>document.cookie</code> 取不到</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>SameSite</strong></td>
+<td style="text-align: left;">CSRF（跨站借 cookie 发请求）</td>
+<td style="text-align: left;"><code>Lax</code>/<code>Strict</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cookie-三件套配置" class="slide level2">
+<h2>Cookie 三件套：配置</h2>
+<pre ><code class="python">app.config.update(
+    SESSION_COOKIE_SECURE=True,      # 生产须 HTTPS
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+)</code></pre>
+</section>
+<section id="过期-防固定会话加固" class="slide level2">
+<h2>过期 + 防固定（会话加固）</h2>
+<ul>
+<li><strong>过期</strong>：<code>session.permanent=True</code> +
+<code>PERMANENT_SESSION_LIFETIME</code> 设上限——会话不能永久有效</li>
+<li><strong>防会话固定</strong>：登录成功 / 权限变更时
+<code>session.regenerate()</code>（清旧 sid、发新的），防止攻击者预植的
+sid 被受害者登录后复用</li>
+</ul>
+</section>
+<section id="随机化-secret_key闭环-m0-r4" class="slide level2">
+<h2>随机化 secret_key（闭环 M0 R4）</h2>
+<ul>
+<li>种子工程 :21 的 <code>REPLACE_ME</code> 让签名可预测 → 改用
+<code>secrets.token_hex(32)</code> 启动时随机化（<strong>闭环 M0
+R4</strong>）</li>
+</ul>
+<pre ><code class="python">import secrets
+app.secret_key = secrets.token_hex(32)   # 不再硬编码，落实 M0 R4</code></pre>
+<blockquote>
+<p>这是 M0 登记表 R4 的「落到代码」证据——评审会专门看
+<code>secret_key</code> 是否仍硬编码。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-4术rbac-授权" class="title-slide slide level1">
+<h1>主题 4：【术】RBAC 授权</h1>
+
+</section>
+<section id="角色模型-行级授权从能进到能做哪一行" class="slide level2">
+<h2>角色模型 + 行级授权：从「能进」到「能做哪一行」</h2>
+<ul>
+<li><strong>角色模型</strong>：<code>admin</code> / <code>alice</code>
+各自能做什么——一张角色-权限矩阵</li>
+<li><strong>端点级</strong>：用装饰器把端点绑到角色，如
+<code>@rbac_required("admin")</code></li>
+<li><strong>行级（本单元重点）</strong>：<code>/orders</code>
+等「带参数查资源」端点，<strong>必须服务端强校验 <code>user</code>
+参数</strong></li>
+</ul>
+<blockquote>
+<p>种子工程 <code>/orders</code> 直接信任前端传的 <code>user</code> →
+越权读他人订单（M3 SQLi 之外的另一个必修点）。</p>
+</blockquote>
+</section>
+<section id="rbac_required-装饰器端点级实现" class="slide level2">
+<h2><code>@rbac_required</code> 装饰器（端点级实现）</h2>
+<pre ><code class="python">def rbac_required(role):
+    def deco(fn):
+        @wraps(fn)
+        def w(*a, **k):
+            u = session.get("user")
+            if not u or USERS_ROLE.get(u) != role:
+                return jsonify({"err": "forbidden"}), 403
+            return fn(*a, **k)
+        return w
+    return deco</code></pre>
+</section>
+<section id="orders-行级授权服务端不信任何客户端入参"
+class="slide level2">
+<h2><code>/orders</code> 行级授权：服务端不信任何客户端入参</h2>
+<ul>
+<li>反例（种子工程
+:71）：<code>user = request.args.get("user", session["user"])</code> →
+前端传谁的 <code>user</code> 就查谁</li>
+<li>正解：<strong>服务端强校验</strong>——<code>user</code> 只能取自
+<code>session["user"]</code>（或显式比对
+<code>user == session["user"]</code>），否则 403</li>
+<li>默认 deny、显式 allow：宁可误拒，不可误放</li>
+<li>这条同时挡住「水平越权」（同级读他人）与「垂直越权」（普通用户碰到
+admin 端点）</li>
+</ul>
+</section></section>
+<section>
+<section id="主题-5器工具与造器的分野" class="title-slide slide level1">
+<h1>主题 5：【器】工具与「造器」的分野</h1>
+
+</section>
+<section id="器hashcat攻击侧-flask-login防御侧" class="slide level2">
+<h2>【器】hashcat（攻击侧）+ flask-login（防御侧）</h2>
+<ul>
+<li><strong>hashcat</strong>（攻击侧）：离线爆破哈希——用<strong>你脱下来的自己的库</strong>验证「弱口令到底有多弱」，是
+M1 的<strong>自检</strong>手段
+<ul>
+<li>例：把 <code>admin</code> 的哈希丢进 hashcat + 字典，秒级还原
+<code>admin123</code> → 这就是为什么不能有弱口令</li>
+</ul></li>
+<li><strong>flask-login</strong>（防御侧）：成熟的会话/登录管理库，封装了「记住我、会话加载、登出」等</li>
+</ul>
+<blockquote>
+<p>⚠️
+这是「<strong>用器</strong>」——会调库、会跑工具只是开始。<strong>课程目标是「造器」</strong>：理解口令为何要加盐、会话为何要轮换、授权为何要行级，进而能设计<strong>带
+AI 能力的</strong>认证与护栏（M6）。</p>
+</blockquote>
+</section>
+<section id="hashcat-自检验证你的口令策略是否真的够强"
+class="slide level2">
+<h2>hashcat 自检：验证你的口令策略是否真的够强</h2>
+<pre ><code class="bash"># 生成一个测试哈希（自造、可逆、仅自检）
+echo -n "admin123" | sha256sum
+# 用字典模式爆破（仅对你自己的哈希、在授权环境内）
+hashcat -m 1400 -a 0 myhash.txt rockyou.txt</code></pre>
+<ul>
+<li>若秒级还原 → 你的口令策略太弱（即便加了盐）→
+倒逼提高最小长度/复杂度、加失败锁定</li>
+<li><strong>红线</strong>：仅对你<strong>自己脱下来的、自己应用里的</strong>哈希做；<strong>禁止</strong>对他人/真实系统</li>
+</ul>
+<blockquote>
+<p>这是「侦察可逆」的同一思想：攻击者能爆的，你理应先自爆出来。</p>
+</blockquote>
+</section></section>
+<section>
+<section id="主题-6造器衔接实验-m1" class="title-slide slide level1">
+<h1>主题 6：【造器】衔接实验 M1</h1>
+
+</section>
+<section id="加固对照表12口令-登录-secret_key" class="slide level2">
+<h2>加固对照表（1/2）：口令 · 登录 · secret_key</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">种子工程弱实现</th>
+<th style="text-align: left;">M1 新实现</th>
+<th style="text-align: left;">闭环</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">口令</td>
+<td style="text-align: left;"><code>USERS={admin:admin123}</code>
+明文(:28)</td>
+<td style="text-align: left;"><code>generate_password_hash</code> +
+盐</td>
+<td style="text-align: left;"><strong>R1</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">登录</td>
+<td style="text-align: left;"><code>USERS.get(u)==p</code>
+明文比对(:46)</td>
+<td style="text-align: left;"><code>check_password_hash</code> +
+失败锁定</td>
+<td style="text-align: left;">R1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">secret_key</td>
+<td style="text-align: left;"><code>REPLACE_ME</code> 硬编码(:21)</td>
+<td style="text-align: left;"><code>secrets.token_hex(32)</code></td>
+<td style="text-align: left;"><strong>R4</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="加固对照表22cookie-授权" class="slide level2">
+<h2>加固对照表（2/2）：cookie · 授权</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">维度</th>
+<th style="text-align: left;">种子工程弱实现</th>
+<th style="text-align: left;">M1 新实现</th>
+<th style="text-align: left;">闭环</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">cookie</td>
+<td style="text-align: left;">无三件套</td>
+<td style="text-align: left;">Secure/HttpOnly/SameSite + 过期</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">授权</td>
+<td style="text-align: left;">仅 <code>login_required</code></td>
+<td style="text-align: left;"><code>@rbac_required</code> +
+行级校验</td>
+<td style="text-align: left;">—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>这张表是 <code>docs/m1/report.md</code>
+的核心——<strong>逐条对照、附测试佐证</strong>，体现
+L3「工程化」而非「贴配置」。</p>
+</blockquote>
+</section>
+<section id="任务全景ae" class="slide level2">
+<h2>任务全景（A→E）</h2>
+<pre ><code >任务 A 口令哈希 + 失败计数 / 锁定        ── 闭环 R1
+任务 B 会话加固（cookie 三件套 + 过期 + 防固定 + 随机 secret）── 闭环 R4
+任务 C RBAC（角色 + @rbac_required + /orders 行级授权）
+任务 D 网络 / 传输基线（暴露面收敛 + HTTPS 思路 + iptables）
+任务 E（可选）AI 辅助审查加固配置、生成对照表草稿</code></pre>
+<ul>
+<li>起点分支：<code>milestone/m1</code>（从 <code>milestone/m0</code>
+切，<strong>不是 main</strong>），开 MR 目标 =
+<code>milestone/m0</code></li>
+<li>自检命令：<code>git grep -nE 'generate_password_hash|bcrypt|pbkdf2'</code>
+/ <code>'secrets.token'</code> / <code>'fail.*count|lock'</code></li>
+</ul>
+</section></section>
+<section>
+<section id="主题-7网络基线任务-d-速览"
+class="title-slide slide level1">
+<h1>主题 7：网络基线（任务 D 速览）</h1>
+
+</section>
+<section id="暴露面收敛-https纵深防御的一层" class="slide level2">
+<h2>暴露面收敛 + HTTPS：纵深防御的一层</h2>
+<ul>
+<li><strong>暴露面收敛</strong>：关多余端口/服务——只暴露 5000（或反代后
+443）；U2 会专门量化</li>
+<li><strong>传输加密</strong>：反代 + 证书（自签用于实验，生产用 Let’s
+Encrypt / ACME）</li>
+<li><strong>主机防火墙</strong>：<code>iptables</code> /
+<code>nftables</code> 写收敛规则——<strong>默认 DROP、显式
+ACCEPT</strong></li>
+</ul>
+<pre ><code class="bash"># 仅放行 22 / 5000，其余入站默认拒绝（仅本机授权环境）
+sudo iptables -A INPUT -p tcp --dport 22   -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
+sudo iptables -P INPUT DROP                  # 默认 deny</code></pre>
+</section></section>
+<section>
+<section id="主题-8能力自评与红线" class="title-slide slide level1">
+<h1>主题 8：能力自评与红线</h1>
+
+</section>
+<section id="本单元点亮簇-①l3安全工程化" class="slide level2">
+<h2>本单元点亮簇 ①·L3（安全工程化）</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">自评勾选</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">L1</td>
+<td style="text-align: left;">复述 CIA/STRIDE/CVSS，识别资产与威胁</td>
+<td style="text-align: center;">☐ U0 已点亮</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">L2</td>
+<td style="text-align: left;">对系统做威胁建模 + 风险登记表</td>
+<td style="text-align: center;">☐ M0 已点亮</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>L3</strong></td>
+<td style="text-align: left;"><strong>设计并实现 认证/会话/RBAC +
+网络基线，并随项目演进</strong></td>
+<td style="text-align: center;">☐ <strong>M1 交付</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>自评须与作品一致（<strong>无虚点亮</strong>）：在
+<code>docs/m1/report.md</code> 逐项附证据路径</li>
+<li>评审专门看：R1（口令）与 R4（secret_key）是否真闭环、RBAC
+是否有行级授权</li>
+</ul>
+</section>
+<section id="红线仅对授权环境" class="slide level2">
+<h2>⚠️ 红线：仅对授权环境</h2>
+<ul>
+<li>所有加固/爆破实验<strong>仅在自己派生的靶场、<code>127.0.0.1</code>
+或明确授权的环境内</strong></li>
+<li>hashcat
+等工具只对你<strong>自己</strong>脱下来的哈希做——<strong>禁止</strong>对任何真实/第三方系统</li>
+<li>课程<strong>不教授</strong>编写恶意代码；基线工具同时是<strong>防御自查</strong>手段</li>
+</ul>
+</section>
+<section id="小结与下一单元" class="slide level2">
+<h2>小结与下一单元</h2>
+<ol type="1">
+<li><strong>道</strong>：认证 ≠ 授权；会话是第二信任根；最小权限默认
+deny</li>
+<li><strong>术</strong>：口令哈希+盐+失败锁定 / cookie
+三件套+防固定+随机 secret / RBAC 行级授权</li>
+<li><strong>造器</strong>：把种子工程的明文弱实现改成加固版，逐条对照 →
+<strong>M1</strong></li>
+</ol>
+<blockquote>
+<p>下一单元 <strong>U2
+自侦察（M2）</strong>：对你这版「<strong>已加固</strong>的应用」做暴露面测绘——你能看见自己暴露了什么，攻击者就能看见什么。</p>
+</blockquote>
+</section></section>
+    </div>
+  </div>
+
+  <script src="../../../reveal.js/dist/reveal.js"></script>
+  <script src="../../../reveal.js/dist/plugin/highlight.js"></script>
+  <script src="../../../reveal.js/dist/plugin/notes.js"></script>
+  <script src="../../../reveal.js/dist/plugin/zoom.js"></script>
+  <script src="../../../reveal.js/dist/plugin/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        plugins: [ RevealHighlight, RevealNotes, RevealZoom, RevealMath ],
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+      });
+
+      // Add "open in new window" button to all iframes
+      Reveal.on('ready', function() {
+        document.querySelectorAll('.slides section iframe').forEach(function(iframe) {
+          var wrapper = document.createElement('div');
+          wrapper.className = 'iframe-wrapper';
+          var link = document.createElement('a');
+          link.className = 'iframe-newwindow-btn';
+          link.href = iframe.src;
+          link.target = '_blank';
+          link.title = '在新窗口打开';
+          link.textContent = '↗ 新窗口打开';
+          iframe.parentNode.insertBefore(wrapper, iframe);
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(link);
+        });
+      });
+    </script>
+    </body>
+</html>
