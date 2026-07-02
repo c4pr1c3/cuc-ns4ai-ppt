@@ -10,6 +10,7 @@ output: revealjs::revealjs_presentation
 
 > 本指南对齐综合实践项目（capstone）M6（簇⑥·L2 双向），按「七要素」精简展开，面向**网安本科生自学**。
 > 配套题库见 [`unit06-quiz.md`](unit06-quiz.md)。
+> 💡 **焦虑解药**：这一单元你会同时「用 AI」和「攻 AI」——可能觉得「AI 这么强，我学的还有什么用？」答案：**人的价值 = 驾驭 AI**（拆问题、指挥、否决错误、担责），AI 自己做不了。课奖励**驾驭质量**、不奖执行速度；详见 [`syllabus.md`](../syllabus.md)「AI 时代的人机关系」。
 
 ---
 
@@ -140,7 +141,7 @@ scores = -clf.score_samples(X_test)   # 分数越高越异常
 ## SOAR：从决策到行动
 
 * **SOAR**（Security Orchestration, Automation & Response）：把响应**剧本化**
-    * 例：钓鱼邮件 → 提取威胁情报指标（IOC） → 查情报 → 命中则隔离邮箱 + 封禁 IP
+    * 例：钓鱼邮件 → 提取威胁情报指标（IoC） → 查情报 → 命中则隔离邮箱 + 封禁 IP
 * AI 介入点：自然语言 → 剧本、运行中动态调整
 * **铁律：高风险动作必须「人在回路」（Human-in-the-Loop）**
 

@@ -11,7 +11,7 @@
 
 ## 2. 环境准备
 
-- 你的 M5 末仓库（已含鉴权、IDS/日志、蜜罐）；起点可 fork [`capstone/seed/`](../../../capstone/seed/) 的 `app.py`（已含 `/api/agent` 端点 + 工具白名单护栏钩子）。
+- 你的 M5 末仓库（已含认证、IDS/日志、蜜罐）；起点可 fork [`capstone/seed/`](../../../capstone/seed/) 的 `app.py`（已含 `/api/agent` 端点 + 工具白名单护栏钩子）。
 - 一个 LLM（外部 API 或本地推理）；Python + `scikit-learn`（AI 检测组件）。
 - ⚠️ 所有攻击实验**仅在自己的靶场、授权环境**内进行；课程不教授编写恶意代码。
 

@@ -25,7 +25,8 @@ bash build_slides.sh
 # 3.（可选/开发期）slide 超高自测：改完 slides 提交前跑，CI 不再做此校验
 npm install && npx playwright install chromium   # 首次
 npm run check:overflow                           # slide 超高自测
-npm run check:links                              # 首页注册校验（加新页后）
+npm run check:links                              # 首页注册 + 全页相对链接可达（加新页后）
+npm run check:links:fix                          # 自动修「多 ../」类断链
 ```
 
 - **slides**（reveal.js + highlight.js monokai）：仅 `courseware/**/slides/*.md`

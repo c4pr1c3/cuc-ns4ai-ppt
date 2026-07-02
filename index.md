@@ -27,7 +27,7 @@ output: revealjs::revealjs_presentation
 
 ### U1 安全基线 → M1
 
-* [课件](courseware/unit01-baseline/slides/01-overview.md) | [实验 M1](courseware/unit01-baseline/labs/lab01-baseline.md) · 来源：教材第 3 章压缩 · 主题：安全基线（鉴权/RBAC/会话）
+* [课件](courseware/unit01-baseline/slides/01-overview.md) | [实验 M1](courseware/unit01-baseline/labs/lab01-baseline.md) · 来源：教材第 3 章压缩 · 主题：安全基线（认证/RBAC/会话）
 
 ---
 
@@ -72,7 +72,7 @@ output: revealjs::revealjs_presentation
 * [作品总览（里程碑 M0–M7 + 量规）](capstone/overview.md)
 * [课程评价指南（学生版）](capstone/evaluation-guide.md)
 * [里程碑 M6：AI 赋能与对抗](capstone/m6-ai.md)
-* [种子工程](https://github.com/)（学生派生起点，目录 `capstone/seed/`）
+* [种子工程](capstone/seed/README.md)（学生派生起点，目录 `capstone/seed/`）
 
 ---
 

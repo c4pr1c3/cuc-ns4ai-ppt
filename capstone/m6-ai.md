@@ -25,7 +25,7 @@ output: revealjs::revealjs_presentation
 
 * 一个已加固、带 IDS/日志/蜜罐的 Web 应用（M0-M5 成果）
 * 集中日志可取；有真实用户行为可观测
-* 仓库已就绪：鉴权、暴露面清单、已知漏洞与修复记录
+* 仓库已就绪：认证、暴露面清单、已知漏洞与修复记录
 
 ---
 
@@ -55,7 +55,6 @@ def agent(q: str):
 * 最小实现：对登录/请求行为用 Isolation Forest 打风险分，高分触发告警
 
 ```{.python .numberLines}
-from sklearn.entropy  import *  # 占位
 from sklearn.ensemble import IsolationForest
 # 特征：[小时, 是否国内, 频率, 失败次数]
 model = IsolationForest(contamination=0.02).fit(X_normal)
