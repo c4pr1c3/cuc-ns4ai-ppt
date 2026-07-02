@@ -1,6 +1,6 @@
 # 渐进式作品 · 种子工程（学生 fork 起点）
 
-> 这是《网络安全（AI 时代版）》渐进式作品 M0 的起点脚手架。fork 它，按 [`../capstone-overview.md`](../capstone-overview.html) 的 M0-M7 在**同一个仓库**里持续迭代。
+> 这是《网络安全（AI 时代版）》渐进式作品 M0 的起点脚手架。fork 它，按 [`overview`](../overview.md) 的 M0-M7 在**同一个仓库**里持续迭代。
 
 ## 最小可运行
 
@@ -22,9 +22,11 @@ python app.py          # 监听 127.0.0.1:5000
 
 ## 迭代约定
 
-- 每个里程碑打 git tag：`m0`, `m1`, … `m7`
-- 每次提交附里程碑报告（做了什么 / 点亮哪些能力簇 / 踩到的坑）
-- ⚠️ 所有攻击实验**仅在本仓库自己的应用、授权环境**内进行；课程不教授编写恶意代码
+- 每个里程碑开一个分支：`milestone/m0`, `milestone/m1`, … `milestone/m7`（**不打 tag**）。分支首尾相接——`milestone/m{n}` 基于 `milestone/m{n-1}` 切出（M0 基于 `main`）。
+- 每个里程碑提一个 **Merge Request**：源 = `milestone/m{n}`，目标 = 上一里程碑分支（M0 目标 `main`）；**@ 助教** 通知批改；**保持 Open、不合并、不关闭**。
+- 每次提交附里程碑报告（做了什么 / 点亮哪些能力簇 / 踩到的坑）。
+- ⚠️ 所有攻击实验**仅在本仓库自己的应用、授权环境**内进行；课程不教授编写恶意代码。
+- 完整 Git 操作规范见 [`Git 指南`](../../courseware/unit00-intro/labs/git-guide.md)；一键开里程碑分支：`bash scripts/new-milestone.sh <n>`。
 
 ## 你需要自己补的（按里程碑）
 

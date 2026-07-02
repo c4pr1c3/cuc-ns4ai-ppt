@@ -283,6 +283,21 @@
     text-decoration: underline;
 }
 
+/* doc 页面顶部「← 返回首页」导航（build_slides.sh render_doc 经 --include-before-body 注入）*/
+.markdown-body .doc-home {
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eaecef;
+    font-size: 90%;
+}
+.markdown-body .doc-home a {
+    color: #0366d6;
+    text-decoration: none;
+}
+.markdown-body .doc-home a:hover {
+    text-decoration: underline;
+}
+
 .markdown-body img {
     max-width: 100%;
     box-sizing: content-box;

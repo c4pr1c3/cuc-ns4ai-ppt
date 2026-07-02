@@ -6,7 +6,7 @@ date: 2026-秋
 output: revealjs::revealjs_presentation
 ---
 
-# Topic 1: 单元导览
+# 主题 1：单元导览
 
 ---
 
@@ -15,7 +15,7 @@ output: revealjs::revealjs_presentation
 > **如何给你的系统装上 AI 能力，并反过来攻防它的 AI 能力？**
 
 * 前五个单元：你在搭一个「已加固、有日志、有蜜罐」的靶场 Web 应用
-* 本单元（U6 = capstone **M6**，核心权重）：给它装 AI，再攻防这个 AI
+* 本单元对应综合实践项目（capstone）的里程碑 **M6**，权重最高：给它装 AI，再攻防这个 AI
 * 同时命中两大维度——课程唯一这样的单元
 
 ---
@@ -24,8 +24,8 @@ output: revealjs::revealjs_presentation
 
 | 维度 | 含义 | 本单元 |
 | :-: | :- | :-: |
-| <span style="color:#1a73e8">**AI 赋能**</span> | 用 AI 提升检测/分析/响应/渗透效率 | slides 03 + lab 赋能侧 |
-| <span style="color:#d93025">**AI 作为对象**</span> | 攻防 AI 系统本身（模型/Agent/RAG） | slides 02 + lab 对抗侧 |
+| <span style="color:#1a73e8">**AI 赋能**</span> | 用 AI 提升检测/分析/响应/渗透效率 | 课件 03 + 实验赋能侧 |
+| <span style="color:#d93025">**AI 作为对象**</span> | 攻防 AI 系统本身（模型、智能体、RAG） | 课件 02 + 实验对抗侧 |
 
 * 不是「用不用 AI」，而是「**在哪层用、如何评、如何兜底**」
 
@@ -33,12 +33,12 @@ output: revealjs::revealjs_presentation
 
 ## 本单元地图
 
-* **slides 01（本页）**：导览 + LLM/对齐速通 + 治理框架
-* **slides 02**：AI 作为攻击面 + Agent 安全（对抗理论）
-* **slides 03**：AI 赋能安全 + 红队速成（赋能理论）
-* **lab**：M6 —— 赋能（集成 LLM + AI 检测）+ 对抗（注入/投毒 PoC + 加固）
+* **课件 01（本页）**：导览 + LLM/对齐速通 + 治理框架
+* **课件 02**：AI 作为攻击面 + 智能体安全（对抗理论）
+* **课件 03**：AI 赋能安全 + 红队速成（赋能理论）
+* **实验**：M6 —— 赋能（集成 LLM + AI 检测）+ 对抗（注入/投毒，产出概念验证（PoC）并加固）
 
-> 深度理论见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md`；本 slides 只讲「做 M6 所需」。
+> 深度理论见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md`；本课件只讲「做 M6 所需」。
 
 ---
 
@@ -48,17 +48,17 @@ output: revealjs::revealjs_presentation
 * L1：区分两类场景（认知）
 * L2（对象）：对 AI 功能做注入/越狱/RAG 投毒并加固
 * L2（赋能）：集成 AI 检测/分诊组件并解读结果
-* 详见 [`capability-framework.md`](../../../../capability-framework.html)
+* 详见 [`capability-framework.md`](../../../capability-framework.md)
 
-# Topic 2: 速通 LLM 与对齐
+# 主题 2：速通 LLM 与对齐
 
 ---
 
 ## 三大架构分支（一句话）
 
-* **Encoder-only**（BERT）：双向理解，擅长分类/抽取
-* **Encoder-Decoder**（T5/BART）：翻译/摘要
-* **Decoder-only**（GPT 系）：自回归生成，当前主流对话模型
+* **仅编码器（Encoder-only，BERT）**：双向理解，擅长分类/抽取
+* **编码器-解码器（Encoder-Decoder，T5/BART）**：翻译/摘要
+* **仅解码器（Decoder-only，GPT 系）**：自回归生成，当前主流对话模型
 * 训练范式：**预训练 → 微调 → 对齐**
 
 ---
@@ -66,7 +66,7 @@ output: revealjs::revealjs_presentation
 ## 对齐（Alignment）与 HHH
 
 * **对齐**：让模型行为符合人类意图与价值
-* **HHH**：Helpful / Honest / Harmless
+* **HHH**：有用 / 诚实 / 无害（Helpful / Honest / Harmless）
 * 手段：指令微调（SFT）、人类反馈强化学习（RLHF）
 
 ---
@@ -74,10 +74,10 @@ output: revealjs::revealjs_presentation
 ## ⚠️ 关键判断：对齐 ≠ 安全
 
 * 对齐让模型「默认表现好」，但**可被注入绕过**
-* 间接注入（藏在模型会读的内容里）普遍有效 → 见 slides 02
+* 间接注入（藏在模型会读的内容里）普遍有效 → 见课件 02
 * 所以「我用了 RLHF」**不能**作为安全结论
 
-# Topic 3: 治理框架速览
+# 主题 3：治理框架速览
 
 ---
 
@@ -93,5 +93,5 @@ output: revealjs::revealjs_presentation
 ## 本单元与治理
 
 * 本单元聚焦「**技术上怎么攻、怎么守**」
-* 合规/审计闭环见 slides 03 红队速成 + `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md`
-* 落到工程：lab M6 必须给出**度量**与**加固证据**
+* 合规/审计闭环见课件 03 红队速成 + `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md`
+* 落到工程：实验 M6 必须给出**度量**与**加固证据**

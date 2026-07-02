@@ -6,7 +6,7 @@ date: 2026-秋
 output: revealjs::revealjs_presentation
 ---
 
-# Topic 1: 课程范式与一个真实问题
+# 主题 1：课程范式与一个真实问题
 
 ---
 
@@ -14,9 +14,9 @@ output: revealjs::revealjs_presentation
 
 > **「如何系统地攻防一个真实系统？」**
 
-- 这不是一道选择题，而是一整学期的工程
+- 本课程不是靠几道选择题应付的考核，而是贯穿整学期的工程实践
 - 经典安全课：分章讲授 + 分章实验报告 → 知识碎片化、无法度量综合能力
-- 本课程：**整学期只做一个 capstone**（一个「含 AI 能力的靶场 Web 应用」），按里程碑 M0-M7 渐进迭代
+- 本课程：**整学期只做一个综合实践项目（capstone）**（一个「含 AI 能力的靶场 Web 应用」），按里程碑 M0-M7 渐进迭代
 - 知识按需、实战驱动；课堂只补「做出来所需」的最小讲授
 
 ---
@@ -25,11 +25,11 @@ output: revealjs::revealjs_presentation
 
 | 类别 | 学时 | 占比 |
 | :-: | :-: | :-: |
-| 课堂 just-in-time 讲授 | 16 | 25% |
+| 课堂按需讲授 | 16 | 25% |
 | 实战 / 实验 / 作品 | 48 | **75%** |
 | **合计** | **64** | 100% |
 
-> 趋势：讲授学时**将继续精简**，实践比重进一步提升。每单元 = 真实问题 hook + 实战 lab + just-in-time 讲授。
+> 趋势：讲授学时**将继续精简**，实践比重进一步提升。每单元 = 真实问题引入 + 实战实验 + 按需讲授。
 
 ---
 
@@ -38,9 +38,9 @@ output: revealjs::revealjs_presentation
 | 维度 | 内容 |
 | :-: | :- |
 | 真实问题 | 如何系统攻防一个真实系统？ |
-| lab（= capstone M0） | 立项与威胁建模 |
+| 实验（= 综合实践项目 M0） | 立项与威胁建模 |
 | 讲授 | 1h：能力框架 + CIA/STRIDE/CVSS 速成 |
-| 来源 | Ch1-2 压缩（经典全文见 [cuc-ns-ppt 在线仓库](https://github.com/c4pr1c3/cuc-ns-ppt/)） |
+| 来源 | 第 1-2 章压缩（经典全文见 [cuc-ns-ppt 在线仓库](https://github.com/c4pr1c3/cuc-ns-ppt/)） |
 | 能力点亮 | 簇①·L1 认知 + 簇①·L2 实践 |
 
 > 本单元**不写代码**，但把整学期的「地基」打好：能力框架、威胁建模语言、风险评分标尺。
@@ -51,14 +51,14 @@ output: revealjs::revealjs_presentation
 
 > 一句话总览：AI 既是**武器**，也是**靶场**。
 
-- <span style="color:#1a73e8">**AI 赋能安全**</span>：用大模型做代码审计、日志分诊、威胁情报、PoC 生成、取证摘要
+- <span style="color:#1a73e8">**AI 赋能安全**</span>：用大模型做代码审计、日志分诊、威胁情报、概念验证（PoC）生成、取证摘要
 - <span style="color:#d93025">**AI 作为安全对象**</span>：提示词注入、越狱、RAG 投毒、工具滥用、模型窃取
 - 课程主线把这两面织进同一个应用：**U4/U5 传统方法 → AI 增强（埋伏）→ U6 AI 对抗（集中，核心 30%）**
 - 本单元先建立「双语」直觉，细节留待 U6
 
-> 详见 [`capability-framework.md`](../../../capability-framework.html) 簇⑥。
+> 详见 [`capability-framework.md`](../../../capability-framework.md) 簇⑥。
 
-# Topic 2: 能力框架 v2
+# 主题 2：能力框架 v2
 
 ---
 
@@ -74,12 +74,12 @@ output: revealjs::revealjs_presentation
 
 | # | 能力簇 | 主单元 | 来源经典（参考） |
 | :-: | :- | :-: | :- |
-| ① | 安全基石与风险 | U0-U1 | Ch1-3 |
-| ② | 侦察与发现 | U2 | Ch4-5（+Ch13 社工） |
-| ③ | 攻击与渗透 | U3 | Ch6-7 |
-| ④ | 防御与加固 | U4 | Ch8-10 |
-| ⑤ | 检测 / 取证 / 欺骗 | U5 | Ch11-13 |
-| ⑥ | **AI×网络安全（贯穿轴）** | **U6**（+U4/U5 埋伏） | Ch14-18 |
+| ① | 安全基石与风险 | U0-U1 | 第 1-3 章 |
+| ② | 侦察与发现 | U2 | 第 4-5 章（+第 13 章 社工） |
+| ③ | 攻击与渗透 | U3 | 第 6-7 章 |
+| ④ | 防御与加固 | U4 | 第 8-10 章 |
+| ⑤ | 检测 / 取证 / 欺骗 | U5 | 第 11-13 章 |
+| ⑥ | **AI×网络安全（贯穿轴）** | **U6**（+U4/U5 埋伏） | AI 安全专题（新增） |
 
 ---
 
@@ -99,9 +99,9 @@ output: revealjs::revealjs_presentation
 | **L2** | 对一个系统做威胁建模 + CVSS 评分 | U0 | **M0** 立项与威胁建模 |
 | L3 | 设计 RBAC/风险登记表并随项目演进 | U1 | M1 安全基线 |
 
-> 完整覆盖矩阵见 [`capability-framework.md`](../../../capability-framework.html)。本单元 lab = M0，证据就是你的威胁建模产物。
+> 完整覆盖矩阵见 [`capability-framework.md`](../../../capability-framework.md)。本单元实验 = M0，证据就是你的威胁建模产物。
 
-# Topic 3: CIA / STRIDE / CVSS 速成
+# 主题 3：CIA / STRIDE / CVSS 速成
 
 ---
 
@@ -113,6 +113,26 @@ output: revealjs::revealjs_presentation
 - 扩充属性：认证（Authentication）/ 授权（Authorization）/ 不可抵赖性（审计 Accountability）
 
 > 每一次威胁建模，第一步都是问：这个资产，**C/I/A** 哪个最受关注？
+
+---
+
+## 【道】CIA 标注反例：别一刀切 C+I+A 全 High
+
+> 新手误区：每个资产都标 C=H / I=H / A=H——等于没标。
+
+* 资产要**挑最致命的 1 个属性**打星（如「用户口令表 → C★」，泄露即沦陷）
+* 三问择一：「攻击者最想要什么 / 最怕什么被改 / 哪个挂了最要命」里**最尖锐**的那个
+* 例：`orders 订单表` 主要怕**篡改/越权（I）**而非机密性 → 标 I★ 才能引导 M3 SQLi 防御
+
+---
+
+## 【道】资产清单误区：对 127.0.0.1 自扫 OS 指纹意义有限
+
+> 给**自己的**应用做资产清单时，别急着 `-O` 扫 OS 指纹。
+
+* 你扫的是 `127.0.0.1` = **你自己的机器** → OS 你本来就知道，指纹扫描信息量≈0
+* M0 资产清单要的是**应用层资产**：端点（`/login` `/orders` `/api/agent`）、数据（orders 表、USERS、secret_key）、依赖（Flask/sqlite/LLM SDK）
+* 指纹/版本扫描留到 **U2 自侦察** 才有意义（那时是「攻击者视角看暴露面」）
 
 ---
 
@@ -134,7 +154,7 @@ output: revealjs::revealjs_presentation
 ## CVSS：给风险打分（[0,10]）
 
 - **基本评估（Base）**：漏洞固有属性，不随时间/环境变化 —— **课堂主要用这组**
-- **时效性评估（Temporal）**：是否已有 PoC / 利用工具
+- **时效性评估（Temporal）**：是否已有概念验证 / 利用工具
 - **环境评估（Environmental）**：在你的部署环境里的实际影响
 
 ---
@@ -168,29 +188,30 @@ output: revealjs::revealjs_presentation
 
 > 评分用 [NVD CVSS 计算器](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator)。完整推导见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x02.md`。
 
-# Topic 4: 怎么学 + 怎么交付
+# 主题 4：怎么学 + 怎么交付
 
 ---
 
 ## 学习金字塔：主动学才有留存
 
-![](https://raw.githubusercontent.com/c4pr1c3/cuc-ns-ppt/master/images/chap0x01/pyramid-1.jpg)
+![学习金字塔](https://raw.githubusercontent.com/c4pr1c3/cuc-ns-ppt/master/images/chap0x01/pyramid-1.jpg){width=40%}
 
 > 听讲 5% / 阅读 10% / 演示 30% / **讨论 50% / 实践 75% / 教别人 90%**。
-> 本课程范式 = **主动学 · 主动做 · 主动讲**。
 
 ---
 
 ## 主动学 · 主动做 · 主动讲
 
+> 本课程范式 = **主动学 · 主动做 · 主动讲**。
+
 - **主动学**：课堂只补最小集；经典理论按需自学见 [在线仓库](https://github.com/c4pr1c3/cuc-ns-ppt/)，助学层有题库自测
-- **主动做**：每周有 lab；整学期一个 capstone，M0-M7 持续迭代，打 tag `m0`…`m7`
-- **主动讲**：里程碑报告写「做了什么 / 点亮哪些能力 / 踩到什么坑」；M7 现场红蓝汇报
+- **主动做**：每周有实验；整学期一个综合实践项目，M0-M7 持续迭代，开分支 `milestone/m0`…`milestone/m7` + MR（见 [Git 指南](../labs/git-guide.md)）
+- **主动讲**：里程碑报告写「做了什么 / 点亮哪些能力 / 踩到什么坑」；M7 现场红队/蓝队汇报
 - 反馈环：每个里程碑对照能力框架自评「这次点亮了哪些簇 × 级」
 
 ---
 
-## 课程主线：capstone M0-M7（M0-M3）
+## 课程主线：综合实践项目 M0-M7（M0-M3）
 
 | 里程碑 | 主题 | 能力簇 | 权重 |
 | :-: | :- | :-: | :-: |
@@ -201,22 +222,22 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 课程主线：capstone M0-M7（M4-M7）
+## 课程主线：综合实践项目 M0-M7（M4-M7）
 
 | 里程碑 | 主题 | 能力簇 | 权重 |
 | :-: | :- | :-: | :-: |
 | M4 | 加固与边界防护 | ④ | 12% |
 | M5 | 日志·取证·蜜罐 | ⑤ | 8% |
 | **M6** | AI 赋能与对抗（核心）⭐ | ⑥ | 30% |
-| M7 | 红蓝对抗 + 复盘 + 自评 | 全簇 | 10% |
+| M7 | 红队/蓝队对抗 + 复盘 + 自评 | 全簇 | 10% |
 
-> 主线一句话：**搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的 AI**，全程同一仓库。详见 [`capstone/overview.md`](../../../capstone/overview.html)。
+> 主线一句话：**搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的 AI**，全程同一仓库。详见 [`capstone/overview.md`](../../../capstone/overview.md)。
 
 ---
 
-## 起点：capstone/seed/
+## 起点：综合实践项目/种子工程（seed）/
 
-- 学生 fork [`capstone/seed/`](../../../capstone/seed/README.html)（Flask 最小应用）作为整个学期的工程起点
+- 学生派生 [`capstone/seed/`](../../../capstone/seed/README.md)（Flask 最小应用）作为整个学期的工程起点
 - 它故意「最小可运行 + 预留攻击面」，作为后续里程碑的真实素材：
   - `/login`：弱口令 + 明文比对 → **M1**
   - `/orders`：字符串拼接 SQL → **M3**
@@ -226,15 +247,15 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 本单元 lab = M0：你要交付什么
+## 本单元实验 = M0：你要交付什么
 
 ```
 M0 立项与威胁建模
 ```
 
-- 任务 A：技术选型 + fork 仓库骨架
+- 任务 A：技术选型 + 派生仓库骨架
 - 任务 B：资产清单 + CIA 标注
-- 任务 C：对 seed 应用做 **STRIDE 威胁建模**
+- 任务 C：对种子工程做 **STRIDE 威胁建模**
 - 任务 D：风险登记表（含 **CVSS 评分**）
 
 > 详见 `labs/lab00-threat-model.md`。完成后在能力框架自评里点亮 **簇①·L1/L2**。
@@ -253,8 +274,8 @@ M0 立项与威胁建模
 
 ## 小结：今天带走的三件事
 
-1. **范式**：少讲授、边学边做、整学期一个 capstone（M0-M7）
+1. **范式**：少讲授、边学边做、整学期一个综合实践项目（M0-M7）
 2. **语言**：CIA 是目标、STRIDE 是威胁清单、CVSS 是风险标尺 —— 三者构成威胁建模的最小工具箱
-3. **行动**：fork `capstone/seed/`，本单元 lab 用它完成 M0，点亮簇①·L1/L2
+3. **行动**：派生 `capstone/seed/`，本单元实验用它完成 M0，点亮簇①·L1/L2
 
 > 经典理论全文：`https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x01.md`、`https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x02.md`（按需自学）。

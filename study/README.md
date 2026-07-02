@@ -16,17 +16,20 @@ author: 黄玮
 | [cuc-ns-ppt 在线](https://github.com/c4pr1c3/cuc-ns-ppt/) | 经典 13 章 + `llm-security.md` + `vuls-awd.md`（按需自学，**本仓库不保留副本**） |
 | `study/README.md` | 本说明 |
 
-* 当前样板：[`unit06-guide.md`](unit06-guide.html) / [`unit06-quiz.md`](unit06-quiz.html)
+* 当前样板：[`unit06-guide.md`](unit06-guide.md) / [`unit06-quiz.md`](unit06-quiz.md)
 * 由 `build_slides.sh` 渲染为**纯 HTML 文档**（`css/linux4ai.css` + 侧边 toc）。
 
 ## 与课件的关系
 
-* 课件（`courseware/unitNN/slides/`）= 教师 just-in-time 讲授主线
+* 课件（`courseware/unitNN/slides/`）= 教师**按需**讲授主线
 * 助学层（`study/`）= 学生自学 + 自测的伴生层；经典深度理论在 `reference/`
 
 # teachme 标准调用约定
 
-## 四个对齐维度（Stage 1 固定答法）
+> **技能源码**：[c4pr1c3/teachme](https://github.com/c4pr1c3/teachme) —— 交互式苏格拉底式讲解技能（3 阶段：反问对齐 → 七要素 Markdown 讲解 → 可选蒸馏课件）。
+> 注意区分粒度：teachme **逐主题讲深**（补 slides/labs 讲不透的「为什么/直觉」，示例见 `study/explainer-*.md`）；**逐单元学习指南/题库** 用下面的可复用 prompt 模板（由教师用任意国产 LLM 跑），**题库随机组卷**用独立的 `quiz-generator` 技能。
+
+## 四个对齐维度（第一阶段固定答法）
 
 | 维度 | 本课取值 | 理由 |
 | :- | :- | :- |
@@ -79,7 +82,7 @@ author: 黄玮
 
 - [ ] 指南覆盖七要素；题库覆盖本单元全部知识点、难度有梯度
 - [ ] 每题答案/解析准确、无幻觉
-- [ ] `bash build_slides.sh` 渲染 exit=0、clean
+- [ ] `bash build_slides.sh` 渲染退出码为 0、clean
 
 ## 当前覆盖
 

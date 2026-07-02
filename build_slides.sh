@@ -24,8 +24,14 @@ fi
 [ -f "$PROJECT_ROOT/styles.html" ] || touch "$PROJECT_ROOT/styles.html"
 
 # 代码块 .numberLines 等属性过滤器（可选存在）
-LUA_ARGS=""
-[ -f "$LUA_FILTER" ] && LUA_ARGS="-L $LUA_FILTER"
+LINKS_FILTER="$PROJECT_ROOT/links-to-html.lua"   # 仓库内 .md 链接 → .html（渲染期重写），slides/docs 共用
+# slides 需 revealjs-codeblock.lua（把 .numberLines 转 reveal.js 的 data-line-numbers）；
+# docs 只用链接重写——其代码高亮/行号由 pandoc skylighting（--highlight-style）内联负责。
+SLIDE_LUA_ARGS=""
+DOC_LUA_ARGS=""
+[ -f "$LUA_FILTER" ] && SLIDE_LUA_ARGS="-L $LUA_FILTER"
+[ -f "$LINKS_FILTER" ] && SLIDE_LUA_ARGS="$SLIDE_LUA_ARGS -L $LINKS_FILTER"
+[ -f "$LINKS_FILTER" ] && DOC_LUA_ARGS="-L $LINKS_FILTER"
 
 render_slide() {
     local file="$1" dir output_file rel_path_to_root revealjs_url css_url
@@ -46,7 +52,7 @@ render_slide() {
         -V hlss=kate \
         --slide-level=2 \
         --mathjax \
-        $LUA_ARGS
+        $SLIDE_LUA_ARGS
 }
 
 render_doc() {
@@ -59,12 +65,24 @@ render_doc() {
     title="$(sed -n 's/^#\{1,\}[[:space:]]\+//p' "$file" | head -n 1)"
     [ -z "$title" ] && title="$(basename "${file%.md}")"
     echo "[doc]    $file"
-    # LAB 样式（对齐 build_pages.sh 的 LAB_MD_FILES 渲染）：--toc + markdown-body body class + toc.js 注入
+    # 返回首页：非首页 doc 在顶部注入「← 返回首页」（pandoc 原生 --include-before-body，
+    # 路径按 rel_path_to_root 计算，子目录页面也能正确指回根 index.html；首页 index.md 自身跳过）
+    local before_body=""
+    if [ "$(basename "$file")" != "index.md" ]; then
+        before_body="$(mktemp)"
+        printf '<div class="doc-home"><a href="%s/index.html">← 返回首页</a></div>\n' "$rel_path_to_root" > "$before_body"
+    fi
+    # LAB 样式：--toc + markdown-body body class + toc.js 注入
+    # 代码高亮走 pandoc 服务端 skylighting（tango 浅色主题，区别于 slides 的 reveal.js monokai），
+    # 着色 + .numberLines 行号 CSS 由 -s 自动内联进 head，无需客户端 JS。
     pandoc -s -o "$output_file" "$file" \
         --css="$css_url" \
+        --highlight-style=tango \
         --toc \
         --metadata title="$title" \
-        $LUA_ARGS
+        ${before_body:+--include-before-body=$before_body} \
+        $DOC_LUA_ARGS
+    [ -n "$before_body" ] && rm -f "$before_body"
     sed -i 's/<body>/<body class="markdown-body">/' "$output_file"
     sed -i "s|</body>|<script src=\"$js_url\"></script></body>|" "$output_file"
 }
@@ -84,33 +102,15 @@ for top in index.md syllabus.md capability-framework.md; do
 done
 
 # 3) capstone/*.md（仅直接子文件；seed/ 下为代码 README，不渲染；统一为 LAB 文档样式）
-[ -d "$PROJECT_ROOT/capstone" ] && find "$PROJECT_ROOT/capstone" -maxdepth 1 -type f -name '*.md' -print0 | while IFS= read -r -d '' f; do render_doc "$f"; done
+[ -d "$PROJECT_ROOT/capstone" ] && find "$PROJECT_ROOT/capstone" -maxdepth 1 -type f -name '*.md' ! -name '*.ai-ta.md' -print0 | while IFS= read -r -d '' f; do render_doc "$f"; done
 
 # 4) 单元 labs
 find "$PROJECT_ROOT" \
     -type d \( -name .git -o -name "$REVEALJS_DIR_NAME" -o -name node_modules -o -name .omc -o -name old -o -name dist \) -prune -o \
-    -type f -path "*/labs/*.md" -print0 | while IFS= read -r -d '' f; do render_doc "$f"; done
+    -type f -path "*/labs/*.md" ! -name '*.ai-ta.md' -print0 | while IFS= read -r -d '' f; do render_doc "$f"; done
 
 # 5) study/ 下所有 md（助学指南/题库/参考）→ 纯 HTML
-[ -d "$PROJECT_ROOT/study" ] && find "$PROJECT_ROOT/study" -type f -name '*.md' -print0 | while IFS= read -r -d '' f; do render_doc "$f"; done
-
-echo "==========================================="
-# 6) 渲染后自测：检测 slide 超高溢出（需 node + Playwright；缺失则跳过）
-if command -v node >/dev/null 2>&1 && [ -f "$PROJECT_ROOT/scripts/check_slide_overflow.mjs" ]; then
-    if [ -d "$PROJECT_ROOT/node_modules/playwright" ]; then
-        echo "---"
-        echo "[check] slide 超高自测..."
-        node "$PROJECT_ROOT/scripts/check_slide_overflow.mjs" && check_rc=0 || check_rc=$?
-        if [ "$check_rc" -ne 0 ]; then
-            echo "[check] ⚠️ 发现超高 slide，请按提示拆分对应 markdown 后重新构建。"
-            # CI 门控：SLIDE_OVERFLOW_GATE=1 时超高即失败，阻止部署被裁剪的 slide
-            if [ "${SLIDE_OVERFLOW_GATE:-0}" = "1" ]; then
-                exit 1
-            fi
-        fi
-    else
-        echo "[check] 未安装 playwright，跳过超高自测（npm install && npx playwright install chromium 后启用）"
-    fi
-fi
+[ -d "$PROJECT_ROOT/study" ] && find "$PROJECT_ROOT/study" -type f -name '*.md' -not -name '*-quiz-answers.md' -print0 | while IFS= read -r -d '' f; do render_doc "$f"; done
 
 echo "转换完成！"
+echo '（slide 超高自测已移出构建——开发期用 `npm run check:overflow` 自测，CI 不再做该校验）'

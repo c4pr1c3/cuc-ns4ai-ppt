@@ -37,7 +37,7 @@ output: revealjs::revealjs_presentation
     * 自然语言查询日志（Text-to-Query）
 * 要求：**接外部或本地 LLM**，且有**工具/数据访问**（为对抗侧留攻击面）
 
-```python{.python .numberLines}
+```{.python .numberLines}
 # 简化：一个带「读知识库 + 查订单」工具的 Agent 端点
 @app.post("/api/agent")
 def agent(q: str):
@@ -51,10 +51,10 @@ def agent(q: str):
 
 ## 赋能侧 · 任务二：集成一个 AI 检测组件
 
-* 用 **ML-IDS / UEBA / 日志分诊** 提升防御（呼应 [`chap0x17`](../chap0x17.html)）
+* 用 **ML-IDS / UEBA / 日志分诊** 提升防御
 * 最小实现：对登录/请求行为用 Isolation Forest 打风险分，高分触发告警
 
-```python{.python .numberLines}
+```{.python .numberLines}
 from sklearn.entropy  import *  # 占位
 from sklearn.ensemble import IsolationForest
 # 特征：[小时, 是否国内, 频率, 失败次数]
@@ -68,14 +68,14 @@ risk  = -model.score_samples(X_live)   # 越大越异常
 
 ## 对抗侧 · 任务一：攻击 AI 功能（红队）
 
-任选 ≥ 2 类，**写 PoC**，记录「劫持/误导是否成功」：
+任选 ≥ 2 类，**写概念验证（PoC）**，记录「劫持/误导是否成功」：
 
-* **间接提示注入**：在 Agent 会读的文档/评论里藏指令，诱导调用受限工具或泄露数据
+* **间接提示注入**：在智能体（Agent）会读的文档/评论里藏指令，诱导调用受限工具或泄露数据
 * **RAG 投毒 / 向量注入**：往知识库塞恶意文档，误导输出（如「把告警转发到攻击者邮箱」）
 * **越狱 / 直接注入**：绕过护栏获取越权回答
-* **工具滥用**：诱导 Agent 把只读工具当**外传通道**
+* **工具滥用**：诱导智能体把只读工具当**外传通道**
 
-> 详见 [`chap0x16`](../chap0x16.html)。所有测试仅限自己的应用。
+> 所有测试仅限自己的应用。
 
 ---
 
@@ -87,7 +87,7 @@ risk  = -model.score_samples(X_live)   # 越大越异常
 * **全链路审计**：哪个工具、读了什么、执行了什么
 * **度量**：加固前后的**劫持成功率下降**（给出数字）
 
-```python{.python .numberLines}
+```{.python .numberLines}
 ALLOW = {"search", "weather"}; DENY = {"email", "rm", "http_post"}
 def guard(a):
     if a.tool in DENY:        return block(a)
@@ -99,8 +99,8 @@ def guard(a):
 
 ## 交付清单
 
-1. **代码**：LLM 功能 + AI 检测组件 + 护栏，集成进应用（仓库 tag `m6`）
-2. **攻击 PoC**：≥ 2 类对抗实验的复现步骤与结果
+1. **代码**：LLM 功能 + AI 检测组件 + 护栏，集成进应用（提交于分支 `milestone/m6` + MR，详见 [Git 指南](../courseware/unit00-intro/labs/git-guide.md)）
+2. **攻击概念验证**：≥ 2 类对抗实验的复现步骤与结果
 3. **度量报告**：
     * 赋能侧：检测组件的 Precision/Recall、误报、与规则版对比、局限
     * 对抗侧：加固前后劫持成功率对比
@@ -114,8 +114,8 @@ def guard(a):
 | :-: | :- | :- | :- |
 | 赋能完整度 | LLM 功能 + AI 检测均有且集成 | 仅其一 | 无 |
 | 度量严谨 | 有数据对比 + 局限分析 | 有基本度量 | 仅「能跑」 |
-| 对抗深度 | ≥2 类 PoC + 加固证据 | 1 类 PoC | 无攻击 |
-| 加固工程化 | 白名单/HITL/审计齐备 | 部分护栏 | 无加固 |
+| 对抗深度 | ≥2 类概念验证 + 加固证据 | 1 类概念验证 | 无攻击 |
+| 加固工程化 | 白名单/人在回路（HITL）/审计齐备 | 部分护栏 | 无加固 |
 
 ---
 

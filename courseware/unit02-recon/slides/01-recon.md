@@ -6,17 +6,17 @@ date: 2026-秋
 output: revealjs::revealjs_presentation
 ---
 
-# Topic 0: 攻击者如何踩点？
+# 主题 0：攻击者如何踩点？
 
 ---
 
-## Hook：攻击前置 = 侦察
+## 问题引入：攻击前置 = 侦察
 
 > 攻击者动手前，**第一件事永远是「看清你」**——你开了哪些口、跑了什么服务、用了什么版本、谁是可以骗的人。
 
 * 侦察（Reconnaissance）= 杀伤链第一步：**收集 → 加工 → 自动化**
 * 防御视角同样适用：**你能看见自己暴露了什么，攻击者就能看见什么**
-* 本单元 = 给你的靶场应用做一次「**自侦察**」（capstone **M2**）
+* 本单元 = 给你的靶场应用做一次「**自侦察**」（综合实践项目（capstone）**M2**）
 
 ---
 
@@ -33,9 +33,9 @@ output: revealjs::revealjs_presentation
 
 5. 社会工程与 OSINT（人是最弱环节）
 6. AI-OSINT（可选埋伏，呼应 U6）
-7. 防御视角：发现自己的暴露面（= lab）
+7. 防御视角：发现自己的暴露面（= 实验）
 
-> 深度理论（ARP 报文结构、TCP 状态机、端口状态全集）见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x04.md` / `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x05.md`。本 slides 只讲「做 M2 所需」。
+> 深度理论（ARP 报文结构、TCP 状态机、端口状态全集）见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x04.md` / `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x05.md`。本课件只讲「做 M2 所需」。
 
 ---
 
@@ -46,7 +46,7 @@ output: revealjs::revealjs_presentation
 * L2：用 Wireshark/nmap 完成测绘并出报告（**M2**）
 * L3：编写**可复用侦察脚本** + 暴露面清单治理（**M2** 脚本交付）
 
-# Topic 1: 网络监听
+# 主题 1：网络监听
 
 ---
 
@@ -100,7 +100,7 @@ sudo tshark -i eth0 -f "host 127.0.0.1" -w m2.pcapng
 
 > **M2 提示**：跑起你的 Flask 靶场后，用 Wireshark 抓一次登录/查询，能直接看到 **明文凭证、SQL 语句**——这是「监听能暴露什么」的最直观证据。
 
-# Topic 2: 网络扫描
+# 主题 2：网络扫描
 
 ---
 
@@ -138,6 +138,15 @@ sudo tshark -i eth0 -f "host 127.0.0.1" -w m2.pcapng
 
 ---
 
+## 【道】UDP 扫描为何又慢又不可靠
+
+* **无连接**：UDP 不像 TCP 有握手，端口开/关都得靠 ICMP 反推
+* **速率受限**：为区分「开放」与「被防火墙过滤」，nmap 必须慢速重传 + 等超时 → 默认比 TCP 慢一个量级
+* **丢包无重传**：UDP 本身不重传，丢包即误判为 `open|filtered` → 结果噪音大
+* 实操：扫 UDP 要 `-sU --max-retries 1` + 耐心，或只扫已知 UDP 服务（53 DNS / 161 SNMP）
+
+---
+
 ## nmap 核心用法（命令速查）
 
 ```bash
@@ -166,7 +175,7 @@ nmap -sV -p 1-1000 127.0.0.1 -oG m2-scan.grep      # grep 友好
 * `-sV`（版本）/ `-O`（OS）/ `-A`（综合）/ `-sC`（脚本）
 * `-oX` / `-oG` / `-oN` / `-oA`（全格式）：**脚本化的关键**
 
-# Topic 3: 指纹识别
+# 主题 3：指纹识别
 
 ---
 
@@ -185,7 +194,16 @@ nmap -sV -p 1-1000 127.0.0.1 -oG m2-scan.grep      # grep 友好
 
 > **M2 提示**：对你的 Flask 靶场做 `-sV`，会暴露 `Werkzeug`/`Python` 版本——这正是攻击者后续（U3）选漏洞利用 payload 的依据。
 
-# Topic 4: 自动化侦察
+---
+
+## 【术】指纹伪装：让攻击者扫不准（呼应 U4 加固）
+
+* **改响应头**：`Server`/`X-Powered-By` 改名/去版本；统一错误页（去掉 Werkzeug 调试栈）
+* **前置 WAF/反向代理**：Nginx/ModSecurity 层统一 `Server` 头，隐藏后端真实栈
+* **指纹对抗是双向的**：攻击者用 favicon hash / 时序侧信道反推，防御者改默认值 + 加噪
+* 伏笔：M4 会把这些做成**规则**（WAF 拦截 + 指纹隐藏 = 纵深防御）
+
+# 主题 4：自动化侦察
 
 ---
 
@@ -255,11 +273,11 @@ if __name__ == "__main__":
 
 > 亦可 `pip install python-nmap` 用封装库。**L3 的关键不是用哪种语言，而是产出「可被下次工程消费」的结构化数据**。
 
-# Topic 5: 社会工程与 OSINT
+# 主题 5：社会工程与 OSINT
 
 ---
 
-## 人是最弱环节（Ch13 并入）
+## 人是最弱环节（第 13 章并入）
 
 > 花几天攻破防火墙，不如打一个电话让员工自己把密码交出来。——经典社工直觉
 
@@ -283,7 +301,7 @@ if __name__ == "__main__":
 * **信息**：减少公开暴露（关闭目录列举、清理过期页面、`robots.txt`/敏感接口下线）
 * **流程**：凭证不随意外发、变更通过带外渠道二次确认
 
-# Topic 6: AI-OSINT（可选埋伏）
+# 主题 6：AI-OSINT（可选埋伏）
 
 ---
 
@@ -295,13 +313,13 @@ if __name__ == "__main__":
 
 ---
 
-## ⚠️ 埋伏：AI-OSINT 结论需 review
+## ⚠️ 埋伏：AI-OSINT 结论需审查
 
-* U6 会系统讲「**AI 作为对象**」——AI 工具本身也会被投毒/误导，OSINT 结论需 review，不可盲信
+* U6 会系统讲「**AI 作为对象**」——AI 工具本身也会被投毒/误导，OSINT 结论需审查，不可盲信
 
 > 本页为可选，不作为 M2 必交项；感兴趣见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/llm-security.md`。
 
-# Topic 7: 防御视角
+# 主题 7：防御视角
 
 ---
 
@@ -316,7 +334,7 @@ if __name__ == "__main__":
 * **持续化**：把 `recon.sh` 接进 CI，每次部署后自动跑 → 暴露面**可追溯、可治理**
 * 这正是 M2 从「L2 测绘」走向「L3 工程化」的分水岭
 
-# Topic 8: 能力自评
+# 主题 8：能力自评
 
 ---
 

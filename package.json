@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Build/check helpers for the cuc-ns4ai-ppt courseware site",
   "scripts": {
-    "check:overflow": "node scripts/check_slide_overflow.mjs"
+    "check:overflow": "node scripts/check_slide_overflow.mjs",
+    "check:links": "bash scripts/check_index_registration.sh"
   },
   "devDependencies": {
     "playwright": "^1.49.0"
