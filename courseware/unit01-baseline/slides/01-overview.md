@@ -1,5 +1,5 @@
 ---
-title: "第一单元: 安全基线"
+title: "第一单元：安全基线"
 subtitle: "【道·术·器·造器】 认证 · 会话 · RBAC · 网络基线"
 author: 黄玮
 date: 2026-秋
@@ -26,6 +26,10 @@ output: revealjs::revealjs_presentation
 2. **【术】**：口令哈希+盐 / 失败锁定 / 会话加固 / RBAC 行级授权
 3. **【器】**：hashcat（攻击侧验证弱口令）/ flask-login（造器之前的器）
 4. **【造器】**：落到你派生的应用 = 综合实践项目（capstone）**M1**
+
+---
+
+## 本单元地图 · 深读入口
 
 > 深度理论见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x03.md`。本课件只讲「做 M1 所需」。
 
@@ -72,7 +76,7 @@ output: revealjs::revealjs_presentation
 * **最小权限原则**：每个主体只授予「完成任务所需的最小权限」，且**默认拒绝、显式允许**
 * 落到代码：`/orders` 不能只问「你登录了吗」，要问「**这个 user 参数你是否有权读**」
 * 落到角色：`admin` 能管账户、`alice` 只能读自己的单——**行级**而非端点级
-* 这一条是 RBAC（任务 C）的灵魂，也是 M6 Agent 护栏（工具白名单）的同一思想
+* 这一条是 RBAC（任务 C）的灵魂，也是 M6 智能体护栏（工具白名单）的同一思想
 
 # 主题 2：【术】口令安全
 

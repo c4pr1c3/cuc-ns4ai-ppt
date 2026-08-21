@@ -1,5 +1,5 @@
 ---
-title: "第六单元: AI 赋能与对抗"
+title: "第六单元：AI 赋能与对抗"
 subtitle: "AI 赋能安全 · 红队速成"
 author: 黄玮
 date: 2026-秋
@@ -12,7 +12,7 @@ output: revealjs::revealjs_presentation
 
 ## 告警洪流
 
-* 中型 SOC 每天**数万~数十万**告警，真阳性常 < 1%
+* 中型 SOC 每天**数万～数十万**告警，真阳性常 < 1%
 * 人才缺 + 数据爆 → 传统规则/签名**力不从心**
 * AI 价值：**速度**（秒级分诊）/ **广度**（长尾未知威胁）/ **语义**（读懂日志代码）
 
@@ -56,9 +56,9 @@ risk = -clf.score_samples(X_live)   # 越大越异常
 
 ---
 
-## UEBA 与 AI-SOC
+## 用户和实体行为分析（UEBA）与 AI-SOC
 
-* **UEBA**：把异常具体到**用户/实体**（凌晨海外登录 = 高风险），输出风险评分
+* **用户和实体行为分析（User and Entity Behavior Analytics，UEBA）**：把异常具体到**用户/实体**（凌晨海外登录 = 高风险），输出风险评分
 * **AI-SOC 分诊**：LLM 对告警归类、合并攻击链、生成调查摘要（要求显式表达不确定性）
 * 代表（**国产优先**）：DeepSeek / Qwen / GLM / Kimi 做 AI-SOC 分诊与日志归类；国外仅作对比（Security Copilot、Gemini for Security、Elastic ML）——**本课程接入一律国产**
 
@@ -87,7 +87,7 @@ risk = -clf.score_samples(X_live)   # 越大越异常
 
 * LLM 训练有截止日 → 对新 CVE/新组织无知
 * **RAG**：检索情报库 → 拼进提示 → 带引用生成
-* ✅ 赋能：自然语言查情报、生成检测规则
+* 赋能：自然语言查情报、生成检测规则
 * ⚠️ 作为对象：库被投毒 → 输出被污染（课件 02 已述）
 
 ---
@@ -119,7 +119,9 @@ risk = -clf.score_samples(X_live)   # 越大越异常
 
 ---
 
-## AI 红队方法论与工具锚点
+## AI 红队资料锚点（按需选读）
+
+> 以下外链均为课外延伸，**不是课堂必读**；建议先看方法论，再按实验需要选工具与基准。
 
 * **方法论**：[OWASP GenAI Red Teaming Guide](https://github.com/requie/AI-Red-Teaming-Guide)、[awesome-ai-security](https://github.com/ottosulin/awesome-ai-security) / [awesome-genai-security](https://github.com/jassics/awesome-genai-security)
 * **自动化评估工具**：[Promptfoo](https://www.promptfoo.dev/)（LLM 测试/红队）、DeepTeam（LLM/智能体红队框架，50+ 漏洞类型）

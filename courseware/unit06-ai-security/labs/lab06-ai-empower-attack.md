@@ -32,7 +32,7 @@ def agent(q: str):
 
 ### 任务 B — 赋能·集成 AI 检测组件
 
-用 ML-IDS / UEBA 提升防御（呼应课件 03）：对登录/请求行为用 Isolation Forest 打风险分，高分触发告警。
+用 ML-IDS / 用户和实体行为分析（User and Entity Behavior Analytics，UEBA）提升防御（呼应课件 03）：对登录/请求行为用 Isolation Forest 打风险分，高分触发告警。
 
 ```{.python .numberLines}
 from sklearn.ensemble import IsolationForest
@@ -74,23 +74,24 @@ def guard(a):
 
 ## 4. 交付与量规（绑定簇 ⑥ · L2）
 
-| 维度 | 优秀 | 合格 | 不合格 |
-| :-: | :- | :- | :- |
-| 赋能完整度 | LLM 功能 + AI 检测均集成 | 仅其一 | 无 |
-| 度量严谨 | 有数据对比 + 局限分析 | 有基本度量 | 仅「能跑」 |
-| 对抗深度 | ≥2 类概念验证 + 加固证据 | 1 类概念验证 | 无攻击 |
-| 加固工程化 | 白名单/HITL/审计齐备 | 部分护栏 | 无加固 |
+| 维度 | 权重 | 优秀 [90,100] | 合格 [60,90) | 不合格 [0,60) |
+| :-: | :-: | :- | :- | :- |
+| **完成度** | 0.25 | LLM 功能 + AI 检测均集成 + 分支 `milestone/m6` + MR | 仅其一 | 无 |
+| **深度** | 0.25 | 有数据对比 + 局限分析 | 有基本度量 | 仅「能跑」 |
+| **AI 双向** | 0.25 | ≥2 类概念验证 + 加固证据 | 1 类概念验证 | 无攻击 |
+| **安全严谨** | 0.15 | 白名单/HITL/审计齐备 | 部分护栏 | 无加固 |
+| **自评** | 0.10 | 能力自评与作品一致 | 有自评 | 无自评 |
 
 **交付物**：代码（分支 `milestone/m6` + MR）、攻击概念验证、度量报告（赋能 Precision/Recall + 局限；对抗加固前后对比）、能力自评。
 
 ## 5. 能力自评
 
-- 簇 ⑥·L1：能区分赋能 vs 作为对象 ✅
+- 簇 ⑥·L1：能区分赋能 vs 作为对象 ☐
 - 簇 ⑥·L2（对象）：完成注入/投毒概念验证 + 加固 ☐
 - 簇 ⑥·L2（赋能）：集成 AI 检测组件 + 度量 ☐
 - 进阶（L3，U7）：在红蓝对抗中综合评估 AI 局限 ☐
 
-### 进阶对标（AI 红队基准与自主 agent）
+### 进阶对标（AI 红队基准与自主智能体）
 
 - 用 [PentestGPT](https://github.com/GreyDGL/PentestGPT) / 腾讯云 TCH / [METATRON](https://github.com/sooryathejas/METATRON) 对你的应用做一次「AI 自主渗透」，与人工 M3 结果对比（命中/误报/盲区）
 - 把对抗概念验证套到评估基准思路（[ExploitGym](https://arxiv.org/abs/2605.11086) / [XBOW benchmarks](https://github.com/xbow-engineering/validation-benchmarks)）——度量「AI 攻击你的 AI 防御」的攻击成功率（ASR）

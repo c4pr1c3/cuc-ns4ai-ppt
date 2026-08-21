@@ -58,7 +58,7 @@ output: revealjs::revealjs_presentation
 
 ### Q4  [单选]
 
-UEBA（User & Entity Behavior Analytics）的输出形式通常是？
+用户和实体行为分析（User and Entity Behavior Analytics，UEBA）的输出形式通常是？
 
 - A. 二元的「是/否」告警
 - B. 一个固定的签名规则
@@ -225,4 +225,3 @@ LLM 在告警分诊时，应该被要求「显式表达不确定性」，而不�
 你的 RAG 客服系统上线后，团队做了一轮红队测试：投毒 50 条知识库文档 + 50 次间接提示注入。加固前测得攻击成功率（ASR）为 60%；加入「白名单 + HITL + 不可信打标 + 输出护栏」后，ASR 降到 12%。
 
 **问题**：这组数字说明了什么？还需要补充哪些度量才能构成 M6 的完整证据？
-

@@ -1,5 +1,5 @@
 ---
-title: "第四单元: 加固与边界防护"
+title: "第四单元：加固与边界防护"
 subtitle: "【道】纵深 · 【术】防火墙/IDS/WAF · 【器】规则集 · 【造器】M4"
 author: 黄玮
 date: 2026-秋
@@ -26,6 +26,11 @@ output: revealjs::revealjs_presentation
 2. 【术】防火墙：iptables / nftables 收敛暴露面（默认拒绝）
 3. 【术】IDS：Snort / Suricata 规则 + **命中 / 误报度量**（重放 M3 概念验证（PoC））
 4. 【术】WAF：ModSecurity + OWASP CRS 拦截 M3 攻击载荷（payload）**变种**（绕过 ↔ 反绕过）
+
+---
+
+## 本单元地图（续）：运行环境与落地
+
 5. 【术】运行环境加固：`debug=False`、隐藏指纹、最小权限
 6. 【器】ModSecurity / Suricata / iptables（用器 → 造器）
 7. 【造器】衔接实验 **M4**：规则集 + 命中 / 误报度量报告
@@ -271,7 +276,7 @@ python3 score.py --alerts /var/log/suricata/eve.json --labels labels.json
 
 > 输出形如 `TP=18, FP=3, FN=2, TN=45 → precision=0.86, recall=0.90`——**这就是 M4 报告里要的数字**。光贴规则无度量 = 深度不合格。
 
-# 【术】WAF：拦截 payload 变种
+# 【术】WAF：拦截攻击载荷变种
 
 ---
 
