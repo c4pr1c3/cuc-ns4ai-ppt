@@ -10,7 +10,7 @@ output: revealjs::revealjs_presentation
 
 > 本指南对齐综合实践项目（capstone）M6（簇⑥·L2 双向），按「七要素」精简展开，面向**网安本科生自学**。
 > 配套题库见 [`unit06-quiz.md`](unit06-quiz.md)。
-> 💡 **焦虑解药**：这一单元你会同时「用 AI」和「攻 AI」——可能觉得「AI 这么强，我学的还有什么用？」答案：**人的价值 = 驾驭 AI**（拆问题、指挥、否决错误、担责），AI 自己做不了。课奖励**驾驭质量**、不奖执行速度；详见 [`syllabus.md`](../syllabus.md)「AI 时代的人机关系」。
+> **焦虑解药**：这一单元你会同时「用 AI」和「攻 AI」——可能觉得「AI 这么强，我学的还有什么用？」答案：**人的价值 = 驾驭 AI**（拆问题、指挥、否决错误、担责），AI 自己做不了。课奖励**驾驭质量**、不奖执行速度；详见 [`syllabus.md`](../syllabus.md)「AI 时代的人机关系」。
 
 ---
 
@@ -113,9 +113,9 @@ scores = -clf.score_samples(X_test)   # 分数越高越异常
 
 ---
 
-## UEBA：把异常具体到用户
+## 用户和实体行为分析（UEBA）：把异常具体到用户
 
-* **UEBA**（User & Entity Behavior Analytics）：把异常定位到**用户/实体**
+* **用户和实体行为分析（User and Entity Behavior Analytics，UEBA）**：把异常定位到**用户/实体**
     * 例：张三平时 9-18 点北京登录 → 凌晨 3 点海外登录 = 高风险
 * 输出**风险评分**而非二元告警，便于分诊排序
 * 代表：Microsoft Defender for Cloud、Splunk UBA、Elastic ML
@@ -277,7 +277,7 @@ def guard(a):
 
 ## 权威资料与知识库
 
-* **MITRE ATLAS**：AI 系统攻击知识库（ adversary tactics, techniques against ML systems）
+* **MITRE ATLAS**：AI 系统攻击知识库（adversary tactics, techniques against ML systems）
 * **OWASP LLM Top 10**：大模型应用十大风险
 * **MITRE ATT&CK**：分诊提示词归类的标准战术框架
 * 各厂商 **Security Copilot** 技术博客：Microsoft / Google / Splunk
@@ -292,7 +292,7 @@ def guard(a):
 
 ---
 
-## 总结 takeaway
+## 总结要点
 
 * AI 赋能 = **分层管线**（小模型检测 + LLM 分诊 + SOAR 行动 + 人在回路）
 * 四大能力：**检测 / SOC / 渗透审计 / 情报问答**

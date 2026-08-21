@@ -1,5 +1,5 @@
 ---
-title: "第二单元: 侦察自动化"
+title: "第二单元：侦察自动化"
 subtitle: "监听 · 扫描 · 指纹 · OSINT"
 author: 黄玮
 date: 2026-秋
@@ -76,7 +76,7 @@ output: revealjs::revealjs_presentation
 
 * **静态 ARP 绑定** / **DHCP Snooping + DAI** / **检测 IP-MAC 异常映射**
 
-> 报文级细节（GARP、 gratuitous ARP、检测脚本）见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x04.md`「主动监听」「检测 ARP 缓存投毒者」。
+> 报文级细节（GARP、gratuitous ARP、检测脚本）见 `https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x04.md`「主动监听」「检测 ARP 缓存投毒者」。
 
 ---
 
@@ -96,7 +96,7 @@ sudo tshark -i eth0 -f "host 127.0.0.1" -w m2.pcapng
 
 ## Wireshark 实战：分析三件套
 
-* **Follow TCP Stream**（还原会话）· **右键作为过滤器应用** · **统计 → 协议分级**
+* **Follow TCP Stream**（还原会话） · **右键作为过滤器应用** · **统计 → 协议分级**
 
 > **M2 提示**：跑起你的 Flask 靶场后，用 Wireshark 抓一次登录/查询，能直接看到 **明文凭证、SQL 语句**——这是「监听能暴露什么」的最直观证据。
 
@@ -124,6 +124,7 @@ sudo tshark -i eth0 -f "host 127.0.0.1" -w m2.pcapng
     * **不完成三次握手** → 不留应用层日志，**nmap 默认、最快、最隐蔽**
 * **TCP Connect 扫描（`-sT`）**
     * 完整三次握手；**无需 root**，但目标应用会记下连接 → 易被发现
+* 换个视角：扫描的「隐蔽性」= 攻击者在躲可观测——U5 你站到防御侧，就用日志让这些扫描现形（贯穿范式「可观测与可验证的安全」的两面）
 
 ---
 
@@ -192,7 +193,7 @@ nmap -sV -p 1-1000 127.0.0.1 -oG m2-scan.grep      # grep 友好
 
 * `http-title`、`http-server-header`、响应头 `Server`/`X-Powered-By`、favicon hash、页面特征
 
-> **M2 提示**：对你的 Flask 靶场做 `-sV`，会暴露 `Werkzeug`/`Python` 版本——这正是攻击者后续（U3）选漏洞利用 payload 的依据。
+> **M2 提示**：对你的 Flask 靶场做 `-sV`，会暴露 `Werkzeug`/`Python` 版本——这正是攻击者后续（U3）选漏洞利用攻击载荷的依据。
 
 ---
 

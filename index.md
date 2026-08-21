@@ -9,7 +9,7 @@ output: revealjs::revealjs_presentation
 
 * [教学大纲](syllabus.md)（8 单元 · 16 讲授 + 48 实践 · 边学边做）
 * [网络安全能力框架 v2](capability-framework.md)
-* [综合实践项目总览（capstone，里程碑 M0–M7）](capstone/overview.md)
+* [综合实践项目总览（capstone，里程碑 M0-M7）](capstone/overview.md)
 
 ---
 
@@ -33,29 +33,29 @@ output: revealjs::revealjs_presentation
 
 ### U2 侦察自动化 → M2
 
-* [课件](courseware/unit02-recon/slides/01-recon.md) | [实验 M2](courseware/unit02-recon/labs/lab02-recon.md) · 来源：教材第 4–5 章（含社工） · 主题：自侦察 + 脚本自动化
+* [课件](courseware/unit02-recon/slides/01-recon.md) | [实验 M2](courseware/unit02-recon/labs/lab02-recon.md) · 来源：教材第 4-5 章（含社工） · 主题：自侦察 + 脚本自动化
 
 ---
 
 ### U3 Web 漏洞攻防 → M3
 
-* [课件](courseware/unit03-web-offense/slides/01-overview.md) | [实验 M3](courseware/unit03-web-offense/labs/lab03-web-offense.md) · 来源：教材第 6–7 章瘦身 · 主题：漏洞利用（SQLi/XSS/上传/CSRF）
+* [课件](courseware/unit03-web-offense/slides/01-overview.md) | [实验 M3](courseware/unit03-web-offense/labs/lab03-web-offense.md) · 来源：教材第 6-7 章瘦身 · 主题：漏洞利用（SQLi/XSS/上传/CSRF）
 
 ---
 
 ### U4 边界防护构建 → M4
 
-* [课件](courseware/unit04-defense/slides/01-overview.md) | [实验 M4](courseware/unit04-defense/labs/lab04-defense.md) · 来源：教材第 8–10 章 · 主题：防火墙/WAF/IDS · **AI 检测组件埋伏**
+* [课件](courseware/unit04-defense/slides/01-overview.md) | [实验 M4](courseware/unit04-defense/labs/lab04-defense.md) · 来源：教材第 8-10 章 · 主题：防火墙/WAF/IDS · **AI 检测组件埋伏**
 
 ---
 
 ### U5 检测取证欺骗 → M5
 
-* [课件](courseware/unit05-detect-forensics/slides/01-overview.md) | [实验 M5](courseware/unit05-detect-forensics/labs/lab05-forensics.md) · 来源：教材第 11–12 章瘦身 · 主题：日志/取证/蜜罐 · **AI 日志分诊埋伏**
+* [课件](courseware/unit05-detect-forensics/slides/01-overview.md) | [实验 M5](courseware/unit05-detect-forensics/labs/lab05-forensics.md) · 来源：教材第 11-12 章瘦身 · 主题：日志/取证/蜜罐 · **AI 日志分诊埋伏**
 
 ---
 
-### U6 AI 赋能与对抗 → M6 ⭐
+### U6 AI 赋能与对抗 → M6（核心）
 
 * [课件：总览](courseware/unit06-ai-security/slides/01-overview.md) | [课件：AI 作为攻击对象](courseware/unit06-ai-security/slides/02-ai-as-target.md) | [课件：AI 赋能攻防](courseware/unit06-ai-security/slides/03-ai-empower.md) | [实验 M6](courseware/unit06-ai-security/labs/lab06-ai-empower-attack.md)
 
@@ -69,7 +69,7 @@ output: revealjs::revealjs_presentation
 
 ## 综合实践项目主线
 
-* [作品总览（里程碑 M0–M7 + 量规）](capstone/overview.md)
+* [作品总览（里程碑 M0-M7 + 量规）](capstone/overview.md)
 * [课程评价指南（学生版）](capstone/evaluation-guide.md)
 * [里程碑 M6：AI 赋能与对抗](capstone/m6-ai.md)
 * [种子工程](capstone/seed/README.md)（学生派生起点，目录 `capstone/seed/`）

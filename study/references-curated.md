@@ -1,11 +1,11 @@
 # 精选高质量参考链接（国产优先 · 道术器标注）
 
-> 课程《网络安全（AI 时代版)》分单元精选参考。每条标 [道]/[术]/[器] + 为何推荐 + 访问日期（2026-06）。
+> 课程《网络安全（AI 时代版）》分单元精选参考。每条标 [道]/[术]/[器] + 为何推荐 + 访问日期（2026-06）。
 > **国产优先**：有国产替代处首选国产（蜜罐 HFish、大模型 DeepSeek/Qwen/GLM/Kimi）；国际标准（CVSS/OWASP/MITRE）无国产替代，引用官方一手源。课程禁止选用国外大模型（GPT/Claude/Gemini）作为接入模型。
 
 ## U0 · 立项与威胁建模（M0，簇①）
 - 【道/术】**STRIDE 威胁建模** — Microsoft SDL Threat Modeling: https://learn.microsoft.com/en-us/azure/architecture/guide/security/security-threat-modeling （STRIDE 六类权威出处）
-- 【道/术】**CVSS v3.1 标准** — FIRST.org: https://www.first.org/cvss/v3-1/ ；计算器: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator （评分唯一权威源，向量可追溯）
+- 【道/术】**CVSS v3.1 标准** — FIRST.org: https://www.first.org/cvss/v3-1/ ；计算器：https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator （评分唯一权威源，向量可追溯）
 - 【器】**OWASP Cheat Sheet Series** — https://cheatsheetseries.owasp.org/ （各漏洞防御速查）
 
 ## U1 · 安全基线（M1，簇①）

@@ -1,5 +1,9 @@
 # 网络安全（AI 时代版 · cuc-ns4ai-ppt）
 
+<p align="center">
+  <img src="images/ns4ai-logo-readme.png" alt="网络安全（AI 时代版）Logo" width="320">
+</p>
+
 配套 [《网络安全》本科生教材](https://github.com/c4pr1c3/cuc-ns) 的课件 —— **面向 AI 时代的实战单元化重构版**。
 
 > 参照（不动）：源课件 [`cuc-ns-ppt`](https://github.com/c4pr1c3/cuc-ns-ppt)、风格/构建来源 [`Linux4AI`](https://github.com/c4pr1c3/Linux4AI)。
@@ -9,7 +13,7 @@
 
 | 维度 | 改造 |
 | :-: | :- |
-| **内容** | 13 章 → **8 实战单元 U0-U7**（≈ 综合实践项目 M0-M7）；经典章改 [在线引用](https://github.com/c4pr1c3/cuc-ns-ppt/)（本仓库不留副本）；AI 脊柱织入 U6 专题 + U4/U5 埋伏 |
+| **内容** | 13 章 → **8 实战单元 U0-U7**（≈ 综合实践项目 M0-M7）；经典章改 [在线引用](https://github.com/c4pr1c3/cuc-ns-ppt/)（本仓库不留副本）；AI 贯穿轴织入 U6 专题 + U4/U5 埋伏 |
 | **教学法** | [`/teachme`](https://github.com/c4pr1c3/teachme) 七要素撰写 + `study/` 助学层（学习指南 + 题库，兼容 `quiz-generator`） |
 | **构建/样式** | 全量迁移 Linux4AI：`hakimel/reveal.js` 5.x + `linux4ai.css` + `build_slides.sh`（slides/labs 分离），与 Linux4AI 视觉统一 |
 
