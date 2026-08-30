@@ -159,7 +159,7 @@
 - ⚠️ **不开 `milestone/m{n}` 分支** → 回退到 HEAD 评审，并标注「未按规范开里程碑分支，**工程规范扣分**」。
 - **MR diff 要干净**：每个 MR 只含本里程碑增量（`git diff milestone/m{n-1}..milestone/m{n}`）；混入其他里程碑或无关内容会干扰评审。
 
-一键开分支+推送+开 MR：`bash scripts/new-milestone.sh <n>`（见 Git 指南）。
+开分支、推送、开 MR 的逐步命令见 [Git 操作指南](../courseware/unit00-intro/labs/git-guide.md)（标准操作 + 一页速查表，复制即用）。
 
 ---
 
