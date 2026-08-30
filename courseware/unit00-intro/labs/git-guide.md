@@ -2,7 +2,7 @@
 
 > 这是《网络安全（AI 时代版）》渐进式作品（综合实践项目 M0-M7）的**唯一** Git 提交规范。
 > 适用对象：所有学生，**尤其是自认为 Git 基础薄弱的同学**——按本指南照做即可，不需要额外看其它教程。
-> 配套：[综合实践项目总览](../../../capstone/overview.md) · [种子工程](../../../capstone/seed/README.md) · [实验 00 / M0](lab00-threat-model.md)
+> 配套：[综合实践项目总览](../../../capstone/overview.md) · [种子工程](../../../capstone/seed/README.md) · [实验 00 / M0](lab00-threat-model.md) · [CI 指南](ci-guide.md)
 
 ---
 
@@ -14,7 +14,7 @@
 
 > **M2 的代码踩在 M1 上，M1 踩在 M0 上……同一个仓库、同一套代码，一路长成一个完整系统。**
 
-这条「累积」性质，直接决定了 Git 的用法必须改。具体改在哪，见 [§8 和 Linux 课的差异](#8-和-linux-课的-git-流程有何不同)。先记住下面三条铁律即可。
+这条「累积」性质，直接决定了 Git 的用法必须改。具体改在哪，见 [§9 和 Linux 课的差异](#9-和-linux-课的-git-流程有何不同)。先记住下面三条铁律即可。
 
 ---
 
@@ -72,6 +72,7 @@ git switch -c milestone/m0
 
 # ③ 做 M0 的实验（见 lab00），产物放进 docs/m0/
 #    例如：docs/m0/tech-stack.md、assets.md、stride.md、risk-register.md、report.md
+#    （每个里程碑必备哪些目录和文件，见 §6 的逐里程碑规划）
 #    小步、多次、写人话 commit：
 git add docs/m0/
 git commit -m "feat(m0): 资产清单 + CIA 标注"
@@ -95,7 +96,7 @@ git pull origin milestone/m1
 # ② 从这里切出新的里程碑分支
 git switch -c milestone/m2
 
-# ③ 做 M2 的实验，产物放进 docs/m2/
+# ③ 做 M2 的实验，产物放进 docs/m2/（逐里程碑目录规划见 §6.2）
 git add docs/m2/
 git commit -m "feat(m2): 暴露面清单 + 参数化侦察脚本"
 # ...边做边 commit...
@@ -134,7 +135,105 @@ git push -u origin milestone/m2
 
 ---
 
-## 6. 常见坑（前几届同学用血换来的）
+## 6. 仓库目录结构与文件命名规划（逐里程碑）
+
+> 本节回答「每个分支里建哪些目录、文件叫什么」。条目分三层：**必备**（固定锚点，助教按它找证据，随意改名 ≈ 让助教找不到）、**建议**（验证过的好习惯）、**自由**（随你发挥，见 [§6.3](#63-自由发挥空间)）。
+
+### 6.1 全学期不变的仓库骨架
+
+以完成全部里程碑后的形态为准，一个规范的作业仓库长这样：
+
+```
+├── app.py  requirements.txt  app.db   # 种子工程：原位演进（M1/M4 等直接改它），不搬家、不复制副本
+├── README.md          # 门面：项目简介 + 里程碑进度表（每完成一个 M 回填一行）
+├── demo.sh            # 根目录一键自检：随里程碑滚动扩充，CI 就调它（见 ci-guide.md）
+├── .gitlab-ci.yml     # CI 配置，M0 就建好（配置方法见 ci-guide.md）
+├── .gitignore         # 至少忽略：.venv/、__pycache__/、app.db、实验产物目录
+├── docs/
+│   ├── m0/            # 每个里程碑一个目录，report.md 必在其中
+│   ├── m1/            #   截图统一放 docs/m{n}/screenshots/，报告里用相对路径引用
+│   └── … 直至 m7/
+├── scripts/           # 工具脚本（可自行增加）
+└── tests/             # 回归测试（建议从 M1 起建立）
+```
+
+三条布局铁律：
+
+1. **代码原位演进**：`app.py` 等种子文件就地修改，不要复制出 `app_m1.py`、`app_v2.py`——版本由分支表达，不由文件名表达。
+2. **文档进 `docs/m{n}/`**：本里程碑的一切文字交付（报告、清单、手册）放这里；`report.md` 是入口，其它文件都从 `report.md` 里用相对链接指过去。
+3. **可执行证据跟着产物走**：`demo.sh`、PoC 脚本、测试，与它们所验证的里程碑放在同一处，并串进根目录的滚动 `demo.sh`。
+
+### 6.2 逐里程碑规划
+
+**M0 · 立项与威胁建模（纯文档）**
+
+- 必备（`docs/m0/` 下）：`tech-stack.md`（技术选型 + M6 拟接入的国产 LLM）、`assets.md`（资产清单 + CIA 标注）、`stride.md`（STRIDE 六类逐项，每条挂 `app.py` 代码位置）、`risk-register.md`（风险登记 + 完整 CVSS 3.1 向量）、`report.md`（里程碑报告 + 能力自评矩阵）
+- 建议：`README.md` 加「里程碑进度」表并回填 M0 行；建好 `.gitlab-ci.yml` 与根 `demo.sh`（M0 的自检可以是「必备文档是否齐全」这类结构校验）
+- 自由：STRIDE 表格模板、风险登记表字段、自评矩阵样式
+
+**M1 · 安全基线（改代码为主）**
+
+- 必备：`docs/m1/report.md`——含 RBAC 设计、「种子弱实现 vs 新实现」加固对照表、网络基线说明、自评
+- 代码（以原位修改 `app.py` 为主，无强制文件名）：口令哈希、会话加固、失败锁定、RBAC 装饰器
+- 建议：`docs/m1/demo.sh` 加固回归自检；测试文件（`tests/` 或 `docs/m1/tests*.py`），并把回归接进根 `demo.sh`
+- 自由：测试写法（pytest / 裸 assert 均可）、加固项的取舍与实施顺序
+
+**M2 · 自侦察**
+
+- 必备：暴露面清单（如 `exposure-inventory.md`，含风险等级 + 处置建议）、可复用侦察脚本（`recon.sh` / `recon.py` / `scanner.py` 风格，参数化目标 + 结构化输出）、asciinema 录屏（`.cast` 后缀，如 `lab02.cast`）、`report.md`（含授权声明：实验仅限 `127.0.0.1`）
+- 布局说明：产物可以放 `docs/m2/`，也可以放 `lab02/`——两种布局助教都认；但**同一个里程碑内请统一用一处**，并在 `report.md` 里逐一链接
+- 建议：nmap 结构化产物落盘（如 `surfaces.json`）+ 解析脚本（如 `parse_nmap.py`）；`docs/m2/demo.sh` 做产物结构自检
+- 自由：脚本语言、结构化输出字段、清单的列设计
+
+**M3 · Web 漏洞挖掘与利用**
+
+- 必备（`docs/m3/` 下）：四类概念验证（PoC），文件名含 `poc`——`sqli-poc.py`、`xss-poc.py`、`upload-poc.py`、`csrf-poc.py`（扩展名不限）；`report.md`（每类写清原理 + 触发条件 + 影响 + 复现步骤）
+- 红线提醒：PoC 与报告里的目标 URL 只允许 `127.0.0.1` / `localhost`
+- 建议：`docs/m3/demo.sh` 一键复现四类 PoC；CSRF 的诱导弹页（如 `evil-csrf.html`）
+- 自由：PoC 形态（python 脚本 / curl 集合均可）、攻击载荷（payload）设计
+
+**M4 · 加固与边界防护**
+
+- 必备：IDS 规则文件（文件名含 `ids` / `suricata`，或 `.rules` 后缀，如 `local.rules`）、WAF 实现（如根目录 `waf.py` 或 `waf/` 目录）、`docs/m4/report.md`——含规则集说明、加固 diff、命中/误报度量数字（TP/FP/precision/recall）、自评
+- 代码：运行环境加固（如 `debug=False`、指纹隐藏），原位改 `app.py`
+- 建议：规则校验与度量脚本（如 `validate_rules.py`、`fp-measure.py`）；`tests/` 里加「加固后回归」（M3 的 PoC 现在应被拦下）
+- 自由：规则条数与覆盖面、WAF 的实现位置（中间件 / 装饰器均可）
+
+**M5 · 日志 · 取证 · 蜜罐**
+
+- 必备：`docs/m5/playbook.md`（取证应对手册，固定文件名）、蜜罐（如根目录 `honeypot.py`，绑定 `127.0.0.1` 并写清隔离说明）、日志管线说明（如 `log-pipeline.md`）、攻击链复盘（`attack-replay.md` 或 `timeline.md`）、`docs/m5/report.md`
+- 建议：日志采集脚本（如 `collect.sh`）；日志防篡改用 `hashlib`/`hmac` 实现并在报告里说明（呼应 M0 风险登记里的对应条目）
+- 自由：日志格式与字段设计、蜜罐交互深度、威胁情报指标（IoC）清单格式
+
+**M6 · AI 赋能与对抗（学期核心）**
+
+- 必备（文件名即锚点）：LLM 功能（`/api/agent` 端点，或 `fake_llm.py` / `agent.py` / `llm.py`）、AI 检测组件 `detector.py`、对抗 PoC `attack_poc.py`（≥ 2 类：间接提示注入 / RAG 投毒 / 越狱 / 工具滥用）、护栏 `guardrail.py`（白名单 + 人在回路）、`report.md`（含 ASR 加固前后对比、Precision/Recall 度量）——**LLM 功能与 AI 检测组件两者都要有，缺一不可**
+- 硬性约束：接入的 LLM 只允许国产模型（DeepSeek / Qwen / GLM / Kimi）；演示外泄的工具不得有真实文件写副作用
+- 建议：产物放 `lab06/` 或 `docs/m6/` 均可（同 M2 的布局规则）；评估脚本（如 `drift_eval.py`）；全链路审计日志
+- 自由：护栏策略、检测算法（规则 / z-score / IsolationForest 均可）、PoC 场景设计
+
+**M7 · 红蓝对抗 + 复盘 + 自评**
+
+- 必备（`docs/m7/` 下）：`redblue-record.md`（场景 + 红队攻击链 + 蓝队复盘 + 纵深度量）、`forensics-report.md`（时间线 + IoC）、能力自评矩阵（如 `self-matrix.md` / `capability-matrix.md`，每项挂 M0-M6 的证据相对路径）、`report.md`（含 AI 综合评估与其局限）、动态证据（录屏或证据包）
+- 建议：复盘脚本（如 `red_team.py`、`timeline.py`）；`README.md` 进度表补齐全部 8 行
+- 自由：演练场景与红蓝剧本、矩阵呈现形式
+
+### 6.3 自由发挥空间
+
+| 类别 | 固定别动 | 随你发挥 |
+| :- | :- | :- |
+| 分支 | `milestone/m{n}` | 临时开发分支随便建，只要别当评审分支 push |
+| 目录 | `docs/m{n}/`、`docs/m{n}/screenshots/`（建议） | 额外建 `notes/`、`assets/` 等随意 |
+| 文件名 | §6.2 标「必备」的锚点文件 | 辅助脚本、笔记、中间产物命名随意（建议英文小写 + 连字符，如 `parse-nmap-draft.py`） |
+| 代码布局 | 同一里程碑内统一放一处 | 放 `docs/m{n}/` 还是 `labNN/` 由你定，二选一 |
+| commit | 小步、多次、说人话；分摊在整个里程碑周期里提交，别拖到最后一天一次堆完 | message 中英文随意，`feat`/`fix`/`docs` 前缀风格自选 |
+| README | 要有里程碑进度表 | 排版、徽章、配图随意 |
+
+**一条总原则**：凡是你自由命名、自由放置的产物，都要能在 `report.md` 里被一个相对链接点到。助教（人和 AI）找证据的顺序是「固定锚点 → `report.md` 里的链接 → 全仓搜索」——前两步命不中，就可能按缺失处理。
+
+---
+
+## 7. 常见坑（前几届同学用血换来的）
 
 | 坑 | 现象 | 正确做法 |
 | :-: | :- | :- |
@@ -145,10 +244,12 @@ git push -u origin milestone/m2
 | **报告用 docx/pdf** | AI 助教解析不出来，直接判扣分 | 报告一律 Markdown（`docs/m{n}/report.md`），禁止 doc/pdf |
 | **忘了 push 或忘了开 MR** | 「我明明 commit 了啊」——但助教什么都看不到 | commit 是本地的；**push + 开 MR + @ 助教** 才是交卷 |
 | **在不同里程碑分支之间乱切着改** | 分支互相串味，出现「平行宇宙」 | 一次只做一个里程碑；切换前 `git status` 确认干净，新分支只从上一里程碑切 |
+| **给必备锚点文件「起个好听的名字」** | `report.md` 改成 `实验报告.md`、`playbook.md` 改成 `手册.md`——助教按锚点找不到，按缺失处理 | §6.2 标「必备」的文件名一个字都别改；想自由发挥的部分见 §6.3 |
+| **把密钥 / token 提交进仓库** | LLM 的 API key、GitLab token 写进代码或 `.env` 并 push——触发安全红线，安全维度直接判不合格 | 密钥一律走环境变量或本地 `.env`，并把 `.env` 写进 `.gitignore`；已经误推的立刻作废换新的，再联系助教 |
 
 ---
 
-## 7. 一页速查表
+## 8. 一页速查表
 
 ```bash
 # ===== 开启里程碑 M{n}（n≥1；M0 见 §4.1）=====
@@ -175,7 +276,7 @@ git push -u origin milestone/m$n      # ⑤ 推送
 
 ---
 
-## 8. 和 Linux 课的 Git 流程有何不同
+## 9. 和 Linux 课的 Git 流程有何不同
 
 如果你上学年用过 Linux 课那套，**唯一的概念差异**就是切分支的起点：
 
@@ -192,7 +293,7 @@ git push -u origin milestone/m$n      # ⑤ 推送
 
 ---
 
-## 9. FAQ
+## 10. FAQ
 
 **Q1：我做到 M3 时发现 M1 的代码有个 bug，要回去改 M1 吗？**
 不用回退（那是高级操作，容易把后续分支搞乱）。**在当前 `milestone/m3` 分支里直接修掉**，commit message 写清楚（如 `fix(m1 的口令哈希): 在 m3 分支内修复`），并在 M3 的 `report.md` 里说明一句「发现并修复了 M1 的 XX 问题」。这叫 **fix-forward**，是工程上推荐的做法。
@@ -213,15 +314,17 @@ git push -u origin milestone/m$n      # ⑤ 推送
 因为 `main` 是冻结的「基线」，所有评审都基于「里程碑相对上一里程碑的增量」。直接动 main 会破坏所有 MR 的 diff，助教就无法判断每个里程碑各自做了什么。
 
 **Q7：我想偷懒，不想记这些命令？**
-种子工程自带 `scripts/new-milestone.sh`，一条命令自动定位上一里程碑分支、切新分支、推送、并打印一个**预填好目标分支**的 GitLab 开 MR 链接。想偷懒用它；想学原理就照 §4 手动来。
+没有也不建议依赖任何「一键脚本」——分支切错是学期级事故，手动操作一两个里程碑就形成肌肉记忆了。照着 [§8 一页速查表](#8-一页速查表) 逐行敲即可，全部命令就六行。
 
 ---
 
-## 10. 检查清单（提交前自检）
+## 11. 检查清单（提交前自检）
 
 - [ ] 当前分支名是 `milestone/m{n}`（不是 main、不是别的）
 - [ ] 这个分支是从 `milestone/m{n-1}`（M0 则从 main）切出来的
 - [ ] 本里程碑产物都在 `docs/m{n}/` 下，含 `report.md`（Markdown）
+- [ ] 本里程碑的必备锚点文件齐全（对照 [§6.2](#62-逐里程碑规划)），自由命名的产物都在 `report.md` 里有相对链接
+- [ ] `.gitlab-ci.yml` 存在，且最近一次 push 的 pipeline 是绿的（配置方法见 [CI 指南](ci-guide.md)）
 - [ ] 报告里的图片在 MR 网页上能正常显示
 - [ ] commit 是小步语义化的，没有「initial commit」巨包
 - [ ] 已经 `git push` 到远端

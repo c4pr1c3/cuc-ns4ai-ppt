@@ -21,7 +21,7 @@ output: revealjs::revealjs_presentation
 
 ### U0 导论与能力框架 → M0
 
-* [课件](courseware/unit00-intro/slides/01-overview.md) | [实验 M0](courseware/unit00-intro/labs/lab00-threat-model.md) | [Git 指南](courseware/unit00-intro/labs/git-guide.md)
+* [课件](courseware/unit00-intro/slides/01-overview.md) | [实验 M0](courseware/unit00-intro/labs/lab00-threat-model.md) | [Git 指南](courseware/unit00-intro/labs/git-guide.md) | [CI 指南](courseware/unit00-intro/labs/ci-guide.md)
 
 ---
 

@@ -16,7 +16,7 @@
 
 - **本地**： Windows 10/11（推荐 WSL 2 Ubuntu 22.04）或 macOS，已安装 Git、Python 3.10+。
 - **仓库**： 课程 GitLab。每个学生在课程 GitLab Group 下派生 [`capstone/seed/`](../../../capstone/seed/README.md) 为自己的私有仓库（命名建议 `cuc-ns-<学号>`）。
-- **Git 规范**（重要）：本学期用「**分支 + MR**」标记里程碑，**不打 tag**。M0 流程 = 从 `main` 切 `milestone/m0` → 完成下述产物 → push → 开 MR（源=`milestone/m0`、目标=`main`）→ @ 助教 → 保持 Open。完整步骤见 [Git 操作指南](git-guide.md)；一键开分支：`bash scripts/new-milestone.sh 0`。
+- **Git 规范**（重要）：本学期用「**分支 + MR**」标记里程碑，**不打 tag**。M0 流程 = 从 `main` 切 `milestone/m0` → 完成下述产物 → push → 开 MR（源=`milestone/m0`、目标=`main`）→ @ 助教 → 保持 Open。完整步骤见 [Git 操作指南](git-guide.md)。
 - **种子工程最小可运行**：
 
   ```bash
