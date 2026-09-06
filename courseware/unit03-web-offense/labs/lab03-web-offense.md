@@ -16,7 +16,7 @@
 
 - **本地**：Git、Python 3.10+；Yakit / Burp / sqlmap / curl。
 - **起点**：你的 `milestone/m2` 分支 tip（M2 末应用，已加固 + 已自侦察）。按 [Git 规范](../../unit00-intro/labs/git-guide.md) **从 `milestone/m2` 切 `milestone/m3`**，MR 目标 = `milestone/m2`。
-- **靶场**：自己派生的应用（含种子工程预留的 `/orders` SQL 注入点；可按需在**自己的**代码里再加 XSS / 上传 / CSRF 教学锚点再利用）。
+- **靶场**：自己派生的应用（含种子工程预留的 `/orders` SQL 注入点；XSS / CSRF 锚点可按需在**自己的**代码里加，**上传锚点用任务 C 给的标准件**——自由发挥容易埋出「不存在利用链」的锚点）。
 - **学术诚信**：⚠️ 仅对自己靶场；禁止对真实 / 第三方系统做任何未授权测试。
 
 ## 3. 任务清单
@@ -27,8 +27,36 @@
 ### 任务 B：XSS（反射 / 存储）利用 + 概念验证
 在自己的应用里构造一个可控回显 / 存储点，写概念验证（窃取 cookie / 演示会话劫持）；说明反射型 vs 存储型区别。
 
-### 任务 C：文件上传漏洞利用
-绕过类型校验上传可执行 / 脚本文件（如 `.php`/`.html`/图片马），写概念验证 + 复现。
+### 任务 C：文件上传漏洞利用（Flask 栈真实链）
+
+> ⚠️ 先校准利用目标：PHP 时代的「上传 webshell → 访问即 RCE」链**在 Flask 栈下不存在**——Flask 不解释任何上传文件，`.php`/图片马落盘后只是惰性数据。「绕过类型校验成功落盘」≠「漏洞可利用」。本任务要求验证**可利用性**（造成真实影响），不是「绕过防御」。
+
+**标准锚点**（M1/M2 若已自建上传锚点，对照补齐回源端点）：
+
+```python
+@app.post("/profile/upload")
+@login_required
+def upload():
+    f = request.files.get("file")
+    if not f:
+        return jsonify({"err": "no file"}), 400
+    os.makedirs("uploads", exist_ok=True)
+    dest = os.path.join("uploads", f.filename)      # 锚点①：文件名未校验（可路径穿越）
+    f.save(dest)
+    return jsonify({"ok": True, "saved": dest}), 201
+
+@app.get("/uploads/<path:fn>")
+@login_required
+def serve_upload(fn):
+    return send_from_directory("uploads", fn)       # 锚点②：按扩展名猜 MIME，同源回源
+```
+
+端到端验证以下**至少一条**（两条都做 → 深度档倾斜）：
+
+- **链 1 · 文件名路径穿越 → 任意文件写**：`os.path.join` 不过滤 `..`。构造 `filename="../app.db"` 覆盖 SQLite 库（或 `filename="../pwn.txt"` 写到应用根目录）。验证判据：文件落在 `uploads/` **之外** / `app.db` 内容被改写。影响：完整性/可用性崩塌；若覆盖的是模板文件，下次渲染即模板注入，可升级为 RCE。
+- **链 2 · 上传 HTML → 同源回源 = 存储型 XSS**：上传内嵌 `<script>` 的 `xss.html`，经 `/uploads/xss.html` 以 `text/html` **同源**返回，脚本以受害者会话身份执行（如 `fetch('/orders?user=...')` 后外带响应）。验证判据：攻击载荷成功执行的证据（浏览器/无头浏览器访问 + 你自己监听端收到外带数据）。注意：M1 加的 `HttpOnly` 只能挡住「读 cookie」，挡不住「冒充受害者发请求」——报告里讲清这一层。
+
+修复方向（写进报告，M4 落地）：`secure_filename()` + 扩展名白名单 + 随机文件名落盘；回源强制 `Content-Disposition: attachment` + `X-Content-Type-Options: nosniff`；上传目录移出 Web 可达路径。
 
 ### 任务 D：CSRF 场景构造
 构造一个跨站请求（改密 / 下单），写概念验证 + 说明 SameSite / Token 防御原理。
@@ -36,9 +64,12 @@
 ### 任务 E（AI 赋能渗透 · 可选，对应 `m3_ai_compare`）
 用 [PentestGPT](https://github.com/GreyDGL/PentestGPT) 或国产安全大模型跑一遍 M3 靶场，对比「AI 辅助 vs 人工」的效率与盲区；讨论自主挖掘智能体的能力边界。**不替代人工概念验证，仅作对比**，命中 / 误报给数字。
 
+### 任务 F（选做 · 挑战）：SSTI 模板注入——Flask 栈的真 RCE
+学有余力时：在自己的应用里埋一个模板拼接锚点（如 `/hello?name=` 用 `render_template_string("Hello " + name)` 渲染）。用 `{{ 7*7 }}` 验证「模板被解释」（返回 49 即成立）→ `{{ config }}` 读出 `secret_key`（闭环呼应 M0 R4）→ 说明经 `__class__.__mro__` 沙箱逃逸可达 RCE 的原理（**定性说明即可，不要求武器化载荷**）。这是「数据即程序」元范式在模板层的复现，属四类之外的深度档加分项。
+
 ### AI 助教适配注意事项
 
-- **常见扣分**：概念验证不足 4 类、仅贴攻击载荷无原理 / 触发条件 / 影响分析、复现步骤缺失、概念验证指向非 `127.0.0.1`（**红线**）。
+- **常见扣分**：概念验证不足 4 类、仅贴攻击载荷无原理 / 触发条件 / 影响分析、复现步骤缺失、上传类仅证明「可落盘 / 绕过校验」而未验证可利用性（路径穿越落点或同源 XSS 执行证据）、概念验证指向非 `127.0.0.1`（**红线**）。
 - **授权红线（硬性）**：所有概念验证仅指向 `127.0.0.1` / 自己派生的应用；报告须显式声明授权范围。触及第三方 = 安全严谨不合格 + 上报。
 - **AI 双向**：用 AI 辅助挖掘须注明范围 + 人工复核；禁止国外大模型。
 - **自评矩阵**：在 `report.md` 对照簇③·L2，每项附证据路径。
@@ -51,7 +82,7 @@
 docs/m3/
 ├── sqli-poc.*       # 任务 A
 ├── xss-poc.*        # 任务 B
-├── upload-poc.*     # 任务 C
+├── upload-poc.*     # 任务 C（路径穿越 / 同源存储 XSS，至少一链）
 ├── csrf-poc.*       # 任务 D
 └── report.md        # 每类：原理 + 触发条件 + 影响 + 复现步骤 + （可选）AI 对比 + 自评
 ```

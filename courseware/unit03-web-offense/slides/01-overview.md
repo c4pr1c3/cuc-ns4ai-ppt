@@ -41,7 +41,7 @@ output: revealjs::revealjs_presentation
 
 ## 本单元地图（续）：上传 / CSRF / 落地
 
-4. **【术】** 文件上传：RCE 原理 → 绕类型校验（图片马）→ 修复
+4. **【术】** 文件上传：二次解释原理 → 路径穿越 / 同源 XSS 双链 → 修复
 5. **【术】** CSRF：自动带 cookie → 概念验证 → SameSite/Token
 6. **【器→造器】** sqlmap / Burp / curl → 衔接实验 M3：≥4 类概念验证 + 复现
 
@@ -245,42 +245,56 @@ https://your-app.example/search?q=%3Cscript%3E...%3C%2Fscript%3E
 
 ---
 
-## 原理：上传一个「能被执行」的文件
+## 原理：上传 ≠ 漏洞，「二次解释」才是
 
-> 文件上传本身不是漏洞；**上传的文件被服务器当脚本执行**才是。
+> 上传头像/附件是正常业务功能；漏洞 = 文件落地后被**解释器**再处理一次。
 
-* 应用允许用户上传（头像、附件），但**未限制类型 / 存到 Web 可达目录 / 用原名**
-* 攻击者上传 `.php` / `.jsp` / `.html` / 图片马 → 访问其 URL → **以 Web 进程权限执行任意代码（RCE）**
-* 后果：**直接拿 shell**——三性全崩（C/I/A），且常是**进入内网的跳板**
+* 四种「二次解释」，四种事故：
+    * **脚本引擎**执行（PHP/ASP webshell）——**Flask 栈没有这一层**：`.php`/图片马落盘 = 惰性数据
+    * **路径拼接**解释文件名（`os.path.join` 吃 `..`）→ 任意文件写
+    * **浏览器**解释 HTML/JS（同源回源）→ 存储型 XSS
+    * **模板引擎**渲染被覆盖的模板 → SSTI → RCE
+* 「绕过类型校验成功落盘」≠「可利用」——要验证的是**落地之后发生了什么**
 
 ---
 
-## 利用：绕类型校验（图片马 / 多重后缀）
+## 链 1：文件名路径穿越 → 任意文件写
 
-```bash
-# ⚠️ 仅对自己 fork 的应用
-# 1) 服务端只看 Content-Type？改头：
-curl -F "file=@shell.php;type=image/jpeg" http://127.0.0.1:5000/upload
-
-# 2) 服务端只看扩展名？图片马：真图片头 + PHP 体
-echo -n -e '\xFF\xD8\xFF\xE0' > evil.jpg   # JPEG 魔数
-cat shell.php >> evil.jpg                   # 追加 PHP 代码
-# 若服务器对 .jpg 用 PHP 解析（错配），访问即执行
+```python
+# 教学锚点：文件名未校验（lab03 任务 C 标准件）
+dest = os.path.join("uploads", f.filename)   # "../app.db" 穿出 uploads/
+f.save(dest)
 ```
 
-* 校验必须**多维**：扩展名、Content-Type、文件头（魔数）、内容解析——任何一维单点都可绕
-* 经典绕法：`shell.php.jpg`（Apache 多重后缀）、`.htaccess` 改解析规则、大小写/空格绕黑名单
+```bash
+# ⚠️ 仅对自己 fork 的应用：multipart 的 filename 完全由客户端控制
+curl -b cookie.txt -F "file=@x.txt;filename=../pwn.txt" \
+     http://127.0.0.1:5000/profile/upload
+```
+
+* 判据：文件落在 `uploads/` **之外**（`../pwn.txt` 出现、`../app.db` 被改写）= 可利用性成立
+* 影响：完整性/可用性崩塌；覆盖模板文件 → 下次渲染即代码执行（可升级 RCE）
+* 正解：`secure_filename()`（werkzeug 自带）剥掉路径分量，只留安全文件名
 
 ---
 
-## 修复：隔离存储 + 禁止执行（**隔离代码与数据**）
+## 链 2：上传 HTML → 同源回源 = 存储型 XSS
 
-* **重命名**：上传后用**随机文件名**（UUID）存，丢掉用户给的扩展名
-* **隔离目录**：存到**非 Web 根**或**静态资源域**，且**禁用该目录脚本解析**（`php_flag engine off`）
-* **白名单校验**：扩展名 + Content-Type + 魔数三重一致才接受
-* **大小限制 + 病毒扫描**：纵深防御
+* 回源 `send_from_directory()` 按扩展名猜 MIME：上传 `xss.html` → `text/html` 同源返回 = **存储型 XSS**
+* 脚本以受害者身份 `fetch('/orders?user=...')` 外带数据——cookie 自动携带，**不用读**
+* U1 的另一面：`HttpOnly` 挡「读 cookie」，挡不住「冒充你发请求」
 
-> 又是「隔离」：把上传内容当**纯数据**对待，绝不给它「变成代码」的机会。
+> 判据：攻击载荷的**执行证据**（无头浏览器 + 监听端收到外带数据），不是「上传成功」。
+
+---
+
+## 修复 + 跨栈背景
+
+* 修复四件套：**`secure_filename` + 扩展名白名单 + 随机文件名**（文件名是数据，不是路径）；回源强制 **`attachment` + `nosniff`**；上传目录**移出 Web 可达路径**；大小限制
+* 跨栈背景（了解即可）：PHP/Apache 的 webshell 链——图片马、多重后缀、解析错配——**你的 Flask 靶场不存在这条链**，全文见 `chap0x07`
+* 元范式不变：还是「**隔离**」——上传内容是**纯数据**，不给它变成代码/路径的机会
+
+> M4 预演：这两条链就是 WAF/IDS 规则要拦的「弹药」。
 
 # 主题 5：【术】CSRF（跨站请求伪造）
 
@@ -358,13 +372,13 @@ cat shell.php >> evil.jpg                   # 追加 PHP 代码
 docs/m3/
 ├── sqli-poc.*       # 任务 A：/orders?user= 注入，dump/篡改/越权
 ├── xss-poc.*        # 任务 B：反射/存储，窃 cookie
-├── upload-poc.*     # 任务 C：图片马/绕类型校验
+├── upload-poc.*     # 任务 C：路径穿越 / 同源存储 XSS（至少一链）
 ├── csrf-poc.*       # 任务 D：跨站改密/下单
 └── report.md        # 每类：原理 + 触发条件 + 影响 + 复现 + 自评
 ```
 
 * 从 `milestone/m2` 切 `milestone/m3`，MR 目标 = `milestone/m2`（[Git 指南](../../unit00-intro/labs/git-guide.md)）
-* 每类概念验证必含**三段**：**原理**（为什么能打）+ **触发条件**（什么环境能打）+ **影响**（打了能干嘛）
+* 任务 F（选做）：**SSTI** 模板注入（`{{7*7}}`→`{{config}}`），深度档加分项
 
 > 详见 [`labs/lab03-web-offense.md`](../labs/lab03-web-offense.md)。
 
@@ -420,7 +434,7 @@ curl -b cookie.txt "http://127.0.0.1:5000/orders?user=' UNION SELECT sql,name FR
 ## 小结：今天带走的三件事
 
 1. **【道】** 注入本质 = 数据被当代码执行；**隔离**是统一解药（SQLi/XSS/上传 通用，并预告 U6 提示词注入）
-2. **【术】** 四类 Web 漏洞各有「根因 → 利用 → 修复」三段：SQLi 参数化、XSS 编码、上传禁执行、CSRF 隔离来源
+2. **【术】** 四类 Web 漏洞各有「根因 → 利用 → 修复」三段：SQLi 参数化、XSS 编码、上传防二次解释（路径 + 回源）、CSRF 隔离来源
 3. **【造器】** 实验 M3 要你交 ≥4 类概念验证 + 复现步骤，**仅打 127.0.0.1**——这些概念验证就是 M4 加固的弹药
 
 > 深度理论：`https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x06.md`（方法论/杀伤链）、`https://github.com/c4pr1c3/cuc-ns-ppt/blob/master/chap0x07.md`（Web 漏洞全谱，按需自学）。
