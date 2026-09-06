@@ -249,7 +249,7 @@ output: revealjs::revealjs_presentation
 | **M6** | AI 赋能与对抗（核心） | ⑥ | 30% |
 | M7 | 红队/蓝队对抗 + 复盘 + 自评 | 全簇 | 10% |
 
-> 主线一句话：**搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的 AI**，全程同一仓库。详见 [`capstone/overview.md`](../../../capstone/overview.md)。
+> 主线一句话：**搭建 → 攻击 → 检测 → 加固 → 装 AI → 攻防它的 AI**，全程同一仓库。详见 [`capstone/overview.md`](../../../capstone/overview.md)。权重为**相对权重**（和 = 90%），按 60% × 权重 / 90% 折算入总评（期末 60% + 平时 20% + 考勤 10% + 线上 10%）。
 
 ---
 
