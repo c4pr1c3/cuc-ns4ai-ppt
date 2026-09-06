@@ -125,6 +125,20 @@
     text-align: left;
 }
 
+/* 固定列宽表格（工具类）：窄首列 + 定宽末列，中间列占余量。
+   用于「级 | 长描述 | 勾选」类三列表——末列短标签（如「☐ U0 已点亮」）列宽不足会换行，
+   把每一行都撑成两行高，表格整体抬高 ~70px 导致页尾内容被画布裁掉。
+   用法：markdown 中用围栏 div 包裹表格（::: {.tbl-colfix} … :::）。 */
+.tbl-colfix table {
+    table-layout: fixed;
+}
+.tbl-colfix table th:first-child {
+    width: 8%;
+}
+.tbl-colfix table th:last-child {
+    width: 26%;
+}
+
 /* 4. 引用块优化 */
 .reveal blockquote {
     width: 95%;
