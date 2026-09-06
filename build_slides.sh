@@ -26,7 +26,7 @@ fi
 # 代码块 .numberLines 等属性过滤器（可选存在）
 LINKS_FILTER="$PROJECT_ROOT/links-to-html.lua"   # 仓库内 .md 链接 → .html（渲染期重写），slides/docs 共用
 # slides 需 revealjs-codeblock.lua（把 .numberLines 转 reveal.js 的 data-line-numbers）；
-# docs 只用链接重写——其代码高亮/行号由 pandoc skylighting（--highlight-style）内联负责。
+# docs 只用链接重写——其代码高亮/行号由 pandoc skylighting（--syntax-highlighting=tango）内联负责。
 SLIDE_LUA_ARGS=""
 DOC_LUA_ARGS=""
 [ -f "$LUA_FILTER" ] && SLIDE_LUA_ARGS="-L $LUA_FILTER"
@@ -48,10 +48,10 @@ render_slide() {
         --css="$css_url" \
         -V transition=fade \
         -V history=true \
-        --no-highlight \
+        --syntax-highlighting=none \
         -V hlss=kate \
         --slide-level=2 \
-        --mathjax \
+        --math-method=mathjax \
         $SLIDE_LUA_ARGS
 }
 
@@ -77,7 +77,7 @@ render_doc() {
     # 着色 + .numberLines 行号 CSS 由 -s 自动内联进 head，无需客户端 JS。
     pandoc -s -o "$output_file" "$file" \
         --css="$css_url" \
-        --highlight-style=tango \
+        --syntax-highlighting=tango \
         --toc \
         --metadata title="$title" \
         ${before_body:+--include-before-body=$before_body} \
