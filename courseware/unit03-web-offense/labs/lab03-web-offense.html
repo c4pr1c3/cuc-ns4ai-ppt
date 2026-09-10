@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>实验 03：Web 漏洞挖掘与利用（综合实践项目 M3）</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">实验 03：Web 漏洞挖掘与利用（综合实践项目 M3）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#实验-03web-漏洞挖掘与利用综合实践项目-m3"
+id="toc-实验-03web-漏洞挖掘与利用综合实践项目-m3">实验 03：Web
+漏洞挖掘与利用（综合实践项目 M3）</a>
+<ul>
+<li><a href="#实验目标" id="toc-实验目标">1. 实验目标</a></li>
+<li><a href="#环境准备" id="toc-环境准备">2. 环境准备</a></li>
+<li><a href="#任务清单" id="toc-任务清单">3. 任务清单</a>
+<ul>
+<li><a href="#任务-asql-注入利用-概念验证"
+id="toc-任务-asql-注入利用-概念验证">任务 A：SQL 注入利用 +
+概念验证</a></li>
+<li><a href="#任务-bxss反射-存储利用-概念验证"
+id="toc-任务-bxss反射-存储利用-概念验证">任务 B：XSS（反射 / 存储）利用
++ 概念验证</a></li>
+<li><a href="#任务-c文件上传漏洞利用flask-栈真实链"
+id="toc-任务-c文件上传漏洞利用flask-栈真实链">任务
+C：文件上传漏洞利用（Flask 栈真实链）</a></li>
+<li><a href="#任务-dcsrf-场景构造" id="toc-任务-dcsrf-场景构造">任务
+D：CSRF 场景构造</a></li>
+<li><a href="#任务-eai-赋能渗透-可选对应-m3_ai_compare"
+id="toc-任务-eai-赋能渗透-可选对应-m3_ai_compare">任务 E（AI 赋能渗透 ·
+可选，对应 <code>m3_ai_compare</code>）</a></li>
+<li><a href="#任务-f选做-挑战ssti-模板注入flask-栈的真-rce"
+id="toc-任务-f选做-挑战ssti-模板注入flask-栈的真-rce">任务 F（选做 ·
+挑战）：SSTI 模板注入——Flask 栈的真 RCE</a></li>
+<li><a href="#ai-助教适配注意事项" id="toc-ai-助教适配注意事项">AI
+助教适配注意事项</a></li>
+</ul></li>
+<li><a href="#交付与量规" id="toc-交付与量规">4. 交付与量规</a></li>
+<li><a href="#能力自评" id="toc-能力自评">5. 能力自评</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="实验-03web-漏洞挖掘与利用综合实践项目-m3">实验 03：Web
+漏洞挖掘与利用（综合实践项目 M3）</h1>
+<blockquote>
+<p>本实验即综合实践项目 <strong>M3</strong>。对自己的靶场应用（M1
+末）发现并利用预设漏洞，每类写概念验证（PoC） + 复现步骤。⚠️
+<strong>仅在自己派生的应用 / <code>127.0.0.1</code> /
+授权环境</strong>——触及第三方系统是红线。 种子工程 <code>app.py</code>
+的 <code>/orders?user=</code> 用 f-string 拼接
+SQL，是<strong>故意预留</strong>的注入点。</p>
+</blockquote>
+<h2 id="实验目标">1. 实验目标</h2>
+<ul>
+<li><strong>能力交付（绑定簇③·L2 · 攻击与渗透）</strong>：
+<ol type="1">
+<li>能够发现并利用 SQL 注入、XSS、文件上传、CSRF 四类典型 Web
+漏洞。</li>
+<li>能够为每类漏洞编写可复现的概念验证（含原理、触发条件、影响）。</li>
+<li>能够（可选）用 AI 辅助漏洞挖掘，并与人工对比命中 / 误报。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>完成本实验后，在 <code>docs/m3/report.md</code> 自评：点亮
+<strong>簇③·L2</strong>。</p>
+</blockquote>
+<h2 id="环境准备">2. 环境准备</h2>
+<ul>
+<li><strong>本地</strong>：Git、Python 3.10+；Yakit / Burp / sqlmap /
+curl。</li>
+<li><strong>起点</strong>：你的 <code>milestone/m2</code> 分支 tip（M2
+末应用，已加固 + 已自侦察）。按 <a
+href="../../unit00-intro/labs/git-guide.html">Git 规范</a> <strong>从
+<code>milestone/m2</code> 切 <code>milestone/m3</code></strong>，MR 目标
+= <code>milestone/m2</code>。</li>
+<li><strong>靶场</strong>：自己派生的应用（含种子工程预留的
+<code>/orders</code> SQL 注入点；XSS / CSRF
+锚点可按需在<strong>自己的</strong>代码里加，<strong>上传锚点用任务 C
+给的标准件</strong>——自由发挥容易埋出「不存在利用链」的锚点）。</li>
+<li><strong>学术诚信</strong>：⚠️ 仅对自己靶场；禁止对真实 /
+第三方系统做任何未授权测试。</li>
+</ul>
+<h2 id="任务清单">3. 任务清单</h2>
+<h3 id="任务-asql-注入利用-概念验证">任务 A：SQL 注入利用 +
+概念验证</h3>
+<p>指向 <code>/orders?user=</code> 的字符串拼接注入：写概念验证（如
+<code>'; UPDATE orders --</code>、<code>UNION SELECT sql,name FROM sqlite_master --</code>），dump
+全表 / 篡改 / 越权读他人订单；记录原理（「数据即程序」）+ 触发条件 +
+影响。</p>
+<h3 id="任务-bxss反射-存储利用-概念验证">任务 B：XSS（反射 / 存储）利用
++ 概念验证</h3>
+<p>在自己的应用里构造一个可控回显 / 存储点，写概念验证（窃取 cookie /
+演示会话劫持）；说明反射型 vs 存储型区别。</p>
+<h3 id="任务-c文件上传漏洞利用flask-栈真实链">任务
+C：文件上传漏洞利用（Flask 栈真实链）</h3>
+<blockquote>
+<p>⚠️ 先校准利用目标：PHP 时代的「上传 webshell → 访问即
+RCE」链<strong>在 Flask 栈下不存在</strong>——Flask
+不解释任何上传文件，<code>.php</code>/图片马落盘后只是惰性数据。「绕过类型校验成功落盘」≠「漏洞可利用」。本任务要求验证<strong>可利用性</strong>（造成真实影响），不是「绕过防御」。</p>
+</blockquote>
+<p><strong>标准锚点</strong>（M1/M2
+若已自建上传锚点，对照补齐回源端点）：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="at">@app.post</span>(<span class="st">&quot;/profile/upload&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">@login_required</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> upload():</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span> request.files.get(<span class="st">&quot;file&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> f:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> jsonify({<span class="st">&quot;err&quot;</span>: <span class="st">&quot;no file&quot;</span>}), <span class="dv">400</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    os.makedirs(<span class="st">&quot;uploads&quot;</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    dest <span class="op">=</span> os.path.join(<span class="st">&quot;uploads&quot;</span>, f.filename)      <span class="co"># 锚点①：文件名未校验（可路径穿越）</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    f.save(dest)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jsonify({<span class="st">&quot;ok&quot;</span>: <span class="va">True</span>, <span class="st">&quot;saved&quot;</span>: dest}), <span class="dv">201</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">&quot;/uploads/&lt;path:fn&gt;&quot;</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">@login_required</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> serve_upload(fn):</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> send_from_directory(<span class="st">&quot;uploads&quot;</span>, fn)       <span class="co"># 锚点②：按扩展名猜 MIME，同源回源</span></span></code></pre></div>
+<p>端到端验证以下<strong>至少一条</strong>（两条都做 →
+深度档倾斜）：</p>
+<ul>
+<li><strong>链 1 · 文件名路径穿越 →
+任意文件写</strong>：<code>os.path.join</code> 不过滤
+<code>..</code>。构造 <code>filename="../app.db"</code> 覆盖 SQLite
+库（或 <code>filename="../pwn.txt"</code>
+写到应用根目录）。验证判据：文件落在 <code>uploads/</code>
+<strong>之外</strong> / <code>app.db</code>
+内容被改写。影响：完整性/可用性崩塌；若覆盖的是模板文件，下次渲染即模板注入，可升级为
+RCE。</li>
+<li><strong>链 2 · 上传 HTML → 同源回源 = 存储型 XSS</strong>：上传内嵌
+<code>&lt;script&gt;</code> 的 <code>xss.html</code>，经
+<code>/uploads/xss.html</code> 以 <code>text/html</code>
+<strong>同源</strong>返回，脚本以受害者会话身份执行（如
+<code>fetch('/orders?user=...')</code>
+后外带响应）。验证判据：攻击载荷成功执行的证据（浏览器/无头浏览器访问 +
+你自己监听端收到外带数据）。注意：M1 加的 <code>HttpOnly</code>
+只能挡住「读
+cookie」，挡不住「冒充受害者发请求」——报告里讲清这一层。</li>
+</ul>
+<p>修复方向（写进报告，M4 落地）：<code>secure_filename()</code> +
+扩展名白名单 + 随机文件名落盘；回源强制
+<code>Content-Disposition: attachment</code> +
+<code>X-Content-Type-Options: nosniff</code>；上传目录移出 Web
+可达路径。</p>
+<h3 id="任务-dcsrf-场景构造">任务 D：CSRF 场景构造</h3>
+<p>构造一个跨站请求（改密 / 下单），写概念验证 + 说明 SameSite / Token
+防御原理。</p>
+<h3 id="任务-eai-赋能渗透-可选对应-m3_ai_compare">任务 E（AI 赋能渗透 ·
+可选，对应 <code>m3_ai_compare</code>）</h3>
+<p>用 <a href="https://github.com/GreyDGL/PentestGPT">PentestGPT</a>
+或国产安全大模型跑一遍 M3 靶场，对比「AI 辅助 vs
+人工」的效率与盲区；讨论自主挖掘智能体的能力边界。<strong>不替代人工概念验证，仅作对比</strong>，命中
+/ 误报给数字。</p>
+<h3 id="任务-f选做-挑战ssti-模板注入flask-栈的真-rce">任务 F（选做 ·
+挑战）：SSTI 模板注入——Flask 栈的真 RCE</h3>
+<p>学有余力时：在自己的应用里埋一个模板拼接锚点（如
+<code>/hello?name=</code> 用
+<code>render_template_string("Hello " + name)</code> 渲染）。用
+<code>{{ 7*7 }}</code> 验证「模板被解释」（返回 49 即成立）→
+<code>{{ config }}</code> 读出 <code>secret_key</code>（闭环呼应 M0
+R4）→ 说明经 <code>__class__.__mro__</code> 沙箱逃逸可达 RCE
+的原理（<strong>定性说明即可，不要求武器化载荷</strong>）。这是「数据即程序」元范式在模板层的复现，属四类之外的深度档加分项。</p>
+<h3 id="ai-助教适配注意事项">AI 助教适配注意事项</h3>
+<ul>
+<li><strong>常见扣分</strong>：概念验证不足 4 类、仅贴攻击载荷无原理 /
+触发条件 / 影响分析、复现步骤缺失、上传类仅证明「可落盘 /
+绕过校验」而未验证可利用性（路径穿越落点或同源 XSS
+执行证据）、概念验证指向非
+<code>127.0.0.1</code>（<strong>红线</strong>）。</li>
+<li><strong>授权红线（硬性）</strong>：所有概念验证仅指向
+<code>127.0.0.1</code> /
+自己派生的应用；报告须显式声明授权范围。触及第三方 = 安全严谨不合格 +
+上报。</li>
+<li><strong>AI 双向</strong>：用 AI 辅助挖掘须注明范围 +
+人工复核；禁止国外大模型。</li>
+<li><strong>自评矩阵</strong>：在 <code>report.md</code>
+对照簇③·L2，每项附证据路径。</li>
+</ul>
+<h2 id="交付与量规">4. 交付与量规</h2>
+<p>在 <code>docs/m3/</code> 下提交（在 <code>milestone/m3</code>
+分支上完成、push、开 MR @ 助教，目标 = <code>milestone/m2</code>）：</p>
+<pre><code>docs/m3/
+├── sqli-poc.*       # 任务 A
+├── xss-poc.*        # 任务 B
+├── upload-poc.*     # 任务 C（路径穿越 / 同源存储 XSS，至少一链）
+├── csrf-poc.*       # 任务 D
+└── report.md        # 每类：原理 + 触发条件 + 影响 + 复现步骤 + （可选）AI 对比 + 自评</code></pre>
+<p><strong>评分量规（绑定簇③·L2，满分 100；详细维度释义见 <a
+href="../../../capstone/evaluation-guide.html">评价指南</a>）</strong>：</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">维度</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: left;">优秀 [90,100]</th>
+<th style="text-align: left;">合格 [60,90)</th>
+<th style="text-align: left;">不合格 [0,60)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>完成度</strong></td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: left;">≥4 类漏洞概念验证（SQLi/XSS/上传/CSRF
+全覆盖）+ 复现步骤 + 分支 milestone/m3 + MR</td>
+<td style="text-align: left;">主要类别（≥2 类）有概念验证</td>
+<td style="text-align: left;">仅 1 类或无概念验证</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>深度</strong></td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: left;">每类概念验证含漏洞原理 + 触发条件 +
+影响评估；能编排多阶段</td>
+<td style="text-align: left;">能复现单类漏洞</td>
+<td style="text-align: left;">仅贴攻击载荷无分析</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>AI 双向</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">用
+AI（PentestGPT/国产安全模型）辅助挖掘并对比命中 / 误报</td>
+<td style="text-align: left;">仅人工</td>
+<td style="text-align: left;">无 AI 内容（M3 对 AI 挖掘有期望，故权重
+0.10）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>安全严谨</strong></td>
+<td style="text-align: center;">0.25</td>
+<td
+style="text-align: left;">仅对自己靶场；概念验证含边界声明；规避真实破坏</td>
+<td style="text-align: left;">基本合规</td>
+<td style="text-align: left;">触及第三方系统（红线）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>自评</strong></td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: left;">自评（簇③·L2）与作品一致</td>
+<td style="text-align: left;">有自评</td>
+<td style="text-align: left;">无自评</td>
+</tr>
+</tbody>
+</table>
+<h2 id="能力自评">5. 能力自评</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">簇 × 级</th>
+<th style="text-align: left;">能力描述</th>
+<th style="text-align: center;">是否点亮</th>
+<th style="text-align: left;">证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">③·L2</td>
+<td style="text-align: left;">发现并利用 ≥4 类 Web 漏洞，每类写概念验证
++ 复现</td>
+<td style="text-align: center;">☐</td>
+<td style="text-align: left;">M3 的 sqli/xss/upload/csrf 概念验证 +
+report</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>下一单元 U4（M4 加固）将给这个被攻破的应用套上 WAF/IDS
+纵深防御——这里的概念验证就是 M4 规则命中 / 误报复盘的「弹药」。</p>
+</blockquote>
+<script src="../../../js/toc.js"></script></body>
+</html>
