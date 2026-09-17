@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CI 指南：给自己的作业仓库装上 gitlab-runner</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../css/linux4ai.css" />
+</head>
+<body class="markdown-body">
+<div class="doc-home"><a href="../../../index.html">← 返回首页</a></div>
+<header id="title-block-header">
+<h1 class="title">CI 指南：给自己的作业仓库装上 gitlab-runner</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#ci-指南给自己的作业仓库装上-gitlab-runner"
+id="toc-ci-指南给自己的作业仓库装上-gitlab-runner">CI
+指南：给自己的作业仓库装上 gitlab-runner</a>
+<ul>
+<li><a href="#为什么值得花这半小时" id="toc-为什么值得花这半小时">1.
+为什么值得花这半小时</a></li>
+<li><a href="#工作原理一句话" id="toc-工作原理一句话">2.
+工作原理一句话</a></li>
+<li><a href="#前置条件" id="toc-前置条件">3. 前置条件</a></li>
+<li><a href="#安装-gitlab-runner" id="toc-安装-gitlab-runner">4. 安装
+gitlab-runner</a>
+<ul>
+<li><a href="#方式-a清华-tuna-镜像推荐"
+id="toc-方式-a清华-tuna-镜像推荐">方式 A：清华 TUNA
+镜像（推荐）</a></li>
+<li><a href="#方式-b官方仓库一键脚本"
+id="toc-方式-b官方仓库一键脚本">方式 B：官方仓库一键脚本</a></li>
+</ul></li>
+<li><a href="#在-gitlab-上创建-runner-并拿到令牌"
+id="toc-在-gitlab-上创建-runner-并拿到令牌">5. 在 GitLab 上创建 runner
+并拿到令牌</a></li>
+<li><a href="#注册-runner-到你的机器" id="toc-注册-runner-到你的机器">6.
+注册 runner 到你的机器</a></li>
+<li><a href="#两种执行器executor怎么选"
+id="toc-两种执行器executor怎么选">7.
+两种执行器（executor）怎么选</a></li>
+<li><a href="#提交-.gitlab-ci.yml" id="toc-提交-.gitlab-ci.yml">8. 提交
+<code>.gitlab-ci.yml</code></a></li>
+<li><a href="#验收让构建日志出现" id="toc-验收让构建日志出现">9.
+验收：让构建日志出现</a></li>
+<li><a href="#常见坑" id="toc-常见坑">10. 常见坑</a></li>
+<li><a href="#安全与诚信边界" id="toc-安全与诚信边界">11.
+安全与诚信边界</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="ci-指南给自己的作业仓库装上-gitlab-runner">CI
+指南：给自己的作业仓库装上 gitlab-runner</h1>
+<blockquote>
+<p>配套：<a href="git-guide.html">Git 操作指南</a> · <a
+href="../../../capstone/overview.html">综合实践项目总览</a> · <a
+href="lab00-threat-model.html">实验 00 / M0</a>
+适用对象：想让每次提交都带一份「自动构建/自检日志」的同学。环境示例：<strong>Ubuntu
+22.04 Server</strong>（虚拟机即可）。</p>
+</blockquote>
+<hr />
+<h2 id="为什么值得花这半小时">1. 为什么值得花这半小时</h2>
+<ul>
+<li><strong>动态证据</strong>：实验报告写的是「我做了什么」，CI
+日志证明「它真的能跑」。每次 <code>git push</code> 都会自动执行仓库里的
+<code>demo.sh</code> 一键自检，GitLab 留下带时间戳的构建日志——助教（含
+AI
+助教）评审时会核对你被评提交的流水线（pipeline）状态和日志，实验报告的「动态执行效果」不靠嘴说。</li>
+<li><strong>独立完成的客观证据链</strong>：一整个学期的 commit 时间线 +
+逐次构建日志 + 你自己服务器上的 runner
+执行环境，构成一条很难事后伪造的连续记录。原创作者随手就能拿出这套证据；临时拼凑或抄袭来的仓库，补不出这样的过程痕迹。</li>
+<li><strong>即时反馈</strong>：改坏了立刻红，不用等评审才发现
+<code>demo.sh</code> 跑不通。</li>
+</ul>
+<blockquote>
+<p>实在没有条件跑 runner 也不致命：保证 <code>.gitlab-ci.yml</code>
+语法合法、本地 <code>bash demo.sh</code> 退出码为 0，并在
+<code>report.md</code>
+里注明本地自检结果，评审时有对应的降级核验口径。但有真实构建日志的同学，证据链完整度就是高一档。</p>
+</blockquote>
+<hr />
+<h2 id="工作原理一句话">2. 工作原理一句话</h2>
+<p>你 <code>git push</code> → 课程 GitLab 生成 pipeline →
+把构建任务（job）派给<strong>你自己机器上的 gitlab-runner</strong> →
+runner 执行 <code>.gitlab-ci.yml</code> 里的脚本（装依赖、跑
+<code>demo.sh</code>）→ 日志与结果回传 GitLab，显示在 commit、MR 和
+<code>Build → Pipelines</code> 页面上。</p>
+<p>Runner 装在你自己控制的 Ubuntu 机器上，只接你自己仓库的活。</p>
+<hr />
+<h2 id="前置条件">3. 前置条件</h2>
+<ul>
+<li>一台 Ubuntu 22.04 Server（虚拟机即可），有 sudo 权限，能访问
+<code>https://git.cuc.edu.cn</code></li>
+<li>已在课程 GitLab 上派生了自己的作业仓库</li>
+<li>你在作业仓库上的角色是 <strong>Maintainer</strong>——创建和管理
+runner 的最低角色要求是 Maintainer，<code>Developer</code>
+在仓库左侧看不到 <code>Settings</code> 菜单。如果没有
+<code>Settings</code>，联系助教提权后再继续</li>
+<li>磁盘空闲 ≥ 2 GB（选 docker 执行器建议 ≥ 5 GB）</li>
+</ul>
+<hr />
+<h2 id="安装-gitlab-runner">4. 安装 gitlab-runner</h2>
+<p>两种方式二选一，校园网推荐方式 A（清华镜像）。</p>
+<h3 id="方式-a清华-tuna-镜像推荐">方式 A：清华 TUNA 镜像（推荐）</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ① 导入 GitLab 官方 GPG 公钥</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://packages.gitlab.com/runner/gitlab-runner/gpgkey <span class="kw">|</span> <span class="fu">sudo</span> gpg <span class="at">--dearmor</span> <span class="at">-o</span> /usr/share/keyrings/gitlab-runner.gpg</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ② 写入镜像源（Ubuntu 22.04 的代号是 jammy）</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;deb [signed-by=/usr/share/keyrings/gitlab-runner.gpg] https://mirrors.tuna.tsinghua.edu.cn/gitlab-runner/ubuntu jammy main&quot;</span> <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/gitlab-runner.list</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ③ 安装</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install <span class="at">-y</span> gitlab-runner</span></code></pre></div>
+<h3 id="方式-b官方仓库一键脚本">方式 B：官方仓库一键脚本</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> <span class="st">&quot;https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh&quot;</span> <span class="at">-o</span> script.deb.sh</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> script.deb.sh    <span class="co"># 好习惯：curl 下来的脚本先看内容再执行</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> bash script.deb.sh</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> gitlab-runner</span></code></pre></div>
+<p>验证安装：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gitlab-runner</span> <span class="at">--version</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> gitlab-runner status    <span class="co"># 应显示服务正在运行</span></span></code></pre></div>
+<hr />
+<h2 id="在-gitlab-上创建-runner-并拿到令牌">5. 在 GitLab 上创建 runner
+并拿到令牌</h2>
+<ol type="1">
+<li>打开<strong>你自己的作业仓库</strong>，左侧
+<code>Settings → CI/CD → Runners</code>，点
+<code>New project runner</code>。</li>
+<li>勾选 <strong><code>Run untagged jobs</code></strong>——本课程的
+<code>.gitlab-ci.yml</code> 不给 job 打标签（tag），不勾的话 runner
+永远接不到活。</li>
+<li>其余保持默认，点 <code>Create runner</code>，页面会给出一枚
+<code>glrt-</code> 开头的认证令牌（authentication
+token）。<strong>它只显示这一次</strong>，立即保存到本地安全的地方（例如密码管理器），<strong>绝不能提交进仓库</strong>。</li>
+</ol>
+<blockquote>
+<p>如果你看到的是旧版界面（给的是 registration token
+而不是上面的新建流程），在 <code>Runners</code> 展开区找到 registration
+token，下一步注册命令改用 <code>--registration-token</code> 参数。</p>
+</blockquote>
+<hr />
+<h2 id="注册-runner-到你的机器">6. 注册 runner 到你的机器</h2>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> gitlab-runner register <span class="at">--url</span> https://git.cuc.edu.cn <span class="at">--token</span> glrt-你的令牌</span></code></pre></div>
+<p>交互提问这样答：</p>
+<ul>
+<li><code>description</code>：随意，如 <code>my-ubuntu2204</code></li>
+<li><code>executor</code>：填 <code>docker</code>（推荐）或
+<code>shell</code>——两者区别见 §7</li>
+<li>选了 docker 还会问默认镜像：填 <code>python:3.11-slim</code></li>
+</ul>
+<p>验证：回到 GitLab 的 <code>Runners</code> 页面，你的 runner
+前面应是绿色圆点；本机执行 <code>sudo gitlab-runner verify</code> 应输出
+<code>is alive</code>。</p>
+<hr />
+<h2 id="两种执行器executor怎么选">7. 两种执行器（executor）怎么选</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"><code>docker</code>（推荐）</th>
+<th style="text-align: left;"><code>shell</code>（备选）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">隔离性</td>
+<td style="text-align: left;">每个 job 一个干净容器，不碰你的系统</td>
+<td style="text-align: left;">直接跑在你的系统上</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>.gitlab-ci.yml</code> 的
+<code>image:</code> 字段</td>
+<td style="text-align: left;">生效（<code>python:3.11-slim</code>）</td>
+<td style="text-align: left;">被忽略，用本机 <code>python3</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">额外依赖</td>
+<td style="text-align: left;">需装
+Docker：<code>sudo apt install -y docker.io</code></td>
+<td style="text-align: left;">无（Ubuntu Server 自带 python3）</td>
+</tr>
+<tr>
+<td style="text-align: left;">网络要求</td>
+<td style="text-align: left;">要能拉取容器镜像（慢可配镜像加速器）</td>
+<td style="text-align: left;">只需 pip 装依赖（已走清华镜像，见
+§8）</td>
+</tr>
+</tbody>
+</table>
+<p>两点说明：</p>
+<ul>
+<li>docker 执行器下，gitlab-runner 服务以 root 运行，可直接使用本机
+Docker，不需要配置用户组。</li>
+<li>shell 执行器下建议用 venv 隔离 CI 的 Python 依赖（见 §8
+变体），避免污染系统环境。</li>
+</ul>
+<hr />
+<h2 id="提交-.gitlab-ci.yml">8. 提交 <code>.gitlab-ci.yml</code></h2>
+<p>在
+<code>milestone/m0</code>（第一个里程碑分支）就建好这个文件，之后整学期不用改——它调用的是根目录的
+<code>demo.sh</code>，而 <code>demo.sh</code> 随里程碑滚动扩充：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .gitlab-ci.yml —— 每次 push 自动执行 demo.sh 一键自检</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">stages</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> validate</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">variables</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">PIP_DISABLE_PIP_VERSION_CHECK</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;1&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">PYTHONUNBUFFERED</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;1&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">PIP_INDEX_URL</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;https://pypi.tuna.tsinghua.edu.cn/simple&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span><span class="kw">:</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stage</span><span class="kw">:</span><span class="at"> validate</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> python:3.11-slim</span><span class="co">        # shell 执行器会忽略本行</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">script</span><span class="kw">:</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> python3 -V</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> pip install -r requirements.txt -q</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> bash demo.sh</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> $CI_COMMIT_BRANCH</span></span></code></pre></div>
+<p><code>shell</code> 执行器的变体（去掉 <code>image:</code>，用 venv
+隔离）：</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stage</span><span class="kw">:</span><span class="at"> validate</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">script</span><span class="kw">:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> python3 -m venv .ci-venv</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> .ci-venv/bin/pip install -r requirements.txt -q</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> source .ci-venv/bin/activate &amp;&amp; bash demo.sh</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> $CI_COMMIT_BRANCH</span></span></code></pre></div>
+<blockquote>
+<p>用 venv 变体时，记得把 <code>.ci-venv/</code> 加进
+<code>.gitignore</code>。</p>
+</blockquote>
+<p>YAML 的两个常见坑：</p>
+<ul>
+<li><code>script:</code>
+里某行如果含有「冒号+空格」（<code>:</code>），整行要用引号包起来，否则
+YAML 解析失败，pipeline 直接红；</li>
+<li>push 之前，可以在仓库的 <code>Build → Pipeline editor</code> 里先
+Lint 校验一遍语法。</li>
+</ul>
+<hr />
+<h2 id="验收让构建日志出现">9. 验收：让构建日志出现</h2>
+<ol type="1">
+<li>随便 push 一个 commit（或
+<code>git commit --allow-empty -m "ci: 触发首次 pipeline"</code> 再
+push）。</li>
+<li>仓库左侧 <code>Build → Pipelines</code>
+应出现一条新记录；点进去能看到完整 job
+日志：装依赖、<code>demo.sh</code> 逐里程碑自检、最终退出码 0。</li>
+<li>打开你保持 <code>Open</code> 的 MR——MR 页面现在会显示 pipeline
+状态，助教一眼就能看到「这次提交是能跑通的」。</li>
+<li>顺手把最近一次绿色 pipeline 的链接回填到 <code>README.md</code>
+的里程碑进度表里。</li>
+</ol>
+<hr />
+<h2 id="常见坑">10. 常见坑</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">坑</th>
+<th style="text-align: left;">现象</th>
+<th style="text-align: left;">处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">runner 不接活</td>
+<td style="text-align: left;">pipeline 一直 <code>pending</code></td>
+<td style="text-align: left;">创建 runner 时没勾
+<code>Run untagged jobs</code>；到
+<code>Settings → CI/CD → Runners</code> 里编辑勾上</td>
+</tr>
+<tr>
+<td style="text-align: left;">令牌丢了</td>
+<td style="text-align: left;">没有地方能找回</td>
+<td style="text-align: left;">令牌只显示一次；删掉旧 runner，按 §5
+重建一个即可</td>
+</tr>
+<tr>
+<td style="text-align: left;">pip 超时</td>
+<td style="text-align: left;">job 日志里装依赖失败</td>
+<td style="text-align: left;">确认 <code>.gitlab-ci.yml</code> 里有
+<code>PIP_INDEX_URL</code> 清华镜像变量</td>
+</tr>
+<tr>
+<td style="text-align: left;">拉不动容器镜像</td>
+<td style="text-align: left;">docker 执行器卡在 pulling</td>
+<td style="text-align: left;">配置镜像加速器；或
+<code>sudo gitlab-runner unregister --name my-ubuntu2204</code> 后改用
+shell 执行器重注册</td>
+</tr>
+<tr>
+<td style="text-align: left;">端口被占</td>
+<td style="text-align: left;">第二次跑 <code>demo.sh</code> 失败</td>
+<td style="text-align: left;"><code>demo.sh</code> 里起的服务要用
+<code>trap</code> 收尾杀掉，各里程碑用不同端口</td>
+</tr>
+<tr>
+<td style="text-align: left;">想「顺便」在 CI 里扫描外部目标</td>
+<td style="text-align: left;">——</td>
+<td style="text-align: left;">绝对禁止：实验目标只允许
+<code>127.0.0.1</code>，CI 里同样适用（这是课程红线）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="安全与诚信边界">11. 安全与诚信边界</h2>
+<ul>
+<li>runner 只注册在<strong>你自己的仓库</strong>上；令牌和
+<code>/etc/gitlab-runner/config.toml</code> 不提交进任何仓库。</li>
+<li>这台 runner 机器是你自己的环境：不要在上面跑来路不明的代码，也不要把
+runner 共享给别人的仓库用。</li>
+<li>把 CI
+日志当作你的学术诚信材料来经营：它如实记录了谁在什么时间、让什么代码跑通了。</li>
+</ul>
+<script src="../../../js/toc.js"></script></body>
+</html>
