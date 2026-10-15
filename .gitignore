@@ -1,0 +1,26 @@
+.DS_Store
+
+# secrets — never commit tokens / credentials
+.env
+.env.*
+
+# python
+__pycache__/
+*.pyc
+app.db
+
+# node (Playwright slide-overflow checker)
+node_modules/
+
+# omc operational state + build outputs
+.omc/
+# anchored to repo root only — must NOT match reveal.js/dist/ (deployed site asset)
+/dist/
+
+# study quiz answers — internal-only (answers); never render via build_slides.sh nor push to public mirror
+study/*-quiz-answers.md
+
+# AI 助教自动核验信号 — internal-only（评分实现细节；写给学生看会泄露打分逻辑）；不渲染、不上 master
+*.ai-ta.md
+
+.env
